@@ -30,7 +30,7 @@ var ads mongo.Collection
 // Structs describing the kind of data that this application will store. A "Lab"
 // is a single page of code, a user is an account.
 
-// A lab contains an ID for identification as well as a name (very similar to a title)
+// Lab contains an ID for identification as well as a name (very similar to a title)
 // as well as code to display and metadata pertaining to it.
 type Lab struct {
 	ID       string    `json:"id"`
@@ -43,7 +43,7 @@ type Lab struct {
 	Language string    `json:"language"`
 }
 
-// An ad contains an ID for identification as well as a title, subtitle and a link to
+// Ad contains an ID for identification as well as a title, subtitle and a link to
 // both an image and a video. The idea is that when the image is clicked on, a video can
 // play, advertising the product. If the video is then clicked on, we are reasonably sure
 // that the user is interested in the product so the user can then migrate away to the
@@ -54,14 +54,14 @@ type Ad struct {
 	Title          string `json:"title"`
 	Subtitle       string `json:"subtitle"`
 	BannerImageURL string `json:"bannerURL"`
-	ModalVideoURL  string `json:"ModalVideoURL"`
+	ModalVideoURL  string `json:"modalVideoURL"`
 	Views          int    `json:"views"`
-	ViewsPaidFor   int    `json:"views"`
+	ViewsPaidFor   int    `json:"viewsBought"`
 	Owner          string `json:"owner"`
 	Action         string `json:"action"`
 }
 
-// This describes a basic user on this system, storing information about the user's
+// User describes a basic user on this system, storing information about the user's
 // particulars and their activity on the system.
 type User struct {
 	ID             string    `json:"id"`
@@ -109,10 +109,10 @@ func getUser(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusNotFound)
 			w.Write([]byte(`{}`))
 			return
-		} else {
-			sendError = true
-			errorMessage = append(errorMessage, string(err.Error()))
 		}
+		sendError = true
+		errorMessage = append(errorMessage, string(err.Error()))
+
 	}
 
 	// Convert the user to a json document before decoding it into raw bytes
@@ -126,7 +126,7 @@ func getUser(w http.ResponseWriter, r *http.Request) {
 	// Otherwise send them the information requested in the JSON format.
 	if sendError {
 		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(strings.Join(errorMessage, "\n")))
+		w.Write([]byte("{'error':'" + strings.Join(errorMessage, "\n") + "'}"))
 	} else {
 		w.WriteHeader(http.StatusOK)
 		if b != nil {
@@ -135,6 +135,11 @@ func getUser(w http.ResponseWriter, r *http.Request) {
 			w.Write([]byte(`{}`))
 		}
 	}
+}
+
+func addUser(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Content-Type", "application/json")
 
 }
 
@@ -172,16 +177,16 @@ func main() {
 	r := mux.NewRouter()
 
 	// API v1
-	api_v1 := r.PathPrefix("/api/v1").Subrouter()
+	apiV1 := r.PathPrefix("/api/v1").Subrouter()
 	//api_v1.HandleFunc("/lab/{labName}", postLab).Methods(http.MethodPost)
 	//api_v1.HandleFunc("/lab/{labName}", getLab).Methods(http.MethodGet)
 	//api_v1.HandleFunc("/lab/{labName}", putLab).Methods(http.MethodPut)
 	//api_v1.HandleFunc("/lab/{labName}", deleteLab).Methods(http.MethodDelete)
 	//api_v1.HandleFunc("/user/{userName}", post).Methods(http.MethodPost)
-	api_v1.HandleFunc("/user/{userName}", getUser).Methods(http.MethodGet)
+	apiV1.HandleFunc("/user/{userName}", getUser).Methods(http.MethodGet)
 	//api_v1.HandleFunc("/user/{userName}", put).Methods(http.MethodPut)
 	//api_v1.HandleFunc("/user/{userName}", delete).Methods(http.MethodDelete)
-	api_v1.HandleFunc("", notFound)
+	apiV1.HandleFunc("", notFound)
 
 	r.Use(mux.CORSMethodMiddleware(r))
 	log.Fatal(http.ListenAndServe(":8080", r))
