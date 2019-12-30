@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/gorilla/mux"
@@ -15,16 +16,16 @@ import (
 )
 
 // Global variable to store the global DB client to be used to perform transactions
-var dbclient *mongo.Client
+var dbclient mongo.Client
 
 // Global handle variable that points to the users collection in the database
-var users = dbclient.Database("Labs").Collection("users")
+var users mongo.Collection
 
 // Global handle variable that points to the labs collection in the database
-var labs = dbclient.Database("Labs").Collection("labs")
+var labs mongo.Collection
 
 // Global handle variable that points to the ads collection in the database
-var ads = dbclient.Database("Labs").Collection("ads")
+var ads mongo.Collection
 
 // Structs describing the kind of data that this application will store. A "Lab"
 // is a single page of code, a user is an account.
@@ -71,10 +72,23 @@ type User struct {
 	AccountCreated time.Time `json:"account created"`
 }
 
+// Functions for debugging go here.
+func addMweya() {
+	var myLabs []string
+	mweya := User{
+		"mweya", "Mweya", "Ruider", "Namibia University of Science and Technology", myLabs, time.Now(),
+	}
+	_, err := users.InsertOne(context.TODO(), mweya)
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
 // Functions governing the behaviour of the system go here, from responding to
 // requests that cannot be satisfied to the creation of users.
 func getUser(w http.ResponseWriter, r *http.Request) {
 	sendError := false
+	var errorMessage []string
 	// Stop CORS from complaining on newer systems
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	// Tell the browsers what kind of content to expect
@@ -86,25 +100,33 @@ func getUser(w http.ResponseWriter, r *http.Request) {
 	// Create a filter to be used to search for the user
 	// ID is uppercase so it does not conflict with the id assigned to the document
 	// by MongoDB
-	filter := bson.D{{"ID", ID}}
+	filter := bson.D{{"id", ID}}
 	// Create a variable for the user we will be returning
 	var user User
 	err := users.FindOne(context.TODO(), filter).Decode(&user)
 	if err != nil {
-		sendError = true
+		if err.Error() == "mongo: no documents in result" {
+			w.WriteHeader(http.StatusNotFound)
+			w.Write([]byte(`{}`))
+			return
+		} else {
+			sendError = true
+			errorMessage = append(errorMessage, string(err.Error()))
+		}
 	}
 
 	// Convert the user to a json document before decoding it into raw bytes
 	b, err := json.Marshal(user)
 	if err != nil {
 		sendError = true
+		errorMessage = append(errorMessage, string(err.Error()))
 	}
 
 	// If anything has gone wrong, send an error back to the client.
-	// Otherwise send them the information requested.
+	// Otherwise send them the information requested in the JSON format.
 	if sendError {
 		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(`500 - Internal Server Error`))
+		w.Write([]byte(strings.Join(errorMessage, "\n")))
 	} else {
 		w.WriteHeader(http.StatusOK)
 		if b != nil {
@@ -137,6 +159,14 @@ func main() {
 	if ping != nil {
 		log.Writer().Write([]byte(ping.Error()))
 	}
+
+	// Instantiate the collection vars
+	users = *dbclient.Database("Labs").Collection("users")
+	labs = *dbclient.Database("Labs").Collection("labs")
+	ads = *dbclient.Database("Labs").Collection("ads")
+
+	// Debug
+	//addMweya()
 
 	// Webserver and routing
 	r := mux.NewRouter()
