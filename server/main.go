@@ -112,8 +112,6 @@ func getUser(w http.ResponseWriter, r *http.Request) {
 	ID := vars["userName"]
 
 	// Create a filter to be used to search for the user
-	// ID is uppercase so it does not conflict with the id assigned to the document
-	// by MongoDB
 	filter := bson.D{{Key: "id", Value: ID}}
 	// Create a variable for the user we will be returning
 	var user User
