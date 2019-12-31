@@ -242,8 +242,25 @@ func addUser(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
+// Removes a user from the system
 func deleteUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Content-Type", "application/json")
+	// Use the mux vars for this one
+	// https://stackoverflow.com/questions/299628/is-an-entity-body-allowed-for-an-http-delete-request
+	vars := mux.Vars(r)
+	ID := vars["userName"]
+
+	// Remove user with that username
+	filter := bson.D{{Key: "id", Value: ID}}
+	_, err := users.DeleteOne(context.TODO(), filter)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte("{'error':'" + err.Error() + "'}"))
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte(`{"status": "OK"}`))
 }
 
 func notFound(w http.ResponseWriter, r *http.Request) {
