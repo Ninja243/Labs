@@ -7,6 +7,8 @@ import (
 	"strings"
 	"time"
 
+	"math"
+
 	"github.com/gorilla/mux"
 
 	"context"
@@ -55,8 +57,8 @@ type Ad struct {
 	Subtitle       string `json:"subtitle"`
 	BannerImageURL string `json:"bannerURL"`
 	ModalVideoURL  string `json:"modalVideoURL"`
-	Views          int    `json:"views"`
-	ViewsPaidFor   int    `json:"viewsBought"`
+	Views          int64  `json:"views"`
+	ViewsPaidFor   int64  `json:"viewsBought"`
 	Owner          string `json:"owner"`
 	Action         string `json:"action"`
 }
@@ -79,6 +81,16 @@ func addMweya() {
 		"mweya", "Mweya", "Ruider", "Namibia University of Science and Technology", myLabs, time.Now(),
 	}
 	_, err := users.InsertOne(context.TODO(), mweya)
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+func addTestAd() {
+	ad := Ad{
+		"helloworld", "Looking for an developer?", "Hire the developer of this app!", "https://mweya.duckdns.org/lowrez", "", 0, math.MaxInt64, "Mweya Ruider", "https://mweya.duckdns.org/cv",
+	}
+	_, err := ads.InsertOne(context.TODO(), ad)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -261,6 +273,7 @@ func deleteUser(w http.ResponseWriter, r *http.Request) {
 	}
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(`{"status": "OK"}`))
+	return
 }
 
 func notFound(w http.ResponseWriter, r *http.Request) {
