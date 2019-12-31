@@ -221,7 +221,6 @@ func addUser(w http.ResponseWriter, r *http.Request) {
 
 	// Test to make sure all fields are populated
 	if user.ID == "" || user.FirstName == "" || user.LastName == "" || user.Affiliation == "" {
-		// Scream
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte("{'error':'Bad request. Don't leave anything blank'"))
 		return
@@ -317,6 +316,10 @@ func main() {
 	apiV1.HandleFunc("/user/{userName}", getUser).Methods(http.MethodGet)
 	apiV1.HandleFunc("/addUser", addUser).Methods(http.MethodPut)
 	//api_v1.HandleFunc("/user/{userName}", delete).Methods(http.MethodDelete)
+
+	//apiV1.HandleFunc("/ad", getAdvert).Methods(http.MethodGet)
+	//apiV1.HandleFunc("/sales/testAd/{adID}", testAd).Methods(http.MethodGet)
+	//apiV1.HandleFunc("/sales/")
 	apiV1.HandleFunc("", notFound)
 
 	r.Use(mux.CORSMethodMiddleware(r))
