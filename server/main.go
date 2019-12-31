@@ -138,13 +138,63 @@ func getUser(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 }
+
 // func testUsername
 
 // Modifies a user on the system
 func modUser(w http.ResponseWriter, r *http.Request) {
-	// Get old user from db
-// Get new user from json
-// Keep acc creation date
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Content-Type", "application/json")
+	var updatedUser User
+	err := json.NewDecoder(r.Body).Decode(&updatedUser)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte("{'error':'" + err.Error() + "'}"))
+		return
+	}
+	// Make sure that no needed fields have been omitted
+	if updatedUser.ID == "" || updatedUser.FirstName == "" || updatedUser.LastName == "" || updatedUser.Affiliation == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte("{'error':'Bad Request. Make sure none of your fields have been left empty.'}"))
+		return
+	}
+
+	// Get old user data from DB
+	var oldUser User
+	err = nil
+	filter := bson.D{{Key: "id", Value: updatedUser.ID}}
+	err = users.FindOne(context.TODO(), filter).Decode(&oldUser)
+	if err != nil {
+		if err.Error() == "mongo: no documents in result" {
+			w.WriteHeader(http.StatusNotFound)
+			w.Write([]byte("{'error':'User not found'}"))
+			return
+		}
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte("{'error':'" + err.Error() + "'}"))
+		return
+	}
+
+	// Keep the date joined from the old account
+	updatedUser.AccountCreated = oldUser.AccountCreated
+
+	// Overwrite the data stored with that username with the data from the json
+	// doc supplied.
+	err = nil
+	b, err := bson.Marshal(updatedUser)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte("{'error':'" + err.Error() + "'}"))
+		return
+	}
+	_, err = users.UpdateOne(context.TODO(), filter, b)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte("{'error':'" + err.Error() + "'}"))
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("{'status': 'OK'"))
 }
 
 // Adds a new user to the system.
@@ -190,7 +240,10 @@ func addUser(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusConflict)
 	w.Write([]byte("{'error':'User already exists'"))
 	return
+}
 
+func deleteUser(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 }
 
 func notFound(w http.ResponseWriter, r *http.Request) {
@@ -232,7 +285,7 @@ func main() {
 	//api_v1.HandleFunc("/lab/{labName}", getLab).Methods(http.MethodGet)
 	//api_v1.HandleFunc("/lab/{labName}", putLab).Methods(http.MethodPut)
 	//api_v1.HandleFunc("/lab/{labName}", deleteLab).Methods(http.MethodDelete)
-	//api_v1.HandleFunc("/user/{userName}", post).Methods(http.MethodPost)
+	apiV1.HandleFunc("/modUser", modUser).Methods(http.MethodPost)
 	apiV1.HandleFunc("/user/{userName}", getUser).Methods(http.MethodGet)
 	apiV1.HandleFunc("/addUser", addUser).Methods(http.MethodPut)
 	//api_v1.HandleFunc("/user/{userName}", delete).Methods(http.MethodDelete)
