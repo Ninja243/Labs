@@ -86,6 +86,8 @@ func addMweya() {
 
 // Functions governing the behaviour of the system go here, from responding to
 // requests that cannot be satisfied to the creation of users.
+
+// Handles requests for specific users.
 func getUser(w http.ResponseWriter, r *http.Request) {
 	sendError := false
 	var errorMessage []string
@@ -100,7 +102,7 @@ func getUser(w http.ResponseWriter, r *http.Request) {
 	// Create a filter to be used to search for the user
 	// ID is uppercase so it does not conflict with the id assigned to the document
 	// by MongoDB
-	filter := bson.D{{"id", ID}}
+	filter := bson.D{{Key: "id", Value: ID}}
 	// Create a variable for the user we will be returning
 	var user User
 	err := users.FindOne(context.TODO(), filter).Decode(&user)
@@ -136,10 +138,58 @@ func getUser(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 }
+// func testUsername
 
+// Modifies a user on the system
+func modUser(w http.ResponseWriter, r *http.Request) {
+	// Get old user from db
+// Get new user from json
+// Keep acc creation date
+}
+
+// Adds a new user to the system.
 func addUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "application/json")
+	var user User
+	err := json.NewDecoder(r.Body).Decode(&user)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte("{'error': '" + err.Error() + "'}"))
+		return
+	}
+
+	// Test to make sure all fields are populated
+	if user.ID == "" || user.FirstName == "" || user.LastName == "" || user.Affiliation == "" {
+		// Scream
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte("{'error':'Bad request. Don't leave anything blank'"))
+		return
+	}
+
+	// Test to see if the user exists or not
+	ID := user.ID
+	filter := bson.D{{Key: "id", Value: ID}}
+	err = users.FindOne(context.TODO(), filter).Decode(&user)
+	if err != nil {
+		if err.Error() == "mongo: no documents in result" {
+			// Good news, we can add them!
+			user.AccountCreated = time.Now()
+			err = nil
+			_, err = users.InsertOne(context.TODO(), user)
+			if err != nil {
+				w.WriteHeader(http.StatusInternalServerError)
+				w.Write([]byte("{'error': '" + err.Error() + "'}"))
+			}
+			return
+		}
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte("{'error': '" + err.Error() + "'}"))
+		return
+	}
+	w.WriteHeader(http.StatusConflict)
+	w.Write([]byte("{'error':'User already exists'"))
+	return
 
 }
 
@@ -184,7 +234,7 @@ func main() {
 	//api_v1.HandleFunc("/lab/{labName}", deleteLab).Methods(http.MethodDelete)
 	//api_v1.HandleFunc("/user/{userName}", post).Methods(http.MethodPost)
 	apiV1.HandleFunc("/user/{userName}", getUser).Methods(http.MethodGet)
-	//api_v1.HandleFunc("/user/{userName}", put).Methods(http.MethodPut)
+	apiV1.HandleFunc("/addUser", addUser).Methods(http.MethodPut)
 	//api_v1.HandleFunc("/user/{userName}", delete).Methods(http.MethodDelete)
 	apiV1.HandleFunc("", notFound)
 
