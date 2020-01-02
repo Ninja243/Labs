@@ -1,3 +1,9 @@
+// TODO
+// Split this behemoth into packages
+//   - DB package
+//   - Routing package
+//   - DataStore package
+//	    - Togglable cache keeping some structs in RAM
 package main
 
 import (
@@ -75,6 +81,8 @@ type User struct {
 }
 
 // Functions for debugging go here.
+
+// Adds my information to the system for testing
 func addMweya() {
 	var myLabs []string
 	mweya := User{
@@ -86,6 +94,7 @@ func addMweya() {
 	}
 }
 
+// Adds a test advert to they system for testing
 func addTestAd() {
 	ad := Ad{
 		"helloworld", "Looking for an developer?", "Hire the developer of this app!", "https://mweya.duckdns.org/lowrez", "", 0, math.MaxInt64, "Mweya Ruider", "https://mweya.duckdns.org/cv",
@@ -98,6 +107,24 @@ func addTestAd() {
 
 // Functions governing the behaviour of the system go here, from responding to
 // requests that cannot be satisfied to the creation of users.
+
+// GDPR Compliance
+// https://gdpr.eu/checklist/
+
+// TODO
+// Returns all the data a user has given to the system (user struct and their labs) in
+// JSON
+func requestData(w http.ResponseWriter, r *http.Request) {
+
+}
+
+// TODO
+// Returns the privacy policy in JSON
+func privacyPolicy(w http.ResponseWriter, r *http.Request) {
+
+}
+
+// Regular endpoints here
 
 // Handles requests for specific users.
 func getUser(w http.ResponseWriter, r *http.Request) {
@@ -149,7 +176,12 @@ func getUser(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// func testUsername
+// TODO
+// Checks if a username is available or not for the signup screen of the app or Auth0.
+// Returns a boolean via JSON
+func testUsername() {
+
+}
 
 // Modifies a user on the system
 func modUser(w http.ResponseWriter, r *http.Request) {
@@ -187,6 +219,10 @@ func modUser(w http.ResponseWriter, r *http.Request) {
 
 	// Keep the date joined from the old account
 	updatedUser.AccountCreated = oldUser.AccountCreated
+
+	//TODO
+	// Keep the labs created from the old account
+	updatedUser.LabsCreated = oldUser.LabsCreated
 
 	// Overwrite the data stored with that username with the data from the json
 	// doc supplied.
@@ -281,21 +317,24 @@ func deleteUser(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
+// Runs when a resource has not been found (no other url matched)
 func notFound(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusNotFound)
 	w.Write([]byte(`{"status": "404 - not found", "explanation": "The resource you asked for does not seem to exist on this server. If you didn't mess with the application or API, then this might be a bug I'd appreciate hearing about. Feel free to contact me at mweyaruider@gmail.com to report it."}`))
+	return
 }
 
 // This is the main function that runs when the application is started.
 func main() {
 
-	// MongoDB
+	// MongoDB initialization
 	clientOptions := options.Client().ApplyURI("mongodb://localhost:27017")
 	dbclient, err := mongo.Connect(context.TODO(), clientOptions)
 	ping := dbclient.Ping(context.TODO(), nil)
 
+	// Print errors to screen
 	if err != nil {
 		log.Writer().Write([]byte(err.Error()))
 	}
@@ -334,9 +373,11 @@ func main() {
 	r.Use(mux.CORSMethodMiddleware(r))
 	log.Fatal(http.ListenAndServe(":8080", r))
 
-	// TODO graceful shutdown support here
-	// Block conn
-	// End DB conn
-	//err = client.Disconnect(context.TODO())
-	// TODO serve React app when / is called
+	// TODO
+	// graceful shutdown support here
+	//  - Block conn
+	//  - End DB conn
+	//     - err = client.Disconnect(context.TODO())
+	// TODO
+	// serve React app when / is called
 }
