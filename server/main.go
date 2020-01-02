@@ -211,6 +211,8 @@ func modUser(w http.ResponseWriter, r *http.Request) {
 func addUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "application/json")
+	vars := mux.Vars(r)
+	urlID := vars["userName"]
 	var user User
 	err := json.NewDecoder(r.Body).Decode(&user)
 	if err != nil {
@@ -228,6 +230,12 @@ func addUser(w http.ResponseWriter, r *http.Request) {
 
 	// Test to see if the user exists or not
 	ID := user.ID
+	if ID != urlID {
+		// Wot
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte("{'error':'Bad Request. Your actions might be reported'}"))
+		return
+	}
 	filter := bson.D{{Key: "id", Value: ID}}
 	err = users.FindOne(context.TODO(), filter).Decode(&user)
 	if err != nil {
@@ -312,9 +320,10 @@ func main() {
 	//api_v1.HandleFunc("/lab/{labName}", getLab).Methods(http.MethodGet)
 	//api_v1.HandleFunc("/lab/{labName}", putLab).Methods(http.MethodPut)
 	//api_v1.HandleFunc("/lab/{labName}", deleteLab).Methods(http.MethodDelete)
-	apiV1.HandleFunc("/modUser", modUser).Methods(http.MethodPost)
+	apiV1.HandleFunc("/user/{userName}", modUser).Methods(http.MethodPost)
 	apiV1.HandleFunc("/user/{userName}", getUser).Methods(http.MethodGet)
-	apiV1.HandleFunc("/addUser", addUser).Methods(http.MethodPut)
+	apiV1.HandleFunc("/user/{userName}", deleteUser).Methods(http.MethodDelete)
+	apiV1.HandleFunc("/user/{userName}", addUser).Methods(http.MethodPut)
 	//api_v1.HandleFunc("/user/{userName}", delete).Methods(http.MethodDelete)
 
 	//apiV1.HandleFunc("/ad", getAdvert).Methods(http.MethodGet)
