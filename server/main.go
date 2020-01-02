@@ -126,8 +126,11 @@ func addTestAd() {
 // Returns all the data a user has given to the system (user struct and their labs) in
 // JSON
 func requestData(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Content-Type", "application/json")
 	// Get user struct
-
+	var user User
+	
 }
 
 // TODO insert the privacy policy into the DB
@@ -525,7 +528,13 @@ func main() {
 	//apiV1.HandleFunc("/sales/")
 
 	// Legal endpoints
-	apiV1.HandleFunc("/legal/privacy", getPrivacyPolicy)
+	apiV1.HandleFunc("/legal/privacy", getPrivacyPolicy).Methods(http.MethodGet)
+	apiV1.HandleFunc("/legal/datarequest", requestData).Methods(http.MethodGet)
+
+	// TODO
+	// SEO endpoints (robot.txt and more)
+
+	// Error handlers
 	apiV1.HandleFunc("", notFound)
 
 	r.Use(mux.CORSMethodMiddleware(r))
