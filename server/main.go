@@ -19,9 +19,14 @@ import (
 	"github.com/gorilla/mux"
 
 	"context"
+
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+
+	"github.com/codegangsta/negroni"
+	"github.com/auth0/go-jwt-middleware"
+	"github.com/dgrijalva/jwt-go"
 )
 
 // Global variable to store the global DB client to be used to perform transactions
@@ -91,6 +96,29 @@ type LegalPolicy struct {
 	Policy       string    `json:"content"`
 }
 
+// Structs needed for Auth0 go here
+
+// Response is a struct defining a JSON message, responding to the client's request for
+// information.
+type Response struct {
+	Message string `json:"message"`
+}
+
+// Jwks ?
+type Jwks struct {
+	Keys []JSONWebKeys `json:"keys"`
+}
+
+// JSONWebKeys defines the struct that actually contains information related to the JWT
+type JSONWebKeys struct {
+	Kty string   `json:"kty"`
+	Kid string   `json:"kid"`
+	Use string   `json:"use"`
+	N   string   `json:"n"`
+	E   string   `json:"e"`
+	X5c []string `json:"x5c"`
+}
+
 // Functions for debugging go here.
 
 // Adds my information to the system for testing
@@ -128,9 +156,11 @@ func addTestAd() {
 func requestData(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "application/json")
+
 	// Get user struct
+
 	var user User
-	
+
 }
 
 // TODO insert the privacy policy into the DB
@@ -551,3 +581,5 @@ func main() {
 
 // TODO
 // Auth0 integration
+// https://auth0.com/docs/quickstart/backend/golang/01-authorization
+//
