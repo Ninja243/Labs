@@ -172,6 +172,27 @@ func insertInitialPrivacyPolicy() {
 
 func main() {
 
+	// MongoDB initialization
+	clientOptions := options.Client().ApplyURI("mongodb://localhost:27017")
+	dbclient, err := mongo.Connect(context.TODO(), clientOptions)
+	ping := dbclient.Ping(context.TODO(), nil)
+
+	// Print Mongo errors to screen
+	if err != nil {
+		log.Writer().Write([]byte(err.Error()))
+	}
+	if ping != nil {
+		log.Writer().Write([]byte(ping.Error()))
+	}
+
+	// Instantiate the collection vars
+	users = *dbclient.Database("Labs").Collection("users")
+	labs = *dbclient.Database("Labs").Collection("labs")
+	ads = *dbclient.Database("Labs").Collection("ads")
+	legal = *dbclient.Database("Labs").Collection("legal")
+
+	// Template continues here
+
 	err := godotenv.Load()
 	if err != nil {
 		log.Print("Error loading .env file")
@@ -183,13 +204,13 @@ func main() {
 			aud := os.Getenv("AUTH0_AUDIENCE")
 			checkAud := token.Claims.(jwt.MapClaims).VerifyAudience(aud, false)
 			if !checkAud {
-				return token, errors.New("Invalid audience.")
+				return token, errors.New("invalid audience")
 			}
 			// Verify 'iss' claim
 			iss := "https://" + os.Getenv("AUTH0_DOMAIN") + "/"
 			checkIss := token.Claims.(jwt.MapClaims).VerifyIssuer(iss, false)
 			if !checkIss {
-				return token, errors.New("Invalid issuer.")
+				return token, errors.New("invalid issuer")
 			}
 
 			cert, err := getPemCert(token)
@@ -307,7 +328,7 @@ func getPemCert(token *jwt.Token) (string, error) {
 	}
 
 	if cert == "" {
-		err := errors.New("Unable to find appropriate key.")
+		err := errors.New("unable to find appropriate key")
 		return cert, err
 	}
 
