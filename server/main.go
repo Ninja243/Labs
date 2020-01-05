@@ -8,21 +8,30 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
-	"fmt"
-	"net/http"
-	"strings"
 	"errors"
+	"fmt"
+	"io/ioutil"
 	"log"
+	"math"
+	"net/http"
 	"os"
+	"strings"
+	"time"
 
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
+
+	jwtmiddleware "github.com/auth0/go-jwt-middleware"
 	"github.com/codegangsta/negroni"
-	"github.com/auth0/go-jwt-middleware"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
 	"github.com/rs/cors"
 )
+
+//"go.mongodb.org/mongo-driver/bson"
 
 // Global variable to store the global DB client to be used to perform transactions
 var dbclient mongo.Client
@@ -102,11 +111,11 @@ type Jwks struct {
 }
 
 type JSONWebKeys struct {
-	Kty string `json:"kty"`
-	Kid string `json:"kid"`
-	Use string `json:"use"`
-	N string `json:"n"`
-	E string `json:"e"`
+	Kty string   `json:"kty"`
+	Kid string   `json:"kid"`
+	Use string   `json:"use"`
+	N   string   `json:"n"`
+	E   string   `json:"e"`
 	X5c []string `json:"x5c"`
 }
 
@@ -156,7 +165,7 @@ func requestData(w http.ResponseWriter, r *http.Request) {
 // Inserts the privacy policy into the DB, run this once when setting up
 func insertInitialPrivacyPolicy() {
 	dat, err := ioutil.ReadFile("privacy.txt")
-    if (err != nil) {
+	if err != nil {
 		log.Print(err.Error())
 		return
 	}
@@ -164,10 +173,27 @@ func insertInitialPrivacyPolicy() {
 		"Privacy Policy", time.Now(), string(dat),
 	}
 
-	_, err := legal.InsertOne(context.TODO(), policy)
+	_, err = legal.InsertOne(context.TODO(), policy)
 	if err != nil {
 		log.Writer().Write([]byte(err.Error()))
 	}
+}
+
+func helloPublic(w http.ResponseWriter, r *http.Request) {
+	message := "Hello from a public endpoint! You don't need to be authenticated to see this."
+	responseJSON(message, w, http.StatusOK)
+}
+
+func homePage(w http.ResponseWriter, r *http.Request) {
+	// TODO Make download app page
+	dat, err := ioutil.ReadFile("index.html")
+	if err != nil {
+		responseJSON(err.Error(), w, http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "text/html")
+	w.Write(dat)
+	return
 }
 
 func main() {
@@ -192,13 +218,13 @@ func main() {
 	legal = *dbclient.Database("Labs").Collection("legal")
 
 	// Template continues here
-
-	err := godotenv.Load()
+	err = nil
+	err = godotenv.Load()
 	if err != nil {
 		log.Print("Error loading .env file")
 	}
 
-	jwtMiddleware := jwtmiddleware.New(jwtmiddleware.Options {
+	jwtMiddleware := jwtmiddleware.New(jwtmiddleware.Options{
 		ValidationKeyGetter: func(token *jwt.Token) (interface{}, error) {
 			// Verify 'aud' claim
 			aud := os.Getenv("AUTH0_AUDIENCE")
@@ -225,18 +251,15 @@ func main() {
 	})
 
 	c := cors.New(cors.Options{
-		AllowedOrigins: []string{"http://localhost:3000"},
+		AllowedOrigins:   []string{"http://localhost:3000"},
 		AllowCredentials: true,
-		AllowedHeaders: []string{"Authorization"},
+		AllowedHeaders:   []string{"Authorization"},
 	})
 
 	r := mux.NewRouter()
 
 	// This route is always accessible
-	r.Handle("/api/public", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		message := "Hello from a public endpoint! You don't need to be authenticated to see this."
-		responseJSON(message, w, http.StatusOK)
-	}))
+	r.Handle("/api/public", http.HandlerFunc(helloPublic))
 
 	// This route is only accessible if the user has a valid access_token
 	// We are chaining the jwtmiddleware middleware into the negroni handler function which will check
@@ -246,7 +269,7 @@ func main() {
 		negroni.Wrap(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			message := "Hello from a private endpoint! You need to be authenticated to see this."
 			responseJSON(message, w, http.StatusOK)
-	}))))
+		}))))
 
 	// This route is only accessible if the user has a valid access_token with the read:messages scope
 	// We are chaining the jwtmiddleware middleware into the negroni handler function which will check
@@ -266,14 +289,28 @@ func main() {
 			}
 			message := "Hello from a private endpoint! You need to be authenticated to see this."
 			responseJSON(message, w, http.StatusOK)
-	}))))
+		}))))
+
+	r.Handle("/", http.HandlerFunc(homePage))
 
 	handler := c.Handler(r)
 	http.Handle("/", r)
 	fmt.Println("Listening on http://localhost:3010")
 	http.ListenAndServe("0.0.0.0:3010", handler)
-}
 
+	// TODO
+	// SEO endpoints (robot.txt and more)
+	// TODO
+	// graceful shutdown support here
+	//  - Block conn
+	//  - End DB conn
+	//     - err = client.Disconnect(context.TODO())
+	// TODO
+	// serve React app when / is called
+	// TODO
+	// First run detection
+	// 	- On first run add priv policy to DB
+}
 
 type CustomClaims struct {
 	Scope string `json:"scope"`
@@ -281,7 +318,7 @@ type CustomClaims struct {
 }
 
 func checkScope(scope string, tokenString string) bool {
-	token, _ := jwt.ParseWithClaims(tokenString, &CustomClaims{}, func (token *jwt.Token) (interface{}, error) {
+	token, _ := jwt.ParseWithClaims(tokenString, &CustomClaims{}, func(token *jwt.Token) (interface{}, error) {
 		cert, err := getPemCert(token)
 		if err != nil {
 			return nil, err
