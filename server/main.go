@@ -1,3 +1,10 @@
+// TODO
+// Split this behemoth into packages
+//   - DB package
+//   - Routing package
+//   - DataStore package
+//	    - Togglable cache keeping some structs in RAM
+//   - Legal package
 package main
 
 import (
@@ -17,6 +24,75 @@ import (
 	"github.com/rs/cors"
 )
 
+// Global variable to store the global DB client to be used to perform transactions
+var dbclient mongo.Client
+
+// Global handle variable that points to the users collection in the database
+var users mongo.Collection
+
+// Global handle variable that points to the labs collection in the database
+var labs mongo.Collection
+
+// Global handle variable that points to the ads collection in the database
+var ads mongo.Collection
+
+// Global handle variable that points to the legal collection in the database
+var legal mongo.Collection
+
+// Structs describing the kind of data that this application will store. A "Lab"
+// is a single page of code, a user is an account.
+
+// Lab contains an ID for identification as well as a name (very similar to a title)
+// as well as code to display and metadata pertaining to it.
+type Lab struct {
+	ID       string    `json:"id"`
+	Name     string    `json:"name"`
+	Code     string    `json:"code"`
+	Views    int       `json:"views"`
+	Uploaded time.Time `json:"uploaded"`
+	Rating   float64   `json:"rating"`
+	Language string    `json:"language"`
+}
+
+// Ad contains an ID for identification as well as a title, subtitle and a link to
+// both an image and a video. The idea is that when the image is clicked on, a video can
+// play, advertising the product. If the video is then clicked on, we are reasonably sure
+// that the user is interested in the product so the user can then migrate away to the
+// "action" link the advertiser has payed for. This is NOT meant to be an intrusive
+// experience and can be removed with minimal effort.
+type Ad struct {
+	ID             string `json:"id"`
+	Title          string `json:"title"`
+	Subtitle       string `json:"subtitle"`
+	BannerImageURL string `json:"bannerURL"`
+	ModalVideoURL  string `json:"modalVideoURL"`
+	Views          int64  `json:"views"`
+	ViewsPaidFor   int64  `json:"viewsBought"`
+	Owner          string `json:"owner"`
+	Action         string `json:"action"`
+}
+
+// User describes a basic user on this system, storing information about the user's
+// particulars and their activity on the system.
+type User struct {
+	ID             string    `json:"id"`
+	FirstName      string    `json:"firstname"`
+	LastName       string    `json:"lastname"`
+	Affiliation    string    `json:"affiliation"`
+	LabsCreated    []string  `json:"labs"`
+	AccountCreated time.Time `json:"datecreated"`
+}
+
+// LegalPolicy describes a generic type of legal policy governing the terms of use of
+// this system, and contains information about the policy's creation date.
+type LegalPolicy struct {
+	PolicyType   string    `json:"type"`
+	LastModified time.Time `json:"modified"`
+	Policy       string    `json:"content"`
+}
+
+// Auth0 structs I don't quite understand yet go here
+
 type Response struct {
 	Message string `json:"message"`
 }
@@ -32,6 +108,66 @@ type JSONWebKeys struct {
 	N string `json:"n"`
 	E string `json:"e"`
 	X5c []string `json:"x5c"`
+}
+
+// Functions for debugging go here.
+
+// Adds my information to the system for testing
+func addMweya() {
+	var myLabs []string
+	mweya := User{
+		"mweya", "Mweya", "Ruider", "Namibia University of Science and Technology", myLabs, time.Now(),
+	}
+	_, err := users.InsertOne(context.TODO(), mweya)
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+// Adds a test advert to they system for testing
+func addTestAd() {
+	ad := Ad{
+		"helloworld", "Looking for an developer?", "Hire the developer of this app!", "https://mweya.duckdns.org/lowrez", "", 0, math.MaxInt64, "Mweya Ruider", "https://mweya.duckdns.org/cv",
+	}
+	_, err := ads.InsertOne(context.TODO(), ad)
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+// Functions governing the behaviour of the system go here, from responding to
+// requests that cannot be satisfied to the creation of users.
+
+// GDPR Compliance
+// https://gdpr.eu/checklist/
+
+// TODO
+// Returns all the data a user has given to the system (user struct and their labs) in
+// JSON
+func requestData(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Content-Type", "application/json")
+
+	// Get user struct
+	//var user User
+
+}
+
+// Inserts the privacy policy into the DB, run this once when setting up
+func insertInitialPrivacyPolicy() {
+	dat, err := ioutil.ReadFile("privacy.txt")
+    if (err != nil) {
+		log.Print(err.Error())
+		return
+	}
+	policy := LegalPolicy{
+		"Privacy Policy", time.Now(), string(dat),
+	}
+
+	_, err := legal.InsertOne(context.TODO(), policy)
+	if err != nil {
+		log.Writer().Write([]byte(err.Error()))
+	}
 }
 
 func main() {
