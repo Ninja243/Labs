@@ -20,6 +20,7 @@ import (
 	"strings"
 	"time"
 
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 
@@ -31,7 +32,7 @@ import (
 	"github.com/rs/cors"
 )
 
-//"go.mongodb.org/mongo-driver/bson"
+//
 
 // Global variable to store the global DB client to be used to perform transactions
 var dbclient mongo.Client
@@ -179,9 +180,64 @@ func insertInitialPrivacyPolicy() {
 	}
 }
 
+// Auth0 test functions
+// helloPublic is to be used on public endpoints that do not require authen
 func helloPublic(w http.ResponseWriter, r *http.Request) {
 	message := "Hello from a public endpoint! You don't need to be authenticated to see this."
 	responseJSON(message, w, http.StatusOK)
+}
+
+func helloPrivate(w http.ResponseWriter, r *http.Request) {
+	message := "Hello from a private endpoint! You need to be authenticated to see this."
+	responseJSON(message, w, http.StatusOK)
+}
+
+func helloPrivateScoped(w http.ResponseWriter, r *http.Request) {
+	authHeaderParts := strings.Split(r.Header.Get("Authorization"), " ")
+	token := authHeaderParts[1]
+
+	hasScope := checkScope("read:messages", token)
+
+	if !hasScope {
+		message := "Insufficient scope."
+		responseJSON(message, w, http.StatusForbidden)
+		return
+	}
+	message := "Hello from a private endpoint! You need to be authenticated to see this."
+	responseJSON(message, w, http.StatusOK)
+}
+
+func getPrivacyPolicy(w http.ResponseWriter, r *http.Request) {
+	filter := bson.D{{"policytype", "Privacy Policy"}}
+	var policy LegalPolicy
+	err := legal.FindOne(context.TODO(), filter).Decode(&policy)
+	if err != nil {
+		responseJSON(err.Error(), w, http.StatusInternalServerError)
+		return
+	}
+	//responseJSON(b, w, http.StatusOK)
+	w.Header().Set("Content-Type", "text/text")
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte(policy.Policy))
+	return
+}
+
+func getPrivacyPolicyJSON(w http.ResponseWriter, r *http.Request) {
+	filter := bson.D{{"policytype", "Privacy Policy"}}
+	var policy LegalPolicy
+	err := legal.FindOne(context.TODO(), filter).Decode(&policy)
+	if err != nil {
+		responseJSON(err.Error(), w, http.StatusInternalServerError)
+		return
+	}
+	b, err := json.Marshal(policy)
+	if err != nil {
+		responseJSON(err.Error(), w, http.StatusInternalServerError)
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(b)
+	return
 }
 
 func homePage(w http.ResponseWriter, r *http.Request) {
@@ -216,6 +272,10 @@ func main() {
 	labs = *dbclient.Database("Labs").Collection("labs")
 	ads = *dbclient.Database("Labs").Collection("ads")
 	legal = *dbclient.Database("Labs").Collection("legal")
+
+	// Debug
+	//addMweya()
+	//insertInitialPrivacyPolicy()
 
 	// Template continues here
 	err = nil
@@ -258,6 +318,30 @@ func main() {
 
 	r := mux.NewRouter()
 
+	// Homepage, static, shows links to download the app or (TODO) a web client
+	// and a link to the privacy policy
+	r.Handle("/", http.HandlerFunc(homePage))
+
+	// Privacy policy, static, available to all
+	r.Handle("/legal/privacy",http.HandlerFunc(getPrivacyPolicyJSON)).Methods(http.MethodGet)
+	// TODO JSON route?
+
+	// Authentication routes
+	//a := r.PathPrefix("/auth").Subrouter()
+	//a.Path("/login").HandlerFunc(loginHandler).Methods(http.MethodGet)
+	//a.Path("/logout").HandlerFunc(logoutHandler).Methods(http.MethodGet)
+	//a.Path("/signup").HandlerFunc(signupHandler).Methods(http.MethodPost)
+
+	// Lab routes
+	l := r.PathPrefix("/lab").Subrouter()
+	l.Methods("GET")
+
+	// User routes
+	//u := r.PathPrefix("/user").Subrouter()
+	//u.HandleFunc("/{userName}", getUser).Methods("GET")
+
+	// Auth0 example routes
+
 	// This route is always accessible
 	r.Handle("/api/public", http.HandlerFunc(helloPublic))
 
@@ -266,32 +350,14 @@ func main() {
 	// for a valid token.
 	r.Handle("/api/private", negroni.New(
 		negroni.HandlerFunc(jwtMiddleware.HandlerWithNext),
-		negroni.Wrap(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			message := "Hello from a private endpoint! You need to be authenticated to see this."
-			responseJSON(message, w, http.StatusOK)
-		}))))
+		negroni.Wrap(http.HandlerFunc(helloPrivate))))
 
 	// This route is only accessible if the user has a valid access_token with the read:messages scope
 	// We are chaining the jwtmiddleware middleware into the negroni handler function which will check
 	// for a valid token and scope.
 	r.Handle("/api/private-scoped", negroni.New(
 		negroni.HandlerFunc(jwtMiddleware.HandlerWithNext),
-		negroni.Wrap(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			authHeaderParts := strings.Split(r.Header.Get("Authorization"), " ")
-			token := authHeaderParts[1]
-
-			hasScope := checkScope("read:messages", token)
-
-			if !hasScope {
-				message := "Insufficient scope."
-				responseJSON(message, w, http.StatusForbidden)
-				return
-			}
-			message := "Hello from a private endpoint! You need to be authenticated to see this."
-			responseJSON(message, w, http.StatusOK)
-		}))))
-
-	r.Handle("/", http.HandlerFunc(homePage))
+		negroni.Wrap(http.HandlerFunc(helloPrivateScoped))))
 
 	handler := c.Handler(r)
 	http.Handle("/", r)
