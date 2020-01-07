@@ -101,7 +101,7 @@ export default class App extends React.Component {
   login = async () => {
     // Retrieve the redirect URL, add this to the callback URL list
     // of your Auth0 application.
-    const redirectUrl = "https://auth.expo.io/@mweya/auth0-example2";//= AuthSession.getRedirectUrl();
+    const redirectUrl = "https://auth.expo.io/@mweya/labsclient";//= AuthSession.getRedirectUrl();
     console.log(`Redirect URL: ${redirectUrl}`);
 
     // Structure the auth parameters and URL

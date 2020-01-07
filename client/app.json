@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Labs",
-    "slug": "client",
+    "slug": "labsclient",
     "privacy": "public",
     "sdkVersion": "36.0.0",
     "platforms": [
