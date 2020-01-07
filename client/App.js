@@ -40,15 +40,18 @@ const MainNavigator = createStackNavigator({
     /* The header config from HomeScreen is now here */
     defaultNavigationOptions: {
       headerLayoutPreset: 'center',
-      headerBackground: (<View style={{ flexDirection: 'column', flex: 1, alignItems: 'stretch', justifyContent: 'center' }}>
-        <Text style={{ padding: 5, alignSelf: "center", color: 'rgba(0, 122, 255, 1)', fontSize: 32, alignItems: 'center', justifyContent: 'center', flex: 1 }}><FaCode size={32} color="rgba(0,122,255,1)" style={{ alignSelf: 'center' }}></FaCode> Labs</Text>
-      </View>),
+      headerBackground: () =>
+      <View style={{ flexDirection: 'column', flex: 1, alignItems: 'stretch', justifyContent: 'center' }}>
+        <Text style={{ padding: 5, alignSelf: "center", color: 'rgba(0, 122, 255, 1)', fontSize: 32, alignItems: 'center', justifyContent: 'center', flex: 1 }}><FaCode size={32} color="rgba(0,122,255,1)" style={{ alignSelf: 'center' }}/> Labs</Text>
+      </View>,
       headerStyle: {
         //backgroundColor: 'rgba(100,175,255,0.7)',
         //fontWeight: 'italic',
         backgroundColor: 'white',
       },
-      headerForceInset: { vertical: 'middle' },
+      // Deprecated soon
+      // headerForceInset will be deprecated soon <>
+      safeAreaInsets: { vertical: 'middle' },
       headerMode: 'float',
       headerTintColor: 'rgba(0,122,255,1)',
       headerTitleStyle: {
@@ -62,9 +65,10 @@ const AppContainer = createAppContainer(MainNavigator);
 //https://reactnavigation.org/docs/en/app-containers.html
 //export default App;
 export default class App extends React.Component {
+  // Logged in not really needed, can just check name for null
   state = {
     name: null,
-
+    loggedIn: false
   };
 
   logout = async () => {
