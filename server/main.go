@@ -137,7 +137,7 @@ func addMweya() {
 // Adds a test advert to they system for testing
 func addTestAd() {
 	ad := Ad{
-		"helloworld", "Looking for an developer?", "Hire the developer of this app!", "https://mweya.duckdns.org/lowrez", "", 0, math.MaxInt64, "Mweya Ruider", "https://mweya.duckdns.org/cv",
+		"helloworld", "Looking for a developer?", "Hire the developer of this app!", "https://mweya.duckdns.org/lowrez", "", 0, math.MaxInt64, "Mweya Ruider", "https://mweya.duckdns.org/cv",
 	}
 	_, err := ads.InsertOne(context.TODO(), ad)
 	if err != nil {
@@ -252,6 +252,58 @@ func homePage(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
+// Adds a new user to the system.
+func addUser(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Content-Type", "application/json")
+	vars := mux.Vars(r)
+	urlID := vars["userName"]
+	var user User
+	err := json.NewDecoder(r.Body).Decode(&user)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte("{'error': '" + err.Error() + "'}"))
+		return
+	}
+
+	// Test to make sure all fields are populated
+	if user.ID == "" || user.FirstName == "" || user.LastName == "" || user.Affiliation == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte("{'error':'Bad request. Don't leave anything blank'"))
+		return
+	}
+
+	// Test to see if the user exists or not
+	ID := user.ID
+	if ID != urlID {
+		// Wot
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte("{'error':'Bad Request. Your actions might be reported'}"))
+		return
+	}
+	filter := bson.D{{Key: "id", Value: ID}}
+	err = users.FindOne(context.TODO(), filter).Decode(&user)
+	if err != nil {
+		if err.Error() == "mongo: no documents in result" {
+			// Good news, we can add them!
+			user.AccountCreated = time.Now()
+			err = nil
+			_, err = users.InsertOne(context.TODO(), user)
+			if err != nil {
+				w.WriteHeader(http.StatusInternalServerError)
+				w.Write([]byte("{'error': '" + err.Error() + "'}"))
+			}
+			return
+		}
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte("{'error': '" + err.Error() + "'}"))
+		return
+	}
+	w.WriteHeader(http.StatusConflict)
+	w.Write([]byte("{'error':'User already exists'"))
+	return
+}
+
 func main() {
 
 	// MongoDB initialization
@@ -325,6 +377,7 @@ func main() {
 	// Privacy policy, static, available to all
 	r.Handle("/legal/privacy",http.HandlerFunc(getPrivacyPolicyJSON)).Methods(http.MethodGet)
 	// TODO JSON route?
+	// TODO Terms of Service
 
 	// Authentication routes
 	//a := r.PathPrefix("/auth").Subrouter()
