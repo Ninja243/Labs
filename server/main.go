@@ -165,7 +165,7 @@ func requestData(w http.ResponseWriter, r *http.Request) {
 
 // Inserts the privacy policy into the DB, run this once when setting up
 func insertInitialPrivacyPolicy() {
-	dat, err := ioutil.ReadFile("privacy.txt")
+	dat, err := ioutil.ReadFile("static/privacy.txt")
 	if err != nil {
 		log.Print(err.Error())
 		return
@@ -242,7 +242,7 @@ func getPrivacyPolicyJSON(w http.ResponseWriter, r *http.Request) {
 
 func homePage(w http.ResponseWriter, r *http.Request) {
 	// TODO Make download app page
-	dat, err := ioutil.ReadFile("index.html")
+	dat, err := ioutil.ReadFile("static/index.html")
 	if err != nil {
 		responseJSON(err.Error(), w, http.StatusInternalServerError)
 		return
