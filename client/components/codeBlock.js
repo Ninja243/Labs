@@ -12,9 +12,9 @@ export default class CodeBlock extends Component {
             <View>
                 <Text style={{ color: 'rgba(44,44,46,1)', paddingBottom: 10, paddingTop: 20, paddingLeft: 40, alignSelf: 'flex-start', fontSize: 30 }}>{this.props.filename}</Text>
                 <View style={{ backgroundColor: 'rgba(199,199,204,1)', padding: 5 }}>
-                    <Highlight style={{ fontFamily, color: 'rgba(44,44,46,1)' }}>
-                        {this.props.code}
-                    </Highlight>
+                    
+                        <Text>{this.props.code}</Text>
+                    
                 </View>
             </View>
         );
@@ -23,4 +23,6 @@ export default class CodeBlock extends Component {
 
 /*<Text style={{ fontFamily, color: 'rgba(44,44,46,1)' }}>
                         {this.props.code}
-                    </Text>*/
+                    </Text>
+                    <Highlight style={{ fontFamily, color: 'rgba(44,44,46,1)' }}>
+                    */
