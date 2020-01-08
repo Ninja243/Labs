@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { View, Text, StatusBar } from 'react-native';
 import { createAppContainer, SafeAreaView } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
+
 import { Provider, connect } from 'react-redux';
 import { createStore, combineReducers } from 'redux';
 import { AuthSession, Linking } from 'expo';
@@ -16,6 +17,7 @@ import Me from './screens/AboutMe.js';
 
 import { FaCode } from "react-icons/fa/index";
 import PolicyViewer from './screens/PolicyView.js';
+import NavigationService from './components/navService'
 
 // Auth0 constants
 const auth0ClientId = 'KLciWpxigi9TW81egFgImpCx5bEFTNgq';
@@ -68,9 +70,7 @@ const MainNavigator = createStackNavigator({
     defaultNavigationOptions: {
       headerLayoutPreset: 'center',
       headerBackground: () =>
-        <View style={{ flexDirection: 'column', flex: 1, alignItems: 'stretch', justifyContent: 'center' }}>
-          <Text style={{ padding: 5, alignSelf: "center", color: 'rgba(0, 122, 255, 1)', fontSize: 32, alignItems: 'center', justifyContent: 'center', flex: 1 }}>{"</> Labs"}</Text>
-        </View>,
+        <View></View>,
       headerStyle: {
         //backgroundColor: 'rgba(100,175,255,0.7)',
         //fontWeight: 'italic',
@@ -81,7 +81,11 @@ const MainNavigator = createStackNavigator({
       // headerForceInset will be deprecated soon <>
       safeAreaInsets: { vertical: 'middle' },
       headerMode: 'float',
+      headerTitleAlign: "center",
       headerTintColor: 'rgba(0,122,255,1)',
+      headerTitle: () => <View style={{ flexDirection: 'column', flex: 1, alignItems: 'stretch', justifyContent: 'center' }}>
+        <Text style={{ padding: 5, alignSelf: "center", color: 'rgba(0, 122, 255, 1)', fontSize: 32, alignItems: 'center', justifyContent: 'center', flex: 1 }}>{"</> Labs"}</Text>
+      </View>,
       // Disable to see page names
       headerTitleStyle: {
         display: 'none'
@@ -172,9 +176,11 @@ export default class App extends React.Component {
 
   render() {
     const { name } = this.state;
+    
+    //, marginTop: StatusBar.currentHeight
     return (
-      <View style={{ flex: 1, marginTop: StatusBar.currentHeight }}>
-
+      <View style={{ flex: 1 }}>
+        <StatusBar hidden={true}/>
         <AppContainer ref={nav => {
           this.navigator = nav;
         }} />

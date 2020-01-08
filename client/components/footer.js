@@ -5,7 +5,7 @@ import { s3 } from './translations';
 export default class Footer extends Component {
     
     render() {
-
+        
         return (
             <View style={{backgroundColor: 'rgba(241,242,242,1)'}}>
                 <TouchableOpacity style={{ alignSelf: 'center' }} onPress={() => navigate('HiringQuestion')}>

@@ -10,13 +10,13 @@ export default class LegalBlock extends Component {
     render() {
         return (
             <View>
-                <Text style={{ color: 'rgba(44,44,46,1)', paddingBottom: 10, paddingTop: 20, paddingLeft: 40, alignSelf: 'flex-start', fontSize: 30 }}>{this.props.filename}</Text>
+                <Text style={{ color: 'rgba(44,44,46,1)', paddingBottom: 10, paddingTop: 20, paddingLeft: 10, alignSelf: 'flex-start', fontSize: 30 }}>{this.props.filename}</Text>
                 <View style={{ padding: 5 }}>
 
                     <Text>{this.props.code}</Text>
 
                 </View>
-                <Text>{this.props.updated}</Text>
+                <Text>Last update: <Text>{this.props.updated}</Text></Text>
             </View>
         );
     }
