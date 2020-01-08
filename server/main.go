@@ -180,6 +180,23 @@ func insertInitialPrivacyPolicy() {
 	}
 }
 
+// Inserts the terms of service into the DB, run this once when setting up
+func insertInitialToS() {
+	dat, err := ioutil.ReadFile("static/terms.txt")
+	if err != nil {
+		log.Print(err.Error())
+		return
+	}
+	policy := LegalPolicy{
+		"Terms of Service", time.Now(), string(dat),
+	}
+
+	_, err = legal.InsertOne(context.TODO(), policy)
+	if err != nil {
+		log.Writer().Write([]byte(err.Error()))
+	}
+}
+
 // Auth0 test functions
 // helloPublic is to be used on public endpoints that do not require authen
 func helloPublic(w http.ResponseWriter, r *http.Request) {
@@ -219,6 +236,24 @@ func getPrivacyPolicy(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/text")
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(policy.Policy))
+	return
+}
+
+func getTermsJSON(w http.ResponseWriter, r *http.Request) {
+	filter := bson.D{{"policytype", "Terms of Service"}}
+	var policy LegalPolicy
+	err := legal.FindOne(context.TODO(), filter).Decode(&policy)
+	if err != nil {
+		responseJSON(err.Error(), w, http.StatusInternalServerError)
+		return
+	}
+	b, err := json.Marshal(policy)
+	if err != nil {
+		responseJSON(err.Error(), w, http.StatusInternalServerError)
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(b)
 	return
 }
 
@@ -328,6 +363,7 @@ func main() {
 	// Debug
 	//addMweya()
 	//insertInitialPrivacyPolicy()
+	//insertInitialToS()
 
 	// Template continues here
 	err = nil
@@ -376,6 +412,7 @@ func main() {
 
 	// Privacy policy, static, available to all
 	r.Handle("/legal/privacy",http.HandlerFunc(getPrivacyPolicyJSON)).Methods(http.MethodGet)
+	r.Handle("/legal/terms",http.HandlerFunc(getTermsJSON)).Methods(http.MethodGet)
 	// TODO JSON route?
 	// TODO Terms of Service
 

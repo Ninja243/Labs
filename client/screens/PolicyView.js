@@ -1,0 +1,1 @@
+// For interpreting the policy JSON to be retrieved by the client
