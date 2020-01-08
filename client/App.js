@@ -15,6 +15,7 @@ import PortfolioGate from './screens/HireMe.js';
 import Me from './screens/AboutMe.js';
 
 import { FaCode } from "react-icons/fa/index";
+import PolicyViewer from './screens/PolicyView.js';
 
 // Auth0 constants
 const auth0ClientId = 'KLciWpxigi9TW81egFgImpCx5bEFTNgq';
@@ -26,18 +27,18 @@ function randomString(length) {
   result = ''
 
   while (length > 0) {
-      var bytes = new Uint8Array(16);
-      var random = window.crypto.getRandomValues(bytes);
+    var bytes = new Uint8Array(16);
+    var random = window.crypto.getRandomValues(bytes);
 
-      random.forEach(function(c) {
-          if (length == 0) {
-              return;
-          }
-          if (c < charset.length) {
-              result += charset[c];
-              length--;
-          }
-      });
+    random.forEach(function (c) {
+      if (length == 0) {
+        return;
+      }
+      if (c < charset.length) {
+        result += charset[c];
+        length--;
+      }
+    });
   }
   return result;
 }
@@ -58,6 +59,7 @@ const MainNavigator = createStackNavigator({
   Options: { screen: OptionScreen },
   HiringQuestion: { screen: PortfolioGate },
   AboutMe: { screen: Me },
+  Policy: { screen: PolicyViewer }
 
 },
   {
@@ -66,14 +68,14 @@ const MainNavigator = createStackNavigator({
     defaultNavigationOptions: {
       headerLayoutPreset: 'center',
       headerBackground: () =>
-      <View style={{ flexDirection: 'column', flex: 1, alignItems: 'stretch', justifyContent: 'center' }}>
-    <Text style={{ padding: 5, alignSelf: "center", color: 'rgba(0, 122, 255, 1)', fontSize: 32, alignItems: 'center', justifyContent: 'center', flex: 1 }}>{"</> Labs"}</Text>
-      </View>,
+        <View style={{ flexDirection: 'column', flex: 1, alignItems: 'stretch', justifyContent: 'center' }}>
+          <Text style={{ padding: 5, alignSelf: "center", color: 'rgba(0, 122, 255, 1)', fontSize: 32, alignItems: 'center', justifyContent: 'center', flex: 1 }}>{"</> Labs"}</Text>
+        </View>,
       headerStyle: {
         //backgroundColor: 'rgba(100,175,255,0.7)',
         //fontWeight: 'italic',
         backgroundColor: 'white',
-        
+
       },
       // Deprecated soon
       // headerForceInset will be deprecated soon <>
@@ -172,12 +174,13 @@ export default class App extends React.Component {
     const { name } = this.state;
     return (
       <View style={{ flex: 1, marginTop: StatusBar.currentHeight }}>
-      
+
         <AppContainer ref={nav => {
-          this.navigator = nav;}} />
-        <Footer style={{alignSelf: 'flex-end'}}/>
+          this.navigator = nav;
+        }} />
+        <Footer style={{ alignSelf: 'flex-end' }} />
       </View>
-      );
-    
+    );
+
   }
- }
+}

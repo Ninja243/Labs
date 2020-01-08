@@ -44,7 +44,7 @@ export default class CodeScreen extends Component {
                     <ScrollView style={{ flex: 1, padding: 20 }}>
                         <ActivityIndicator />
                     </ScrollView>
-                    <Footer></Footer>
+
                 </SafeAreaView>
             )
         }
@@ -54,7 +54,7 @@ export default class CodeScreen extends Component {
                 <ScrollView>
                     <CodeBlock code={this.state.dataSource} filename={"test-movies.json"}></CodeBlock>
                 </ScrollView>
-                <Footer></Footer>
+
             </SafeAreaView>
         );
     }
