@@ -1,15 +1,16 @@
-FROM golang:1.8-alpine3.6
+FROM golang:alpine
 
 # install git
 RUN apk --update add \
-	git openssl \
+	git openssl gcc musl-dev \
 	&& rm /var/cache/apk/*
 
 WORKDIR /go/src
 
 ADD . /go/src
 
-RUN go-wrapper download
+RUN go get
+#RUN go-wrapper download
 
 CMD ["go", "run", "main.go"]
 
