@@ -342,16 +342,21 @@ func addUser(w http.ResponseWriter, r *http.Request) {
 func main() {
 
 	// MongoDB initialization
-	clientOptions := options.Client().ApplyURI("mongodb://localhost:27017")
+	// Localhost config
+	//clientOptions := options.Client().ApplyURI("mongodb://localhost:27017")
+	// Mongo in docker
+	clientOptions := options.Client().ApplyURI("mongodb://mongo:27017")
 	dbclient, err := mongo.Connect(context.TODO(), clientOptions)
 	ping := dbclient.Ping(context.TODO(), nil)
 
 	// Print Mongo errors to screen
 	if err != nil {
 		log.Writer().Write([]byte(err.Error()))
+		return
 	}
 	if ping != nil {
 		log.Writer().Write([]byte(ping.Error()))
+		return
 	}
 
 	// Instantiate the collection vars
@@ -362,8 +367,8 @@ func main() {
 
 	// Debug
 	//addMweya()
-	//insertInitialPrivacyPolicy()
-	//insertInitialToS()
+	insertInitialPrivacyPolicy()
+	insertInitialToS()
 
 	// Template continues here
 	err = nil
@@ -411,8 +416,8 @@ func main() {
 	r.Handle("/", http.HandlerFunc(homePage))
 
 	// Privacy policy, static, available to all
-	r.Handle("/legal/privacy",http.HandlerFunc(getPrivacyPolicyJSON)).Methods(http.MethodGet)
-	r.Handle("/legal/terms",http.HandlerFunc(getTermsJSON)).Methods(http.MethodGet)
+	r.Handle("/legal/privacy", http.HandlerFunc(getPrivacyPolicyJSON)).Methods(http.MethodGet)
+	r.Handle("/legal/terms", http.HandlerFunc(getTermsJSON)).Methods(http.MethodGet)
 	// TODO JSON route?
 	// TODO Terms of Service
 

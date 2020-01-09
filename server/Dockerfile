@@ -14,5 +14,4 @@ RUN go get
 
 CMD ["go", "run", "main.go"]
 
-# Play nice with Nginx
-EXPOSE 3010 1100
+EXPOSE 3010
