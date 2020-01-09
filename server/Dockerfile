@@ -1,6 +1,6 @@
 FROM golang:alpine
 
-# install git
+# install git and more
 RUN apk --update add \
 	git openssl gcc musl-dev \
 	&& rm /var/cache/apk/*
