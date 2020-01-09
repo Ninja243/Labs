@@ -4,7 +4,7 @@
 
 export const s1 = ["Check my code out!", "Siehe Sie meinen Code"][0]
 export const s2 = ["Settings", "Einstellugen"][0]
-export const s3 = ["Made in Bavaria", "Mit Späß im Bayern gemacht"][1]
+export const s3 = ["Made with ❤️ in Bavaria", "Mit ❤️ im Bayern gemacht"][0]
 export const s4 = ["Check out my CV!", "Lesen Sie meinen Lebenslauf!"][0]
 export const s5 = ["For more about my education, projects and experiance tap the button below.", "Für mehr über mein Bildung, Projekte und Erfahrung, druck die Knopf hier untern."][0]
 export const s6 = ["Sorry, something went wrong", "Es tut mir leid, irgendwas habt Schiefgelaufen"][0]

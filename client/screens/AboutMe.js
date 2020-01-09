@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { Button, Platform, StyleSheet, Text, View, Image, SafeAreaView } from 'react-native';
+import { Button, Platform, StyleSheet, Text, View, Image, SafeAreaView, } from 'react-native';
+import * as WebBrowser from 'expo-web-browser';
 import { WebView } from 'react-native-webview';
 import Footer from '../components/footer.js';
 import { s5, s4 } from '../components/translations';
@@ -20,22 +21,25 @@ export default class Me extends Component {
                         <Text>{s5}</Text>
                     </View>
 
-                    <View style={{ flex: 4, alignItems: 'center', justifyContents: 'center' }}>
-                        <Button title={s4} onPress={() => { window.location.href = "https://mweya.duckdns.org/cv" }}></Button>
+                    <View style={{ flex: 1, alignItems: 'center', justifyContents: 'center' }}>
+                        <Button title={"Check out my CV!"} onPress={() => { window.location.href = "https://mweya.duckdns.org/cv" }}></Button>
                     </View>
                 </SafeAreaView>
             );
         }
-        return (<View style={{ flex: 1 }}><WebView
-            originWhitelist={['*']}
-            source={{ uri: 'https://mweya.duckdns.org' }}
-            style={{ marginTop: 20, flex: 1, alignSelf: 'center' }}
-            onError={() => function () {
-                alert({s6});
-                navigate('Options');
-            }}
-        /></View>);
+        return (<View style={{ flex: 1 }}>
+            <WebView
+                originWhitelist={['*']}
+                source={{ uri: 'https://mweya.duckdns.org/cv' }}
+
+                
+            />
+        </View>);
 
     }
 
 }
+
+/**
+ * 
+ */

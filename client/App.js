@@ -181,10 +181,12 @@ export default class App extends React.Component {
     return (
       <View style={{ flex: 1 }}>
         <StatusBar hidden={true}/>
-        <AppContainer ref={nav => {
-          this.navigator = nav;
-        }} />
-        <Footer style={{ alignSelf: 'flex-end' }} />
+        <AppContainer
+        ref={navigatorRef => {
+          NavigationService.setTopLevelNavigator(navigatorRef);
+        }}
+      />
+        <Footer style={{ alignSelf: 'flex-end' }}/>
       </View>
     );
 
