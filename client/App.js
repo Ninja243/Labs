@@ -17,7 +17,11 @@ import Me from './screens/AboutMe.js';
 
 import { FaCode } from "react-icons/fa/index";
 import PolicyViewer from './screens/PolicyView.js';
-import NavigationService from './components/navService'
+import NavigationService from './components/navService';
+import friendReducder from './components/reducer';
+
+// Redux state management
+const store = createStore(friendReducder);
 
 // Auth0 constants
 const auth0ClientId = 'KLciWpxigi9TW81egFgImpCx5bEFTNgq';
@@ -176,17 +180,19 @@ export default class App extends React.Component {
 
   render() {
     const { name } = this.state;
-    
+
     //, marginTop: StatusBar.currentHeight
     return (
       <View style={{ flex: 1 }}>
-        <StatusBar hidden={true}/>
-        <AppContainer
-        ref={navigatorRef => {
-          NavigationService.setTopLevelNavigator(navigatorRef);
-        }}
-      />
-        <Footer style={{ alignSelf: 'flex-end' }}/>
+        <StatusBar hidden={true} />
+        <Provider store={store}>
+          <AppContainer
+            ref={navigatorRef => {
+              NavigationService.setTopLevelNavigator(navigatorRef);
+            }}
+          />
+          <Footer style={{ alignSelf: 'flex-end' }} />
+        </Provider>
       </View>
     );
 

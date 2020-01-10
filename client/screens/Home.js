@@ -3,12 +3,16 @@ import { TouchableOpacity, Text, Button, View, SafeAreaView, StatusBar, AppState
 import { createAppContainer, ThemeColors } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 import { ScrollView } from 'react-native-gesture-handler';
+import { connect } from 'react-redux'
 
 import Footer from '../components/footer';
 import { s1, s2 } from '../components/translations';
 import QuoteBlock from '../components/quoteBlock';
 
-export default class HomeScreen extends Component{
+import { bindActionCreators } from 'redux';
+import { addFriend } from './FriendActions';
+
+export default class HomeScreen extends Component {
     //title: 'JavaLabs',
     static navigationOptions = {
 
@@ -69,6 +73,16 @@ export default class HomeScreen extends Component{
         );
     }
 }
+
+// Redux
+const mapDispatchToProps = dispatch => (
+  bindActionCreators({
+    addFriend,
+  }, dispatch)
+);
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(Friends);
 
 /*
 /*eturn (
