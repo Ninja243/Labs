@@ -8,7 +8,7 @@ import Footer from '../components/footer';
 import { s1, s2 } from '../components/translations';
 import QuoteBlock from '../components/quoteBlock';
 
-export default class HomeScreen {//x-mweya.duckdns.orgent {
+export default class HomeScreen extends Component{
     //title: 'JavaLabs',
     static navigationOptions = {
 
@@ -29,10 +29,10 @@ export default class HomeScreen {//x-mweya.duckdns.orgent {
                         <Text style={{ fontSize: 15 }}>"I have read and agree with the Privacy Policy and Terms of Service"</Text>
                         <Text style={{ alignSelf: 'flex-end' }}>-You</Text>
                         <View style={{ paddingTop: 10, alignSelf: 'flex-start' }}>
-                            <TouchableOpacity onPress={() => navigate('Policy', { link: 'http://x-mweya.duckdns.org:3010/legal/privacy' })}>
+                            <TouchableOpacity onPress={() => navigate('Policy', { link: 'https://jl.x-mweya.duckdns.org/legal/privacy' })}>
                                 <Text style={{ color: 'rgba(0, 122, 255, 1)', textDecorationLine: 'underline' }}>Privacy Policy</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity onPress={() => navigate('Policy', { link: 'http://x-mweya.duckdns.org:3010/legal/terms' })}>
+                            <TouchableOpacity onPress={() => navigate('Policy', { link: 'https://jl.x-mweya.duckdns.org/legal/terms' })}>
                                 <Text style={{ color: 'rgba(0, 122, 255, 1)', textDecorationLine: 'underline' }}>Terms of Service</Text>
                             </TouchableOpacity>
                         </View>
@@ -50,10 +50,10 @@ export default class HomeScreen {//x-mweya.duckdns.orgent {
                     <View style={{ width: '50%', paddingTop: 40, paddingBottom: 10, flexDirection: 'column', justifyContent: 'center', alignContent: "flex-end" }}>
                         <Text>You need to have read and agreed with the Privacy Policy and the Terms of Service to use this app. Tap the links below to read them.</Text>
                         <View style={{ paddingTop: 10, alignSelf: 'flex-start' }}>
-                            <TouchableOpacity onPress={() => navigate('Policy', { link: 'http://x-mweya.duckdns.org:3010/legal/privacy' })}>
+                            <TouchableOpacity onPress={() => navigate('Policy', { link: 'https://jl.x-mweya.duckdns.org/legal/privacy' })}>
                                 <Text style={{ color: 'rgba(0, 122, 255, 1)', textDecorationLine: 'underline' }}>Privacy Policy</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity onPress={() => navigate('Policy', { link: 'http://x-mweya.duckdns.org:3010/legal/terms' })}>
+                            <TouchableOpacity onPress={() => navigate('Policy', { link: 'https://jl.x-mweya.duckdns.org/legal/terms' })}>
                                 <Text style={{ color: 'rgba(0, 122, 255, 1)', textDecorationLine: 'underline' }}>Terms of Service</Text>
                             </TouchableOpacity >
                         </View>
