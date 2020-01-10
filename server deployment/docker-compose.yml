@@ -1,0 +1,25 @@
+version: '3'
+services: 
+    mongodb:
+        restart: always
+        image: mongo
+        container_name: mongo
+        ports:
+            - "127.0.0.1:27017:27017"
+        volumes:
+            - mongodata:/data/db
+        networks: 
+            - mongo-go
+    webservice:
+        restart: always
+        depends_on: 
+            - mongodb
+        image: mweya/labs-api:latest
+        ports:
+            - "3010:3010"
+        networks:
+            - mongo-go
+volumes:
+    mongodata: {}
+networks:
+    mongo-go:
