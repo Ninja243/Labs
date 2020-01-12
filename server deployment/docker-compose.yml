@@ -16,7 +16,7 @@ services:
             - mongodb
         image: mweya/labs-api:latest
         ports:
-            - "3010:3010"
+            - "127.0.0.1:3010:3010"
         networks:
             - mongo-go
 volumes:
