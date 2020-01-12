@@ -8,6 +8,7 @@ https://www.gdprprivacypolicy.net/live.php?token=xwrVvp8hLUStHhnjIyMjTqKfHrtbBf0
 At Labs, accessible from jl.mweya.duckdns.org, one of our main priorities is the privacy of our visitors. This Privacy Policy document contains types of information that is collected and recorded by Labs and how we (the Labs development team) use it.
 
 If you have additional questions or require more information about our Privacy Policy, do not hesitate to contact us over email (mweyaruider@gmail.com) or Telegram (t.me/Mweya). Other contact methods like phone calls are discouraged as response times may be longer, however requests for information will be upheld to the best of our ability.
+The word "system" in this document refers to the application, the website and the resources it depends on, including the API and the database.
 
 
 
@@ -38,13 +39,13 @@ In certain circumstances, you have the following data protection rights:
 
     3. Log Files
 
-Your interaction with Labs results in the creation of log files. This is standard practice and is done by the hosting companies responsible for hosting this service as well as some functions of Labs. Although some consideration has gone into minimizing the amount of information logged, log files are very important to the operation of Labs and store information that can help our team fix bugs and broken features. The information collected by log files can include internet protocol (IP) addresses,  browser type, Internet Service Provider (ISP), date and time stamp, referring/exit pages, and possibly the number of clicks. These are not linked to any information that is personally identifiable. The purpose of the information is for analyzing trends, administering the site, tracking users' movement on the website, and gathering demographic information, as well as measuring the popularity of resources on this website.
+Your interaction with Labs results in the creation of log files. This is standard practice and is done by the hosting companies responsible for hosting this service as well as some functions of Labs. Although some consideration has gone into minimizing the amount of information logged, log files are very important to the operation of Labs and store information that can help our team fix bugs and broken features. The information collected by log files can include internet protocol (IP) addresses,  browser type, Internet Service Provider (ISP), date and time stamp, referring/exit pages, and possibly the number of clicks. These are not linked to any information that is personally identifiable. The purpose of the information is for analyzing trends, administering the site, tracking users' movement on the system or application, and gathering demographic information, as well as measuring the popularity of resources on this system.
 
 
 
     4. Cookies and Web Beacons
 
-Like most other websites, Labs uses 'cookies'. These cookies are used to store information including visitors' preferences, and the pages on the website that the visitor accessed or visited. The information is used to optimize the users' experience by  customizing our web page content based on visitors' browser type and/or other information. Labs is built using third party tools like React Native and GoLang which might use cookies for communication and other system functions. 
+Like most other websites, Labs uses 'cookies'. These cookies are used to store information including visitors' preferences, and the pages served by the system that the visitor accessed or visited. The information is used to optimize the users' experience by  customizing our web page content based on visitors' browser type and/or other information. Labs is built using third party tools like React Native and GoLang which might use cookies for communication and other system functions. 
 
 
 
@@ -61,16 +62,16 @@ http://www.whatarecookies.com/
 
     6. Children's Information
 
-Another part of our priority is adding protection for children while using the internet. We encourage parents and guardians to observe, participate in, and/or monitor and guide their online activity. Labs does not knowingly collect any Personal Identifiable Information from children under the age of 13. If you think that your child provided this kind of information on our website, we strongly encourage you to contact us immediately and we will do our best efforts to promptly remove such information from our records.
+Another part of our priority is adding protection for children while using the internet. We encourage parents and guardians to observe, participate in, and/or monitor and guide their online activity. Labs does not knowingly collect any Personal Identifiable Information from children under the age of 13. If you think that your child provided this kind of information when interacting with our system, we strongly encourage you to contact us immediately and we will do our best efforts to promptly remove such information from our records.
 
 
 
     7. Online Privacy Policy Only
 
-Our Privacy Policy (created at GDPRPrivacyPolicy.net) applies only to our online activities and is valid for visitors to our website with regards to the information that they shared and/or collect in Labs. This policy is not applicable to any information collected offline or via channels other than this website. Our GDPR Privacy Policy was generated from the GDPR Privacy Policy Generator.
+Our Privacy Policy (created at GDPRPrivacyPolicy.net) applies only to our online activities and is valid for users of our system with regards to the information that they shared and/or collect in Labs. This policy is not applicable to any information collected offline or via channels other than this system. Our GDPR Privacy Policy was generated from the GDPR Privacy Policy Generator.
 
 
 
     8. Consent
 
-By using our website, you hereby consent to our Privacy Policy and agree to its terms.
+By using our system, you hereby consent to our Privacy Policy and agree to its terms.
