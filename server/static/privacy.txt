@@ -14,12 +14,13 @@ The word "system" in this document refers to the application, the website and th
 
     2. General Data Protection Regulation (GDPR)
 
-We are a Data Controller of your information. Labs' legal basis for collecting and using the personal information described in this Privacy Policy depends on the Personal Information we collect and the specific context in which we collect the information:
+We are a Data Controller of the information you have chosen to give us. Labs' legal basis for collecting and using the personal information described in this Privacy Policy depends on the Personal Information we collect and the specific context in which we collect the information. Labs needs to comply with the law. Labs will retain your personal information only for as long as it is necessary for the purposes set out in this Privacy Policy.
 
-	Labs needs to perform a contract with you
-	You have given Labs permission to do so
-	Processing your personal information is in Labs legitimate interests
-	Labs needs to comply with the law
+	Tl;Dr
+	Labs needs to perform a contract with you, 
+	You have given Labs permission to do so,
+	Processing your personal information is in Labs legitimate interests,
+	Labs needs to comply with the law.
 
 Labs will retain your personal information only for as long as is necessary for the purposes set out in this Privacy Policy. We will retain and use your information to the extent necessary to comply with our legal obligations, resolve disputes,  and enforce our policies.
 
@@ -28,12 +29,14 @@ Our Privacy Policy was generated with the help of the GDPR Privacy Policy Genera
 
 In certain circumstances, you have the following data protection rights:
 
-	The right to access, update or to delete the information we have on you.
-	The right of rectification.
-	The right to object.
-	The right of restriction.
-	The right to data portability
-	The right to withdraw consent
+	The right to access, update or to delete the information we have on you,
+	The right of rectification,
+	The right to object,
+	The right of restriction,
+	The right to data portability,
+	And the right to withdraw consent.
+
+For more information about these rights, please go to the following site: https://gdpr-info.eu/
 	
 
 
@@ -55,8 +58,7 @@ The advertising system used in Labs has been built from scratch and does not use
 
 Note that Labs has no access to or control over these cookies that are used by third-party advertisers.
 
-You can choose to disable cookies through your individual browser options. To know more detailed information about cookie management with specific web browsers, it can be found at the browsers' respective websites or at the following link:
-http://www.whatarecookies.com/
+You can choose to disable cookies through your individual browser options. To know more detailed information about cookie management with specific web browsers, it can be found at the browsers' respective websites or at the following link: http://www.whatarecookies.com/
 
 
 
