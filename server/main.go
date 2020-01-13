@@ -84,11 +84,16 @@ type Ad struct {
 
 // User describes a basic user on this system, storing information about the user's
 // particulars and their activity on the system.
+// 
+// The following values might not be needed for the final product, so for legality's
+// sake I'll leave them out.
+//	FirstName      string    `json:"firstname"`
+//	LastName       string    `json:"lastname"`
+//	Affiliation    string    `json:"affiliation"`
+// The ID here can be the first bit of the email address received
+// from the Google OAuth2 flow.
 type User struct {
 	ID             string    `json:"id"`
-	FirstName      string    `json:"firstname"`
-	LastName       string    `json:"lastname"`
-	Affiliation    string    `json:"affiliation"`
 	LabsCreated    []string  `json:"labs"`
 	AccountCreated time.Time `json:"datecreated"`
 }

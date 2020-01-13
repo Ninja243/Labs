@@ -10,9 +10,9 @@ import { s1, s2 } from '../components/translations';
 import QuoteBlock from '../components/quoteBlock';
 
 import { bindActionCreators } from 'redux';
-import { addFriend } from './FriendActions';
+import { addFriend } from '../components/actions';
 
-export default class HomeScreen extends Component {
+export class HomeScreen extends Component {
     //title: 'JavaLabs',
     static navigationOptions = {
 
@@ -76,9 +76,9 @@ export default class HomeScreen extends Component {
 
 // Redux
 const mapDispatchToProps = dispatch => (
-  bindActionCreators({
-    addFriend,
-  }, dispatch)
+    bindActionCreators({
+        addFriend,
+    }, dispatch)
 );
 
 
