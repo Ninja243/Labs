@@ -16,7 +16,7 @@ export default class PolicyViewer extends Component {
 
     componentDidMount() {
         // Link from props
-        console.log(this.props.navigation.state.params.link);
+        //console.log(this.props.navigation.state.params.link);
         return fetch(this.props.navigation.state.params.link)
             .then((response) => response.json())
 

@@ -134,7 +134,7 @@ export class HomeScreen extends Component {
                 this.state.accepted ?
                     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                         <QuoteBlock />
-                        <Button style={{ alignSelf: 'center' }} title="Log in with Auth0 or Google" onPress={() => { this.login() }} />
+                        <Button style={{ alignSelf: 'center' }} title="Log in with a google account" onPress={() => { this.login() }} />
                         <View style={{ width: '50%', paddingTop: 40, paddingBottom: 10, flexDirection: 'column', justifyContent: 'center', alignContent: "flex-end" }}>
                             <Text style={{ fontSize: 15 }}>"I have read and agree with the Privacy Policy and Terms of Service"</Text>
                             <Text style={{ alignSelf: 'flex-end' }}>-You</Text>
@@ -156,7 +156,7 @@ export class HomeScreen extends Component {
                     :
                     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                         <QuoteBlock />
-                        <Button style={{ alignSelf: 'center' }} title="Log in with Auth0 or Google" onPress={() => { this.login() }} disabled />
+                        <Button style={{ alignSelf: 'center' }} title="Log in with a google account" onPress={() => { this.login() }} disabled />
                         <View style={{ width: '50%', paddingTop: 40, paddingBottom: 10, flexDirection: 'column', justifyContent: 'center', alignContent: "flex-end" }}>
                             <Text>You need to have read and agreed with the Privacy Policy and the Terms of Service to use this app. Tap the links below to read them.</Text>
                             <View style={{ paddingTop: 10, alignSelf: 'flex-start' }}>
