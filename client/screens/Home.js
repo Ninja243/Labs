@@ -98,15 +98,16 @@ export class HomeScreen extends Component {
             redirect_uri: redirectUrl,
             response_type: 'id_token', // id_token will return a JWT token
             scope: 'openid profile name email', // retrieve the user's profile
-            nonce: 'nonce',//randomString(5),//'nonce', // ideally, this will be a random value
+            nonce: randomString(5),//'nonce', // ideally, this will be a random value, TODO actually check the nonce to see if it matches
         });
         const authUrl = `${auth0Domain}/authorize` + queryParams;
         //console.log(authUrl);
         // Perform the authentication
         const response = await AuthSession.startAsync({ authUrl });
-        console.log('Authentication response', response);
+        //console.log('Authentication response', response);
 
         if (response.type === 'success') {
+            //console.log(response);
             this.handleResponse(response.params);
         }
     };
@@ -120,7 +121,7 @@ export class HomeScreen extends Component {
         // Retrieve the JWT token and decode it
         const jwtToken = response.id_token;
         const decoded = jwtDecode(jwtToken);
-
+        //console.log(decoded);
         const { name, given_name, family_name, nickname, email } = decoded;
         var profile = {
             name: name,
@@ -129,14 +130,16 @@ export class HomeScreen extends Component {
             nickname: nickname,
             email: email,
         };
+        //console.log(profile);
         this.props.authIn(profile);
     };
 
     render() {
         const { navigate } = this.props.navigation;
-
+        var name = this.props.profile.name;
+        //console.log("name", this.props.profile.name);
         return (
-            this.props.profile.name !== null ?
+            (name == null) ?
 
                 this.state.accepted ?
                     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
