@@ -5,7 +5,7 @@ import { createStackNavigator } from 'react-navigation-stack';
 
 import { Provider, connect } from 'react-redux';
 import { createStore, combineReducers } from 'redux';
-import { AuthSession, Linking } from 'expo';
+import { AuthSession, Linking, AppState } from 'expo';
 import jwtDecode from 'jwt-decode';
 
 import Footer from './components/footer.js';
@@ -22,8 +22,6 @@ import profileReducer from './components/reducer';
 
 // Redux state management
 const store = createStore(profileReducer);
-
-
 
 
 
@@ -84,7 +82,6 @@ export default class App extends React.Component {
 
   render() {
     
-
     //, marginTop: StatusBar.currentHeight
     return (
       <View style={{ flex: 1 }}>

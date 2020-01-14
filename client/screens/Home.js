@@ -15,6 +15,12 @@ import { bindActionCreators } from 'redux';
 import { authIn } from '../components/actions';
 import { GenIcon } from 'react-icons/lib/cjs';
 
+// Black magic
+// https://stackoverflow.com/questions/59589158/expo-authsession-immediately-resolves-as-dismissed
+function pray() { 
+    if (AppState.currentState === "") { }
+}
+
 // Random string generator for nonce
 function randomString(length) {
     var result = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
@@ -80,9 +86,10 @@ export class HomeScreen extends Component {
     }
 
     login = async () => {
+        pray();
         // Retrieve the redirect URL, add this to the callback URL list
         // of your Auth0 application.
-        const redirectUrl = "exp://tz-ytd.mweya.client.exp.direct:80";//"exp://auth.expo.io/@mweya/Labs";//= AuthSession.getRedirectUrl();
+        const redirectUrl = "https://auth.expo.io/@mweya/labsclient";//"exp://tz-ytd.mweya.client.exp.direct:80";//"exp://auth.expo.io/@mweya/Labs";//= AuthSession.getRedirectUrl();
         //console.log(`Redirect URL: ${retdirectUrl}`);
 
         // Structure the auth parameters and URL
