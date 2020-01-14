@@ -1,16 +1,16 @@
 import { combineReducers } from 'redux';
 
 const INITIAL_STATE = {
-    current: [],
-    possible: [
-        'Allie',
-        'Gator',
-        'Lizzie',
-        'Reptar',
-    ],
+    profile: {
+        name: null,
+        given_name: null,
+        family_name: null,
+        nickname: null,
+        email: null,
+    }
 };
 
-const friendReducer = (state = INITIAL_STATE, action) => {
+const profileReducer = (state = INITIAL_STATE, action) => {
     switch (action.type) {
         default:
             return state
@@ -18,5 +18,5 @@ const friendReducer = (state = INITIAL_STATE, action) => {
 };
 
 export default combineReducers({
-    friends: friendReducer,
+    profile: profileReducer,
 });

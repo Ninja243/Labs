@@ -18,10 +18,10 @@ import Me from './screens/AboutMe.js';
 import { FaCode } from "react-icons/fa/index";
 import PolicyViewer from './screens/PolicyView.js';
 import NavigationService from './components/navService';
-import friendReducder from './components/reducer';
+import profileReducer from './components/reducer';
 
 // Redux state management
-const store = createStore(friendReducder);
+const store = createStore(profileReducer);
 
 
 
@@ -76,13 +76,14 @@ export default class App extends React.Component {
     name: null,
     loggedIn: false
   };*/
+  //const { name } = this.state;
 
   
 
   
 
   render() {
-    const { name } = this.state;
+    
 
     //, marginTop: StatusBar.currentHeight
     return (

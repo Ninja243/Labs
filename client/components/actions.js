@@ -1,64 +1,45 @@
 import { combineReducers } from 'redux';
 
-export const addFriend = friendIndex => (
-    {
-        type: 'ADD_FRIEND',
-        payload: friendIndex,
-    }
-);
+// Login funcs
 
-export const logIn = profile => (
+// Random string generator for nonce
+function randomString(length) {
+    var result = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+    return result;
+}
+// Auth0 constants
+const auth0ClientId = 'KLciWpxigi9TW81egFgImpCx5bEFTNgq';
+const auth0Domain = 'https://mweya-labs.eu.auth0.com';
+// Converts an object to a query string.
+function toQueryString(params) {
+    return '?' + Object.entries(params)
+        .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
+        .join('&');
+}
+
+// REDUX
+
+export const authIn = profile => (
     {
         type: 'LOG_IN',
         payload: profile
     }
 );
 
-const logInReducer = (state = INITIAL_STATE, action) => { 
-    switch (action.type) { 
+export const authOut = profile => (
+    {
+        type: 'LOG_OUT',
+        payload: profile
+    }
+);
+
+const authReducer = (state = INITIAL_STATE, action) => {
+    const {
+        current, possible
+    } = state;
+    switch (action.type) {
         case 'LOG_IN':
-            const {
-                current, possible
-            } = state;
-
-            // Auth0 login here
-
-            // Auth0 constants
-            const auth0ClientId = 'KLciWpxigi9TW81egFgImpCx5bEFTNgq';
-            const auth0Domain = 'https://mweya-labs.eu.auth0.com';
-
-            // Random string generator for nonce
-            function randomString(length) {
-                var charset = '0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._'
-                result = ''
-
-                while (length > 0) {
-                    var bytes = new Uint8Array(16);
-                    var random = window.crypto.getRandomValues(bytes);
-
-                    random.forEach(function (c) {
-                        if (length == 0) {
-                            return;
-                        }
-                        if (c < charset.length) {
-                            result += charset[c];
-                            length--;
-                        }
-                    });
-                }
-                return result;
-            }
-
-            /**
-             * Converts an object to a query string.
-             */
-            function toQueryString(params) {
-                return '?' + Object.entries(params)
-                    .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
-                    .join('&');
-            }
-
-            login = async () => {
+            async function login() {
                 // Retrieve the redirect URL, add this to the callback URL list
                 // of your Auth0 application.
                 const redirectUrl = "https://auth.expo.io/@mweya/labsclient";//= AuthSession.getRedirectUrl();
@@ -69,7 +50,7 @@ const logInReducer = (state = INITIAL_STATE, action) => {
                     client_id: auth0ClientId,
                     redirect_uri: redirectUrl,
                     response_type: 'id_token', // id_token will return a JWT token
-                    scope: 'openid profile name', // retrieve the user's profile
+                    scope: 'openid profile name email', // retrieve the user's profile
                     nonce: randomString(5)//'nonce', // ideally, this will be a random value
                 });
                 const authUrl = `${auth0Domain}/authorize` + queryParams;
@@ -93,15 +74,26 @@ const logInReducer = (state = INITIAL_STATE, action) => {
                 const jwtToken = response.id_token;
                 const decoded = jwtDecode(jwtToken);
 
-                const { name } = decoded;
-                this.setState({ name });
+                const { name, given_name, family_name, nickname, email } = decoded;
+                //this.setState({ name });
+                var profile = {
+                    name: name,
+                    given_name: given_name,
+                    family_name: family_name,
+                    nickname: nickname,
+                    email: email,
+                };
+                current.push(profile);
+                const newState = { current, possible };
+                return newState;
             };
+            login();
 
+        default:
+            return state;
 
         case 'LOG_OUT':
-            const {
-                current, possible
-            } = state;
+
             logout = async () => {
                 const deauthURL = "https://mweya-labs.eu.auth0.com/v2/logout?returnTo=";
                 //AuthSession.dismiss();
@@ -132,10 +124,25 @@ const logInReducer = (state = INITIAL_STATE, action) => {
                         console.error(error);
                     });
             }
-        }
+    }
 };
 
-const friendReducer = (state = INITIAL_STATE, action) => {
+
+
+export default combineReducers({
+
+    auth: authReducer
+});
+
+//friends: friendReducer,
+
+
+
+
+
+
+
+/*const friendReducer = (state = INITIAL_STATE, action) => {
     switch (action.type) {
         case 'ADD_FRIEND':
             // Pulls current and possible out of previous state
@@ -159,8 +166,4 @@ const friendReducer = (state = INITIAL_STATE, action) => {
         default:
             return state;
     }
-};
-
-export default combineReducers({
-    friends: friendReducer,
-});
+};*/
