@@ -91,7 +91,7 @@ export class HomeScreen extends Component {
             redirect_uri: redirectUrl,
             response_type: 'id_token', // id_token will return a JWT token
             scope: 'openid profile name email', // retrieve the user's profile
-            nonce: randomString(5),//'nonce', // ideally, this will be a random value
+            nonce: 'nonce',//randomString(5),//'nonce', // ideally, this will be a random value
         });
         const authUrl = `${auth0Domain}/authorize` + queryParams;
         //console.log(authUrl);

@@ -9,23 +9,38 @@
       "android",
       "web"
     ],
+    "backgroundColor": "#f8f9f9",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
-    "updates": {
-      "fallbackToCacheTimeout": 0
+      "backgroundColor": "#f8f9f9"
     },
     "assetBundlePatterns": [
       "**/*"
     ],
-    "ios": {
-      "supportsTablet": true
+    "android": {
+      "permissions": []
     },
-    "scheme": "labs"
+    "ios": {
+      "supportsTablet": true,
+      "requireFullScreen": false
+    },
+    "scheme": "labs",
+    "description": "Kinda like going though your textbook's examples, but better.",
+    "githubUrl": "https://github.com/Ninja243/Labs",
+    "facebookAutoLogAppEventsEnabled": false,
+    "facebookAutoInitEnabled": false,
+    "facebookAdvertiserIDCollectionEnabled": false,
+    "androidNavigationBar": {
+      "visible": false,
+      "barStyle": "light-content"
+    },
+    "updates": {
+      "checkAutomatically": "ON_ERROR_RECOVERY",
+      "fallbackToCacheTimeout": 0
+    }
   }
 }
