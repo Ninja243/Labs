@@ -82,8 +82,8 @@ export class HomeScreen extends Component {
     login = async () => {
         // Retrieve the redirect URL, add this to the callback URL list
         // of your Auth0 application.
-        const redirectUrl = "https://auth.expo.io/@mweya/Labs";//= AuthSession.getRedirectUrl();
-        //console.log(`Redirect URL: ${redirectUrl}`);
+        const redirectUrl = "exp://tz-ytd.mweya.client.exp.direct:80";//"exp://auth.expo.io/@mweya/Labs";//= AuthSession.getRedirectUrl();
+        //console.log(`Redirect URL: ${retdirectUrl}`);
 
         // Structure the auth parameters and URL
         const queryParams = toQueryString({
@@ -94,7 +94,7 @@ export class HomeScreen extends Component {
             nonce: randomString(5),//'nonce', // ideally, this will be a random value
         });
         const authUrl = `${auth0Domain}/authorize` + queryParams;
-        console.log(authUrl);
+        //console.log(authUrl);
         // Perform the authentication
         const response = await AuthSession.startAsync({ authUrl });
         console.log('Authentication response', response);
