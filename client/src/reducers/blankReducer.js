@@ -2,7 +2,8 @@ const initialState = {
   i: 0,
   profile: []
 }
-const blankReducer = function(state = initialState, action) {
+const blankReducer = function (state = initialState, action) {
+  //console.log("Reducer ->",action);
   switch(action.type){
     case "INCREMENT":
       return {
@@ -10,7 +11,8 @@ const blankReducer = function(state = initialState, action) {
         i: state.i+1
       }
     case "LOG_IN":
-      alert(action.payload);
+      console.log("A");
+      console.log(action.payload);
       return {
         ...state,
         profile: action.payload

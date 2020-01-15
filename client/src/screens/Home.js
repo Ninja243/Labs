@@ -38,7 +38,7 @@ function toQueryString(params) {
         .join('&');
 }
 
-export class HomeScreen extends Component {
+export class HomeScreen extends Component {    
     constructor(props) {
         super(props);
       }
@@ -143,12 +143,12 @@ export class HomeScreen extends Component {
         p.push(family_name);
         p.push(nickname);
         p.push(email);
-        console.log("Before redux -> ", p);
+        //console.log("Before redux -> ", p);
         logIn(p);
     };
 
     render() {
-        //const { navigate } = this.props.navigation;
+        const { navigate } = this.props.navigation;
         //const profile = this.props.profile;
 
         const navigation = this.props.navigation;
@@ -160,7 +160,6 @@ export class HomeScreen extends Component {
         //console.log("name", this.props.profile.name);
         return (
             (profile.length == 0) ?
-
                 this.state.accepted ?
                     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                      
