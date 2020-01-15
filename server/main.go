@@ -84,7 +84,7 @@ type Ad struct {
 
 // User describes a basic user on this system, storing information about the user's
 // particulars and their activity on the system.
-// 
+//
 // The following values might not be needed for the final product, so for legality's
 // sake I'll leave them out.
 //	FirstName      string    `json:"firstname"`
@@ -165,6 +165,8 @@ func requestData(w http.ResponseWriter, r *http.Request) {
 
 	// Get user struct
 	//var user User
+	// Check scope
+	// Return user struct
 
 }
 
