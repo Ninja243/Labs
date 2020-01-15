@@ -131,7 +131,7 @@ type JSONWebKeys struct {
 func addMweya() {
 	var myLabs []string
 	mweya := User{
-		"mweya", "Mweya", "Ruider", "Namibia University of Science and Technology", myLabs, time.Now(),
+		"mweya-test", myLabs, time.Now(),
 	}
 	_, err := users.InsertOne(context.TODO(), mweya)
 	if err != nil {
@@ -307,7 +307,7 @@ func addUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Test to make sure all fields are populated
-	if user.ID == "" || user.FirstName == "" || user.LastName == "" || user.Affiliation == "" {
+	if user.ID == "" {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte("{'error':'Bad request. Don't leave anything blank'"))
 		return
