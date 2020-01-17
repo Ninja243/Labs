@@ -20,7 +20,7 @@ import { enableExpoCliLogging } from 'expo/build/logs/Logs';
 
 // Black magic
 // https://stackoverflow.com/questions/59589158/expo-authsession-immediately-resolves-as-dismissed
-function pray() { 
+function pray() {
     if (AppState.currentState === "") { }
 }
 
@@ -39,17 +39,52 @@ function toQueryString(params) {
         .join('&');
 }
 
-export class HomeScreen extends Component {    
+export class HomeScreen extends Component {
     constructor(props) {
         super(props);
-      }
+    }
     //title: 'JavaLabs',
     static navigationOptions = {
 
     };
     state = {
         accepted: false,
-        profileBuffer: {}
+        profileBuffer: {},
+        ready: false
+    }
+
+    toString = s => {
+        var i = 0;
+        var string = "";
+        while (i < s.length) {
+            if (i == s.length - 1) {
+                string = string + "\n JWT: " + s[i] + "\n";
+            } else {
+                string = string + s[i] + ",\n";
+            }
+
+            i = i + 1
+        }
+
+        return string;
+    }
+
+    init = () => {
+        // Create account if none exists
+        // TEST
+        // Load account details if not cached
+        // Nav to splash screen
+        const { navigate } = this.props.navigation;
+        console.log("Start 2");
+        // TEST
+        var i = 0;
+        while (i < 1000) {
+            console.log(i);
+            i = i + 1;
+        }
+        this.setState({ ready: true });
+        console.log("ready ->", this.state.ready)
+        //navigate("Splash");
     }
 
 
@@ -71,6 +106,7 @@ export class HomeScreen extends Component {
             +"&client_id="+
             encodeURIComponent(auth0ClientId)// __DEV__ ? "exp://localhost:19000" : "app:/callback"
         );*/
+        // TODO WARNING AuthOut has been replaced by LogOut which takes an empty array
         await fetch(deauthURL + encodeURIComponent("") + "&client_id=" + encodeURIComponent(auth0ClientId))
             .then((response) => response.text())
             .then((code) => {
@@ -91,6 +127,8 @@ export class HomeScreen extends Component {
                 console.error(error);
             });
     }
+
+
 
     login = async () => {
         pray();
@@ -115,14 +153,16 @@ export class HomeScreen extends Component {
 
         if (response.type === 'success') {
             //console.log(response);
-            this.handleResponse(response.params);
+            if (this.handleResponse(response.params)) {
+                return true;
+            }
         }
     };
 
     handleResponse = (response) => {
         if (response.errorCode) {
             Alert('Authentication error', response.error_description || 'something went wrong');
-            return;
+            return false;
         }
 
         // Retrieve the JWT token and decode it
@@ -144,32 +184,32 @@ export class HomeScreen extends Component {
         p.push(family_name);
         p.push(nickname);
         p.push(email);
+        // Should probably save the token tbh
+        p.push(jwtToken);
         //console.log("Before redux -> ", p);
         const logIn = this.props.logIn;
-        logIn(p)
+        logIn(p);
+        return true;
         //console.log("Handled ->", );
-        
+
     };
 
 
 
     render() {
         const { navigate } = this.props.navigation;
-        //const profile = this.props.profile;
-
-        const navigation = this.props.navigation;
-        const increment = this.props.increment;
         const i = this.props.i;
         const profile = this.props.profile;
-        const logIn = this.props.logIn;
-        //console.log("Render ->", profile);
-        //console.log("name", this.props.profile.name);
         return (
             (profile.length == 0) ?
                 this.state.accepted ?
                     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                     
-                        <Button style={{ alignSelf: 'center' }} title="Log in with a google account" onPress={() => { this.login() }} />
+
+                        <Button style={{ alignSelf: 'center' }} title="Log in with a google account" onPress={
+                            async () => {
+                                this.login().then(this.init());
+                             }
+                        } />
                         <View style={{ width: '50%', paddingTop: 40, paddingBottom: 10, flexDirection: 'column', justifyContent: 'center', alignContent: "flex-end" }}>
                             <Text style={{ fontSize: 15 }}>"I have read and agree with the Privacy Policy and Terms of Service"</Text>
                             <Text style={{ alignSelf: 'flex-end' }}>-You</Text>
@@ -186,12 +226,12 @@ export class HomeScreen extends Component {
                                 <Switch onValueChange={() => { this.setState({ accepted: false }) }} value={this.state.accepted} thumbColor="rgba(0, 122, 255, 1)" />
                             </View>
                         </View>
-                   
+
                     </View>
                     :
                     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                      
-                        <Button style={{ alignSelf: 'center' }} title="Log in with a google account" onPress={() => { this.login() }} disabled />
+
+                        <Button style={{ alignSelf: 'center' }} title="Log in with a google account" disabled />
                         <View style={{ width: '50%', paddingTop: 40, paddingBottom: 10, flexDirection: 'column', justifyContent: 'center', alignContent: "flex-end" }}>
                             <Text>You need to have read and agreed with the Privacy Policy and the Terms of Service to use this app. Tap the links below to read them.</Text>
                             <View style={{ paddingTop: 10, alignSelf: 'flex-start' }}>
@@ -207,21 +247,32 @@ export class HomeScreen extends Component {
                                 <Switch onValueChange={() => { this.setState({ accepted: true }) }} value={this.state.accepted} />
                             </View>
                         </View>
-                     
+
                     </View>
                 :
-                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                  
-                    <View style={{ width: '50%', paddingTop: 40, paddingBottom: 10, flexDirection: 'column',  }}>
-                        
-                        <View style={{ paddingBottom: 70, alignSelf: "center"}}>
-                            <Text style={{ color: 'rgba(144,144,146,1)', fontSize: 20 }}>Hey {profile[0][1]}, we're setting things up for you.</Text>
-                            <Text style={{ color: 'rgba(164,164,166,1)', paddingLeft: 40 }}>This won't take long.</Text>
+                (this.state.ready) ?
+                    <View>
+                        <Text style={{ color: 'rgba(44,44,46,1)', paddingBottom: 10, paddingTop: 20, paddingLeft: 40, alignSelf: 'flex-start', fontSize: 30 }}>{"User Profile"}</Text>
+                        <View style={{ backgroundColor: 'rgba(199,199,204,1)', padding: 5 }}>
+
+                            <Text>{profile[0].toString()}</Text>
+
                         </View>
-                        <ActivityIndicator size="large" color={"rgba(0, 122, 255, 1)"} />
                     </View>
-                    
-                </View>
+                    :
+                    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+
+                        <View style={{ width: '50%', paddingTop: 40, paddingBottom: 10, flexDirection: 'column', }}>
+
+                            <View style={{ paddingBottom: 70, alignSelf: "center" }}>
+                                <Text style={{ color: 'rgba(144,144,146,1)', fontSize: 20 }}>Hey {profile[0][1]}, we're setting things up for you.</Text>
+                                <Text style={{ color: 'rgba(164,164,166,1)', paddingLeft: 40 }}>This won't take long.</Text>
+                            </View>
+                            <ActivityIndicator size="large" color={"rgba(0, 122, 255, 1)"} />
+
+                        </View>
+
+                    </View>
         );
     }
 }
@@ -234,14 +285,14 @@ export class HomeScreen extends Component {
 };*/
 const mapStateToProps = (state) => {
     return {
-      i: state.blank.i,
-      profile: state.blank.profile
+        i: state.blank.i,
+        profile: state.blank.profile
     };
 };
 const mapDispatchToProps = (dispatch) => {
     return {
-      increment: () => dispatch(increment()),
-      logIn: p => dispatch(logIn(p)),
+        increment: () => dispatch(increment()),
+        logIn: p => dispatch(logIn(p)),
     };
 };
 /*const mapDispatchToProps = dispatch => (

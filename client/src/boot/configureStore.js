@@ -5,16 +5,17 @@ import thunk from "redux-thunk";
 import { persistStore, persistReducer } from "redux-persist";
 import reducer from "../reducers";
 import devToolsEnhancer from 'remote-redux-devtools';
-import storage from 'redux-persist/lib/storage' // defaults to localStorage for web and AsyncStorage for react-native
+//import storage from 'redux-persist/lib/storage'; // defaults to localStorage for web and AsyncStorage for react-native
+//import AsyncStorage from '@react-native-community/async-storage'; 
 
 const persistConfig = {
   key: 'root',
-  storage,
+  storage: AsyncStorage,
 }
 
 const persistedReducer = persistReducer(persistConfig, reducer);
 
-export default function configureStore(onCompletion: () => {}) {
+export default function configureStore(onCompletion) {
   const enhancer = compose(
     applyMiddleware(thunk),
     devTools({

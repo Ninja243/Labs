@@ -13,6 +13,7 @@ import HomeScreen from './screens/Home.js';
 import OptionScreen from './screens/Options.js';
 import PortfolioGate from './screens/HireMe.js';
 import Me from './screens/AboutMe.js';
+import SplashScreen from './screens/splash.js';
 
 import { FaCode } from "react-icons/fa/index";
 import PolicyViewer from './screens/PolicyView.js';
@@ -29,7 +30,8 @@ const MainNavigator = createStackNavigator({
   Options: { screen: OptionScreen },
   HiringQuestion: { screen: PortfolioGate },
   AboutMe: { screen: Me },
-  Policy: { screen: PolicyViewer }
+  Policy: { screen: PolicyViewer },
+  Splash: {screen: SplashScreen}
 
 },
   {

@@ -346,6 +346,10 @@ func addUser(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
+func robots(w http.ResponseWriter, r *http.Request) {
+	// TODO
+}
+
 func main() {
 
 	// MongoDB initialization
@@ -428,6 +432,10 @@ func main() {
 	// TODO JSON route?
 	// TODO Terms of Service
 
+	// Account routes
+	//acc := r.PathPrefix("/account").Subrouter()
+	//acc.Path("/create").HandlerFunc().Methods(http.MethodPut)
+
 	// Authentication routes
 	//a := r.PathPrefix("/auth").Subrouter()
 	//a.Path("/login").HandlerFunc(loginHandler).Methods(http.MethodGet)
@@ -435,12 +443,32 @@ func main() {
 	//a.Path("/signup").HandlerFunc(signupHandler).Methods(http.MethodPost)
 
 	// Lab routes
+	// All users should be able to GET labs
+	// All users should be able to PUT labs
+	// Owner should be able to delete lab
+	//	- All can call but check to see if user matches owner in method?
+	// Owner should be able to modify lab
+	//	- All can call but check to see if user matches owner in method?
 	l := r.PathPrefix("/lab").Subrouter()
-	l.Methods("GET")
+	// For the splashpage of the app, returns most popular lab, most recent lab and a random lab
+	l.Path("/splash").HandlerFunc(getSplashLabs).Methods(http.MethodGet)
+	l.HandleFunc("/{labID}", getLab).Methods(http.MethodGet)
+	l.HandleFunc("/{labID}", createLab).Methods(http.MethodPut)
+	l.HandleFunc("/{labID}", deleteLab).Methods(http.MethodDelete)
+	l.HandleFunc("/{labID}", modLab).Methods(http.MethodPost)
 
 	// User routes
-	//u := r.PathPrefix("/user").Subrouter()
-	//u.HandleFunc("/{userName}", getUser).Methods("GET")
+	u := r.PathPrefix("/user").Subrouter()
+	u.HandleFunc("/{userName}", getUser).Methods(http.MethodGet)
+	u.HandleFunc("/{userName}", createUser).Methods(http.MethodPut)
+	u.HandleFunc("/{userName}", deleteUser).Methods(http.MethodDelete)
+	u.HandleFunc("/{userName}", modUser).Methods(http.MethodPost)
+
+	// Ad routes
+	// All users should be able to GET ads
+	// TODO sell and insert ads
+
+
 
 	// Auth0 example routes
 
@@ -461,13 +489,16 @@ func main() {
 		negroni.HandlerFunc(jwtMiddleware.HandlerWithNext),
 		negroni.Wrap(http.HandlerFunc(helloPrivateScoped))))
 
+	// SEO endpoints (robot.txt and more)
+	r.Handle("/robots.txt", http.HandlerFunc(robots))
+
 	handler := c.Handler(r)
 	http.Handle("/", r)
 	fmt.Println("Listening on http://localhost:3010")
 	http.ListenAndServe("0.0.0.0:3010", handler)
 
 	// TODO
-	// SEO endpoints (robot.txt and more)
+	// User management, ban hammer, warnings
 	// TODO
 	// graceful shutdown support here
 	//  - Block conn
