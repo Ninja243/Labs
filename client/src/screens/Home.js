@@ -145,7 +145,16 @@ export class HomeScreen extends Component {
         p.push(email);
         //console.log("Before redux -> ", p);
         logIn(p);
+        
     };
+
+    componentDidUpdate() {
+        const profile = this.props.profile;
+        console.log("Update ->", profile);
+    }
+    // https://www.hackthissite.org/
+
+
 
     render() {
         const { navigate } = this.props.navigation;

@@ -8,12 +8,17 @@
     "eject": "expo eject"
   },
   "dependencies": {
+    "@react-native-community/async-storage": "^1.7.1",
     "@react-native-community/masked-view": "0.1.5",
     "expo": "~36.0.0",
+    "jwt-decode": "^2.2.0",
     "react": "~16.9.0",
     "react-dom": "~16.9.0",
+    "react-fast-highlight": "^3.0.0",
+    "react-icons": "^3.8.0",
     "react-native": "https://github.com/expo/react-native/archive/sdk-36.0.0.tar.gz",
     "react-native-gesture-handler": "^1.5.3",
+    "react-native-safe-area-context": "0.6.0",
     "react-native-web": "~0.11.7",
     "react-navigation": "^4.0.10",
     "react-navigation-stack": "^2.0.14",
@@ -21,8 +26,7 @@
     "redux": "^4.0.5",
     "redux-persist": "^6.0.0",
     "redux-thunk": "^2.3.0",
-    "remote-redux-devtools": "^0.5.16",
-    "react-native-safe-area-context": "0.6.0"
+    "remote-redux-devtools": "^0.5.16"
   },
   "devDependencies": {
     "babel-preset-expo": "~8.0.0",
