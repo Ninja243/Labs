@@ -6,17 +6,24 @@ const blankReducer = function (state = initialState, action) {
   //console.log("Reducer ->",action);
   switch(action.type){
     case "INCREMENT":
+      //console.log("Increment reducer");
       return {
         ...state,
         i: state.i+1
       }
     case "LOG_IN":
-      console.log("A");
-      console.log(action.payload);
-      return {
-        ...state,
-        profile: action.payload
-      }
+      //console.log("LogIn Reducer ->", action.payload);
+      return Object.assign({}, state, {
+        profile: [
+          ...state.profile,
+          action.payload
+        ]
+      })
+    //  console.log("LogIn Reducer ->", action.payload);
+    //  return {
+    //    ...state,
+    //    profile: action.payload
+    //  }
     case "LOG_OUT":
       return {
         ...state,

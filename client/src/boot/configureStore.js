@@ -18,7 +18,7 @@ export default function configureStore(onCompletion: () => {}) {
   const enhancer = compose(
     applyMiddleware(thunk),
     devTools({
-      name: "MyApp",
+      name: "Labs",
       realtime: true
     })
   );

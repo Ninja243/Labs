@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { TouchableOpacity, Text, Button, View, SafeAreaView, StatusBar, AppState, Switch, ScreenRect } from 'react-native'
+import { TouchableOpacity, Text, Button, View, SafeAreaView, StatusBar, AppState, Switch, ScreenRect, ActivityIndicator } from 'react-native'
 import { createAppContainer, ThemeColors } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 import { ScrollView } from 'react-native-gesture-handler';
@@ -16,6 +16,7 @@ import { logIn } from '../actions/index.js';
 
 import { bindActionCreators } from 'redux';
 import { GenIcon } from 'react-icons/lib/cjs';
+import { enableExpoCliLogging } from 'expo/build/logs/Logs';
 
 // Black magic
 // https://stackoverflow.com/questions/59589158/expo-authsession-immediately-resolves-as-dismissed
@@ -144,15 +145,11 @@ export class HomeScreen extends Component {
         p.push(nickname);
         p.push(email);
         //console.log("Before redux -> ", p);
-        logIn(p);
+        const logIn = this.props.logIn;
+        logIn(p)
+        //console.log("Handled ->", );
         
     };
-
-    componentDidUpdate() {
-        const profile = this.props.profile;
-        console.log("Update ->", profile);
-    }
-    // https://www.hackthissite.org/
 
 
 
@@ -165,7 +162,7 @@ export class HomeScreen extends Component {
         const i = this.props.i;
         const profile = this.props.profile;
         const logIn = this.props.logIn;
-        console.log("Render ->", profile);
+        //console.log("Render ->", profile);
         //console.log("name", this.props.profile.name);
         return (
             (profile.length == 0) ?
@@ -215,10 +212,15 @@ export class HomeScreen extends Component {
                 :
                 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                   
-                    <View style={{ width: '50%', paddingTop: 40, paddingBottom: 10, flexDirection: 'column', justifyContent: 'center', alignContent: "flex-end" }}>
-                        <Text>Hello {profile}!</Text>
+                    <View style={{ width: '50%', paddingTop: 40, paddingBottom: 10, flexDirection: 'column',  }}>
+                        
+                        <View style={{ paddingBottom: 70, alignSelf: "center"}}>
+                            <Text style={{ color: 'rgba(144,144,146,1)', fontSize: 20 }}>Hey {profile[0][1]}, we're setting things up for you.</Text>
+                            <Text style={{ color: 'rgba(164,164,166,1)', paddingLeft: 40 }}>This won't take long.</Text>
+                        </View>
+                        <ActivityIndicator size="large" color={"rgba(0, 122, 255, 1)"} />
                     </View>
-                 
+                    
                 </View>
         );
     }
