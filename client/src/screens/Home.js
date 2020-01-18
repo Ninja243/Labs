@@ -209,6 +209,10 @@ export class HomeScreen extends Component {
         console.log(profile);
         //const setReady = this.props.setReady;
         //setReady(true);
+
+        // TODO
+        // If the app is ready or undefined, we should have a JWT saved.
+        // The saved JWT should be able to be used to pull the splash labs from the server.
         return (
             (profile.length == 0) ?
                 this.state.accepted ?
