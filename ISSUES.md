@@ -16,7 +16,14 @@
    * How did I miss this?
      - https://github.com/auth0/react-native-auth0
        - Kinda considering trying to ditch the AuthSession browser for a fetch method instead, how would I emulate the user's consent flow without raising a huge red flag?
+       - This module's documentation doesn't seem to be done yet, should I really be considering switching over to it?
+       - https://community.auth0.com/t/implementing-auth0-in-react-native-expo-app/17406/14 Seems to suggest that this might not work with Expo 33
+         - I mean yes I'm on Expo 36 but still
    * What is the audience parameter and how should it be sent to the API
+     - https://auth0.com/docs/api-auth/tutorials/client-credentials Seems to suggest that I should be handling the auth browser's functions myself so that I can have access to the data that is about to be posted instead of leaving all of that up to expo, however that also sounds like a pretty bad idea.
+     - Should the API automatically resolve acceptable audiences?
+       - https://auth0.com/docs/quickstart/spa/react/02-calling-an-api#specify-the-api-audience Seems to suggest that the audience should be stored in an .env file
+
 
  * ## NoSQL DBs
    * RAM usage
