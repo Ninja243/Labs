@@ -13,7 +13,7 @@ import { s1, s2 } from '../components/translations';
 
 import { increment } from '../actions/index.js';
 import { logIn } from '../actions/index.js';
-import { setReady} from '../actions/index.js'
+import { setReady } from '../actions/index.js'
 
 import { bindActionCreators } from 'redux';
 import { GenIcon } from 'react-icons/lib/cjs';
@@ -50,8 +50,8 @@ export class HomeScreen extends Component {
     };
     state = {
         accepted: false,
-        profileBuffer: {},
-        
+        endpointTest: "Not updated",
+
     }
 
     toString = s => {
@@ -70,27 +70,62 @@ export class HomeScreen extends Component {
         return string;
     }
 
-    init = () => {
+    init = async () => {
         // Create account if none exists
         // TEST
         // Load account details if not cached
         // Nav to splash screen
         const { navigate } = this.props.navigation;
-        console.log("Start 2");
+
         // TEST
-        var i = 0;
+        /*var i = 0;
         while (i < 1000) {
             console.log(i);
             i = i + 1;
-        }
+        }*/
         const setReady = this.props.setReady;
+        const readyState = this.props.ready;
+        //console.log("Ready ->", readyState);
+        //console.log(setReady);
         setReady(true);
-        console.log("ready ->", this.state.ready)
+
+        //console.log("Ready ->",readyState);
+        //console.log("ready ->", this.state.ready)
         //navigate("Splash");
+        this.privEndpointTest();
+    }
+
+    privEndpointTest = () => {
+        const profile = this.props.profile;
+        var x;
+        if (profile.length != 0) {
+            x = profile[0].length - 1;
+        } else { 
+            console.log("Profile", profile)
+        }
+        const hdrs = {
+            'Authorization': 'Bearer ' + profile[0][x],
+            
+        };
+        console.log(hdrs)
+        fetch("https://jl.x-mweya.duckdns.org/api/private" + toQueryString({
+            audience: "LabsGolangAPI",
+        }), {
+            method: "GET",
+            headers: hdrs
+            
+        })
+            .then((response) => response.text())
+            .then((quote) => {
+                this.setState({
+                    endpointTest: quote
+                })
+            })
+            .done();
     }
 
 
-
+    // NEEDS REWRITE
     logout = async () => {
         const deauthURL = "https://mweya-labs.eu.auth0.com/v2/logout?returnTo=";
         //AuthSession.dismiss();
@@ -143,6 +178,7 @@ export class HomeScreen extends Component {
 
         // Structure the auth parameters and URL
         const queryParams = toQueryString({
+            audience: "LabsGolangAPI",
             client_id: auth0ClientId,
             redirect_uri: redirectUrl,
             response_type: 'id_token', // id_token will return a JWT token
@@ -205,8 +241,12 @@ export class HomeScreen extends Component {
         const i = this.props.i;
         const profile = this.props.profile;
         const readyState = this.props.ready;
-        console.log(readyState);
-        console.log(profile);
+        if (profile.length != 0) {
+            this.privEndpointTest();
+            
+        }
+        //console.log(readyState);
+        //console.log(profile);
         //const setReady = this.props.setReady;
         //setReady(true);
 
@@ -219,9 +259,12 @@ export class HomeScreen extends Component {
                     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
 
                         <Button style={{ alignSelf: 'center' }} title="Log in with a google account" onPress={
-                            async () => {
-                                this.login().then(this.init());
-                             }
+                            () => {
+                                if (this.login()) {
+                                    this.init();
+                                    
+                                }
+                            }
                         } />
                         <View style={{ width: '50%', paddingTop: 40, paddingBottom: 10, flexDirection: 'column', justifyContent: 'center', alignContent: "flex-end" }}>
                             <Text style={{ fontSize: 15 }}>"I have read and agree with the Privacy Policy and Terms of Service"</Text>
@@ -264,15 +307,21 @@ export class HomeScreen extends Component {
                     </View>
                 :
                 // Undefined if the app didn't have time to set it when starting
-                (this.props.ready == true || this.props.ready == undefined) ?
-                    <View>
+                (readyState == true || readyState == undefined) ?
+                    <ScrollView>
                         <Text style={{ color: 'rgba(44,44,46,1)', paddingBottom: 10, paddingTop: 20, paddingLeft: 40, alignSelf: 'flex-start', fontSize: 30 }}>{"User Profile"}</Text>
                         <View style={{ backgroundColor: 'rgba(199,199,204,1)', padding: 5 }}>
 
                             <Text>{profile[0].toString()}</Text>
 
                         </View>
-                    </View>
+                        <Text style={{ color: 'rgba(44,44,46,1)', paddingBottom: 10, paddingTop: 20, paddingLeft: 40, alignSelf: 'flex-start', fontSize: 30 }}>{"Private Endpoint Test"}</Text>
+                        <View style={{ backgroundColor: 'rgba(199,199,204,1)', padding: 5 }}>
+
+                            <Text>{this.state.endpointTest}</Text>
+
+                        </View>
+                    </ScrollView>
                     :
                     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
 

@@ -21,12 +21,10 @@ const blankReducer = function (state = initialState, action) {
         ]
       })
     case "APP_READY":
-      return Object.assign({}, state, {
-        ready: [
-          ...state.ready,
-          action.payload
-        ]
-      })
+      return {
+        ...state,
+        ready: action.payload
+      }
     case "LOG_OUT":
       return {
         ...state,
