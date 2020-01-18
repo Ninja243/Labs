@@ -13,6 +13,7 @@ import { s1, s2 } from '../components/translations';
 
 import { increment } from '../actions/index.js';
 import { logIn } from '../actions/index.js';
+import { setReady} from '../actions/index.js'
 
 import { bindActionCreators } from 'redux';
 import { GenIcon } from 'react-icons/lib/cjs';
@@ -50,7 +51,7 @@ export class HomeScreen extends Component {
     state = {
         accepted: false,
         profileBuffer: {},
-        ready: false
+        
     }
 
     toString = s => {
@@ -82,7 +83,8 @@ export class HomeScreen extends Component {
             console.log(i);
             i = i + 1;
         }
-        this.setState({ ready: true });
+        const setReady = this.props.setReady;
+        setReady(true);
         console.log("ready ->", this.state.ready)
         //navigate("Splash");
     }
@@ -132,6 +134,8 @@ export class HomeScreen extends Component {
 
     login = async () => {
         pray();
+        const setReady = this.props.setReady;
+        setReady(false);
         // Retrieve the redirect URL, add this to the callback URL list
         // of your Auth0 application.
         const redirectUrl = "https://auth.expo.io/@mweya/labsclient";//"exp://tz-ytd.mweya.client.exp.direct:80";//"exp://auth.expo.io/@mweya/Labs";//= AuthSession.getRedirectUrl();
@@ -200,6 +204,11 @@ export class HomeScreen extends Component {
         const { navigate } = this.props.navigation;
         const i = this.props.i;
         const profile = this.props.profile;
+        const readyState = this.props.ready;
+        console.log(readyState);
+        console.log(profile);
+        //const setReady = this.props.setReady;
+        //setReady(true);
         return (
             (profile.length == 0) ?
                 this.state.accepted ?
@@ -250,7 +259,8 @@ export class HomeScreen extends Component {
 
                     </View>
                 :
-                (this.state.ready) ?
+                // Undefined if the app didn't have time to set it when starting
+                (this.props.ready == true || this.props.ready == undefined) ?
                     <View>
                         <Text style={{ color: 'rgba(44,44,46,1)', paddingBottom: 10, paddingTop: 20, paddingLeft: 40, alignSelf: 'flex-start', fontSize: 30 }}>{"User Profile"}</Text>
                         <View style={{ backgroundColor: 'rgba(199,199,204,1)', padding: 5 }}>
@@ -286,13 +296,15 @@ export class HomeScreen extends Component {
 const mapStateToProps = (state) => {
     return {
         i: state.blank.i,
-        profile: state.blank.profile
+        profile: state.blank.profile,
+        readyState: state.blank.ready
     };
 };
 const mapDispatchToProps = (dispatch) => {
     return {
         increment: () => dispatch(increment()),
         logIn: p => dispatch(logIn(p)),
+        setReady: b => dispatch(setReady(b))
     };
 };
 /*const mapDispatchToProps = dispatch => (

@@ -35,7 +35,7 @@
     "facebookAutoInitEnabled": false,
     "facebookAdvertiserIDCollectionEnabled": false,
     "androidNavigationBar": {
-      "visible": false,
+      "visible": true,
       "barStyle": "light-content"
     },
     "updates": {

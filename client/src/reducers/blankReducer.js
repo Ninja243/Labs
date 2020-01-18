@@ -1,6 +1,7 @@
 const initialState = {
   i: 0,
-  profile: []
+  profile: [],
+  ready: false
 }
 const blankReducer = function (state = initialState, action) {
   //console.log("Reducer ->",action);
@@ -19,11 +20,13 @@ const blankReducer = function (state = initialState, action) {
           action.payload
         ]
       })
-    //  console.log("LogIn Reducer ->", action.payload);
-    //  return {
-    //    ...state,
-    //    profile: action.payload
-    //  }
+    case "APP_READY":
+      return Object.assign({}, state, {
+        ready: [
+          ...state.ready,
+          action.payload
+        ]
+      })
     case "LOG_OUT":
       return {
         ...state,
