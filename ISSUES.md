@@ -15,6 +15,8 @@
        - Can scopes be changed or assigned by the API?
    * How did I miss this?
      - https://github.com/auth0/react-native-auth0
+       - Kinda considering trying to ditch the AuthSession browser for a fetch method instead, how would I emulate the user's consent flow without raising a huge red flag?
+   * What is the audience parameter and how should it be sent to the API
 
  * ## NoSQL DBs
    * RAM usage
