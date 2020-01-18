@@ -1,5 +1,5 @@
 # Stuff I don't understand
- * ## Auth0
+ * ##  :neckbeard: Auth0
    * Auth0/Oauth2 authentication flow
    * ~Authentication~
    * Identification
@@ -23,21 +23,22 @@
      - https://auth0.com/docs/api-auth/tutorials/client-credentials Seems to suggest that I should be handling the auth browser's functions myself so that I can have access to the data that is about to be posted instead of leaving all of that up to expo, however that also sounds like a pretty bad idea.
      - Should the API automatically resolve acceptable audiences?
        - https://auth0.com/docs/quickstart/spa/react/02-calling-an-api#specify-the-api-audience Seems to suggest that the audience should be stored in an .env file
+       - https://github.com/Ninja243/Labs/blob/master/server/.env Looks like it's already defined, the client might just not be giving the right audience?
 
 
- * ## NoSQL DBs
+ * ##  :bamboo: NoSQL DBs
    * RAM usage
      - Is it higher? Which solutions are better when? 
        - I've always just thought that they're interchangable
 
- * ## React/JSX
+ * ##  :imp: React/JSX
    * Loading screens via async/await
      - Do I just not understand async?
 
- * ## React/Redux
+ * ##  :imp: React/Redux
    * readyState has an initial state of false, however when checked on boot it's 'undefined'
 
-# Stuff I should change before moving to prod
+# Stuff I should change before moving to prod :shipit:
  * ## MongoDB
    * Set up persistant storage using a volume so reboots don't get rid of everything
  * ## Go
