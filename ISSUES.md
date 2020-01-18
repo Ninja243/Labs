@@ -45,5 +45,7 @@
    * Set up first run detection so that the privacy policy and other legal documents aren't forced into the DB whenever the API starts
  * ## Docker
    * Load balancing
+   * Consider switching to PODMAN
+     - The humanoid packing device, not https://podman.io/
  * ## React
    * Regen keys
