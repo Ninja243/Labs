@@ -37,15 +37,3 @@
 
  * ##  :imp: React/Redux
    * readyState has an initial state of false, however when checked on boot it's 'undefined'
-
-# Stuff I should change before moving to prod :shipit:
- * ## MongoDB
-   * Set up persistant storage using a volume so reboots don't get rid of everything
- * ## Go
-   * Set up first run detection so that the privacy policy and other legal documents aren't forced into the DB whenever the API starts
- * ## Docker
-   * Load balancing
-   * Consider switching to PODMAN
-     - The humanoid packing device, not https://podman.io/
- * ## React
-   * Regen keys
