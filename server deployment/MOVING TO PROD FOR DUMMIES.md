@@ -9,3 +9,4 @@
      - The humanoid packing device, not https://podman.io/
  * ## 3. React
    * Regen keys
+   * Actually check Nonce during auth
