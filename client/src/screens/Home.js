@@ -31,7 +31,7 @@ function randomString(length) {
     return result;
 }
 // Auth0 constants
-const auth0ClientId = 'KLciWpxigi9TW81egFgImpCx5bEFTNgq';
+const auth0ClientId = '7GnUDOPZ1mUSsxq2OFKQph1tPD36di7B';
 const auth0Domain = 'https://mweya-labs.eu.auth0.com';
 // Converts an object to a query string.
 function toQueryString(params) {
@@ -100,23 +100,27 @@ export class HomeScreen extends Component {
         var x;
         if (profile.length != 0) {
             x = profile[0].length - 1;
-        } else { 
+        } else {
             console.log("Profile", profile)
         }
         const hdrs = {
             'Authorization': 'Bearer ' + profile[0][x],
-            
+
         };
-        console.log(hdrs)
+        //console.log(hdrs)
+        // aud: "https://mweya-labs.eu.auth0.com/api/v2/"
         fetch("https://jl.x-mweya.duckdns.org/api/private" + toQueryString({
             audience: "LabsGolangAPI",
         }), {
-            method: "GET",
+            method: "POST",
             headers: hdrs
-            
+
         })
             .then((response) => response.text())
             .then((quote) => {
+                if (quote != "Hello from a private endpoint! You need to be authenticated to see this.") {
+                    //console.log(quote);
+                }
                 this.setState({
                     endpointTest: quote
                 })
@@ -176,7 +180,7 @@ export class HomeScreen extends Component {
         const redirectUrl = "https://auth.expo.io/@mweya/labsclient";//"exp://tz-ytd.mweya.client.exp.direct:80";//"exp://auth.expo.io/@mweya/Labs";//= AuthSession.getRedirectUrl();
         //console.log(`Redirect URL: ${retdirectUrl}`);
 
-        // Structure the auth parameters and URL
+        // Structure the auth parameters and URL //LabsGolangAPI
         const queryParams = toQueryString({
             audience: "LabsGolangAPI",
             client_id: auth0ClientId,
@@ -208,7 +212,7 @@ export class HomeScreen extends Component {
         // Retrieve the JWT token and decode it
         const jwtToken = response.id_token;
         const decoded = jwtDecode(jwtToken);
-        //console.log(decoded);
+        console.log(decoded);
         const { name, given_name, family_name, nickname, email } = decoded;
         //var profile = {
         //    name: name,
@@ -243,7 +247,7 @@ export class HomeScreen extends Component {
         const readyState = this.props.ready;
         if (profile.length != 0) {
             this.privEndpointTest();
-            
+
         }
         //console.log(readyState);
         //console.log(profile);
@@ -262,7 +266,7 @@ export class HomeScreen extends Component {
                             () => {
                                 if (this.login()) {
                                     this.init();
-                                    
+
                                 }
                             }
                         } />

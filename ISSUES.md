@@ -24,6 +24,8 @@
      - Should the API automatically resolve acceptable audiences?
        - https://auth0.com/docs/quickstart/spa/react/02-calling-an-api#specify-the-api-audience Seems to suggest that the audience should be stored in an .env file
        - https://github.com/Ninja243/Labs/blob/master/server/.env Looks like it's already defined, the client might just not be giving the right audience?
+       - The aud I get back is the same as the client ID?
+       - Ok, this just doesn't work https://manage.auth0.com/dashboard/eu/mweya-labs/apis/5e0f33cea4414107f2bd7929/test
 
 
  * ##  :bamboo: NoSQL DBs
