@@ -10,7 +10,8 @@
      - Currently the client stores a user's JWT and the name bit of their OpenID profile
        - Is the Email they use for Google unique enough to use as a key?
        - Can I resolve a user's information from the JWT they supply to the API?
-       - Should I be sending the JWT over to the API for Auth?
+         - What would the flow for checking that look like?
+       - ~Should I be sending the JWT over to the API for Auth?~
    * Scopes
      - How should I be using them?
      - Does each user get a set of scopes assigned to them when they log in?
