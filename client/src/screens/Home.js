@@ -30,7 +30,7 @@ function randomString(length) {
     var result = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
     return result;
 }
-// Auth0 constants
+// Auth0 constants -> 7GnUDOPZ1mUSsxq2OFKQph1tPD36di7B
 const auth0ClientId = '7GnUDOPZ1mUSsxq2OFKQph1tPD36di7B';
 const auth0Domain = 'https://mweya-labs.eu.auth0.com';
 // Converts an object to a query string.
@@ -97,22 +97,21 @@ export class HomeScreen extends Component {
 
     privEndpointTest = () => {
         const profile = this.props.profile;
-        var x;
+        var x = null;
         if (profile.length != 0) {
             x = profile[0].length - 1;
+
         } else {
             console.log("Profile", profile)
         }
         const hdrs = {
-            'Authorization': 'Bearer ' + profile[0][x],
+            'authorization': 'Bearer ' + profile[0][x],
 
         };
         //console.log(hdrs)
         // aud: "https://mweya-labs.eu.auth0.com/api/v2/"
-        fetch("https://jl.x-mweya.duckdns.org/api/private" + toQueryString({
-            audience: "LabsGolangAPI",
-        }), {
-            method: "POST",
+        fetch("https://jl.x-mweya.duckdns.org/api/private", {
+            method: "GET",
             headers: hdrs
 
         })
@@ -184,17 +183,17 @@ export class HomeScreen extends Component {
         const queryParams = toQueryString({
             audience: "LabsGolangAPI",
             client_id: auth0ClientId,
+            connection: "google-oauth2",
             redirect_uri: redirectUrl,
-            response_type: 'id_token', // id_token will return a JWT token
+            response_type: 'token', // token -> Auth token (jwt), id_token -> Info about the person
             scope: 'openid profile name email', // retrieve the user's profile
             nonce: randomString(5),//'nonce', // ideally, this will be a random value, TODO actually check the nonce to see if it matches
         });
         const authUrl = `${auth0Domain}/authorize` + queryParams;
-        //console.log(authUrl);
+        console.log(authUrl);
         // Perform the authentication
         const response = await AuthSession.startAsync({ authUrl });
         //console.log('Authentication response', response);
-
         if (response.type === 'success') {
             //console.log(response);
             if (this.handleResponse(response.params)) {
@@ -211,8 +210,8 @@ export class HomeScreen extends Component {
 
         // Retrieve the JWT token and decode it
         const jwtToken = response.id_token;
+        const access_token = response.access_token;
         const decoded = jwtDecode(jwtToken);
-        console.log(decoded);
         const { name, given_name, family_name, nickname, email } = decoded;
         //var profile = {
         //    name: name,
@@ -229,7 +228,7 @@ export class HomeScreen extends Component {
         p.push(nickname);
         p.push(email);
         // Should probably save the token tbh
-        p.push(jwtToken);
+        p.push(access_token);
         //console.log("Before redux -> ", p);
         const logIn = this.props.logIn;
         logIn(p);

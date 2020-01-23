@@ -20,9 +20,6 @@ import PolicyViewer from './screens/PolicyView.js';
 import NavigationService from './components/navService';
 import profileReducer from './components/reducer';
 
-// TODO
-// https://stackoverflow.com/questions/57781527/how-to-solve-console-error-redux-persist-failed-to-create-sync-storage-falli
-
 // Screen navigation is declared here
 const MainNavigator = createStackNavigator({
   Home: { screen: HomeScreen },

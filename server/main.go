@@ -449,20 +449,20 @@ func main() {
 	//	- All can call but check to see if user matches owner in method?
 	// Owner should be able to modify lab
 	//	- All can call but check to see if user matches owner in method?
-	l := r.PathPrefix("/lab").Subrouter()
+	//l := r.PathPrefix("/lab").Subrouter()
 	// For the splashpage of the app, returns most popular lab, most recent lab and a random lab
-	l.Path("/splash").HandlerFunc(getSplashLabs).Methods(http.MethodGet)
-	l.HandleFunc("/{labID}", getLab).Methods(http.MethodGet)
-	l.HandleFunc("/{labID}", createLab).Methods(http.MethodPut)
-	l.HandleFunc("/{labID}", deleteLab).Methods(http.MethodDelete)
-	l.HandleFunc("/{labID}", modLab).Methods(http.MethodPost)
+	//l.Path("/splash").HandlerFunc(getSplashLabs).Methods(http.MethodGet)
+	//l.HandleFunc("/{labID}", getLab).Methods(http.MethodGet)
+	//l.HandleFunc("/{labID}", createLab).Methods(http.MethodPut)
+	//l.HandleFunc("/{labID}", deleteLab).Methods(http.MethodDelete)
+	//l.HandleFunc("/{labID}", modLab).Methods(http.MethodPost)
 
 	// User routes
-	u := r.PathPrefix("/user").Subrouter()
-	u.HandleFunc("/{userName}", getUser).Methods(http.MethodGet)
-	u.HandleFunc("/{userName}", createUser).Methods(http.MethodPut)
-	u.HandleFunc("/{userName}", deleteUser).Methods(http.MethodDelete)
-	u.HandleFunc("/{userName}", modUser).Methods(http.MethodPost)
+	//u := r.PathPrefix("/user").Subrouter()
+	//u.HandleFunc("/{userName}", getUser).Methods(http.MethodGet)
+	//u.HandleFunc("/{userName}", createUser).Methods(http.MethodPut)
+	//u.HandleFunc("/{userName}", deleteUser).Methods(http.MethodDelete)
+	//u.HandleFunc("/{userName}", modUser).Methods(http.MethodPost)
 
 	// Ad routes
 	// All users should be able to GET ads

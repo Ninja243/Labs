@@ -9,15 +9,27 @@ client_id = "7GnUDOPZ1mUSsxq2OFKQph1tPD36di7B"
 client_secret = "YZrlCgybQcvvpZjC5t2KmBtAdgO8EwfkzvCn1DbKte_UPhzgcDsq9y7tTJiiX58y"
 audience = "LabsGolangAPI"
 grant_type = "client_credentials"
+response_type = "code"
+nonce = "nonce"
+redirect_uri = "https://auth.expo.io/@mweya/labsclient"
+connection = "google-oauth2"
 
-print("1. Get Token\n")
+#print("1. Get Token (POST)\n")
 
-payload = "{\"client_id\":\"" + client_id + "\", \"client_secret\":\"" + \
-    client_secret + "\", \"audience\":\""+audience + \
-    "\", \"grant_type\":\""+grant_type+"\"}"
-headers = {'content-type': "application/json"}
-print("Request:\n\tHeader\n"+str(headers)+"\n\tPayload\n"+payload)
-conn.request("POST", "/oauth/token", payload, headers)
+# payload = "{\"client_id\":\"" + client_id + "\", \"client_secret\":\"" + \
+#    client_secret + "\", \"audience\":\""+audience + \
+#    "\", \"grant_type\":\""+grant_type+"\"}"
+#headers = {'content-type': "application/json"}
+# print("Request:\n\tHeader\n"+str(headers)+"\n\tPayload\n"+payload)
+#conn.request("POST", "/oauth/token", payload, headers)
+
+print("1. Get Token (GET)")
+
+url = "/authorize?client_id=" + client_id  + "&audience=" + audience +  "&response_type="+response_type + "&nonce="+nonce + "&redirect_uri="+redirect_uri+"&connection="+connection
+conn.request("GET", url)
+
+print("Getting ->"+"https://mweya-labs.eu.auth0.com"+url)
+
 res = conn.getresponse()
 data = res.read()
 print("\n\tResponse:\n" + data.decode("utf-8") + "\n\n")
@@ -26,7 +38,7 @@ print("\n\tResponse:\n" + data.decode("utf-8") + "\n\n")
 
 print("2. Test Token\n")
 
-conn = http.client.HTTPConnection("localhost:3010")
+conn = http.client.HTTPSConnection("jl.x-mweya.duckdns.org")
 data = ast.literal_eval(data.decode("utf-8"))
 headers = {"authorization": data["token_type"]+" "+data["access_token"]}
 
