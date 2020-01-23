@@ -45,3 +45,11 @@
 
  * ##  :imp: React/Redux
    * readyState has an initial state of false, however when checked on boot it's 'undefined'
+
+ * ##  :books: Legal
+   * Is writing my own policies a good idea?
+   * Is there a service I can use to look through my policies and make sure they're ok that doesn't cost regular lawyer prices?
+   * Have I done enough for GDPR compliance?
+   * Do I need to register my Ad Engine somewhere?
+   * Everything posted to the app will be done so under a Creative Commons license. Is this enough to stop DMCA complaints?
+   * Do I need to be worried about the DMCA?
