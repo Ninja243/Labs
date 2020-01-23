@@ -3,6 +3,7 @@
 
 import http.client
 import ast
+import jwt
 conn = http.client.HTTPSConnection("mweya-labs.eu.auth0.com")
 client_id = "7GnUDOPZ1mUSsxq2OFKQph1tPD36di7B"
 client_secret = "YZrlCgybQcvvpZjC5t2KmBtAdgO8EwfkzvCn1DbKte_UPhzgcDsq9y7tTJiiX58y"
@@ -11,19 +12,23 @@ grant_type = "client_credentials"
 
 print("1. Get Token\n")
 
-payload = "{\"client_id\":\"" + client_id +  "\", \"client_secret\":\"" + client_secret + "\", \"audience\":\""+audience+"\", \"grant_type\":\""+grant_type+"\"}"
-headers = { 'content-type': "application/json" }
+payload = "{\"client_id\":\"" + client_id + "\", \"client_secret\":\"" + \
+    client_secret + "\", \"audience\":\""+audience + \
+    "\", \"grant_type\":\""+grant_type+"\"}"
+headers = {'content-type': "application/json"}
 print("Request:\n\tHeader\n"+str(headers)+"\n\tPayload\n"+payload)
 conn.request("POST", "/oauth/token", payload, headers)
 res = conn.getresponse()
 data = res.read()
-print("\n\tResponse:\n"+data.decode("utf-8")+"\n\n")
+print("\n\tResponse:\n" + data.decode("utf-8") + "\n\n")
+#decoded = jwt.decode(data.decode("utf-8"), client_secret, algorithms=['RS256'])
+# print("\n\tDecoded:\n"+decoded)
 
 print("2. Test Token\n")
 
-conn = http.client.HTTPSConnection("jl.x-mweya.duckdns.org")
+conn = http.client.HTTPConnection("localhost:3010")
 data = ast.literal_eval(data.decode("utf-8"))
-headers = {"authorization":data["token_type"]+" "+data["access_token"]}
+headers = {"authorization": data["token_type"]+" "+data["access_token"]}
 
 conn.request("GET", "/api/private", headers=headers)
 
