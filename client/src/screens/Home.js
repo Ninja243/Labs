@@ -185,7 +185,7 @@ export class HomeScreen extends Component {
             client_id: auth0ClientId,
             connection: "google-oauth2",
             redirect_uri: redirectUrl,
-            response_type: 'token', // token -> Auth token (jwt), id_token -> Info about the person
+            response_type: 'token id_token', // token -> Auth token (jwt), id_token -> Info about the person
             scope: 'openid profile name email', // retrieve the user's profile
             nonce: randomString(5),//'nonce', // ideally, this will be a random value, TODO actually check the nonce to see if it matches
         });
