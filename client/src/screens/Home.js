@@ -19,6 +19,8 @@ import { bindActionCreators } from 'redux';
 import { GenIcon } from 'react-icons/lib/cjs';
 import { enableExpoCliLogging } from 'expo/build/logs/Logs';
 
+import { privEndpointTest, privScopedEndpointTest, getEndpointText } from '../tests/Endpoints.js'
+
 // Black magic
 // https://stackoverflow.com/questions/59589158/expo-authsession-immediately-resolves-as-dismissed
 function pray() {
@@ -50,8 +52,9 @@ export class HomeScreen extends Component {
     };
     state = {
         accepted: false,
-        endpointTest: "Not updated",
-
+        pEndpointTest: "Not updated",
+        psEndpointTest: "Not updated",
+        lastSilentCheck: Date.now()
     }
 
     toString = s => {
@@ -93,43 +96,13 @@ export class HomeScreen extends Component {
         //console.log("ready ->", this.state.ready)
         //navigate("Splash");
         this.privEndpointTest();
-    }
-
-    privEndpointTest = () => {
-        const profile = this.props.profile;
-        var x = null;
-        if (profile.length != 0) {
-            x = profile[0].length - 1;
-
-        } else {
-            console.log("Profile", profile)
-        }
-        const hdrs = {
-            'authorization': 'Bearer ' + profile[0][x],
-
-        };
-        //console.log(hdrs)
-        // aud: "https://mweya-labs.eu.auth0.com/api/v2/"
-        fetch("https://jl.x-mweya.duckdns.org/api/private", {
-            method: "GET",
-            headers: hdrs
-
-        })
-            .then((response) => response.text())
-            .then((quote) => {
-                if (quote != "Hello from a private endpoint! You need to be authenticated to see this.") {
-                    //console.log(quote);
-                }
-                this.setState({
-                    endpointTest: quote
-                })
-            })
-            .done();
+        this.privScopedEndpointTest();
     }
 
 
     // NEEDS REWRITE
-    logout = async () => {
+    logout = () => {
+
         const deauthURL = "https://mweya-labs.eu.auth0.com/v2/logout?returnTo=";
         //AuthSession.dismiss();
         /*const response = await AuthSession.startAsync({deauthURL});
@@ -147,29 +120,72 @@ export class HomeScreen extends Component {
             encodeURIComponent(auth0ClientId)// __DEV__ ? "exp://localhost:19000" : "app:/callback"
         );*/
         // TODO WARNING AuthOut has been replaced by LogOut which takes an empty array
-        await fetch(deauthURL + encodeURIComponent("") + "&client_id=" + encodeURIComponent(auth0ClientId))
+        fetch(deauthURL + encodeURIComponent("") + "&client_id=" + encodeURIComponent(auth0ClientId))
             .then((response) => response.text())
             .then((code) => {
-                console.log(code);
-                var profile = {
-                    name: null,
-                    given_name: null,
-                    family_name: null,
-                    nickname: null,
-                    email: null,
-                };
+                // I kinda hate myself for this one
                 if (code === "OK") {
-                    this.props.authOut(profile)
+
+                    const logIn = this.props.logIn;
+                    var p = [];
+                    logIn(p);
+                    return true;
                 }
 
             })
             .catch((error) => {
-                console.error(error);
+                console.error(error, ", logging out anyway");
             });
+        const logIn = this.props.logIn;
+        var p = [];
+        logIn(p);
     }
 
+    // Silent auth for refreshing
+    silentLogin = async () => {
+        pray();
+        //console.log("v");
+        const setReady = this.props.setReady;
+        setReady(false);
+        const redirectUrl = "https://auth.expo.io/@mweya/labsclient";
+        const queryParams = toQueryString({
+            response_type: "id_token token",
+            client_id: auth0ClientId,
+            redirect_uri: redirectUrl,
+            state: "wot",
+            scope: "openid profile name email",
+            audience: "LabsGolangAPI",
+            response_mode: "wot",
+            prompt: "none"
+        });
+        const authUrl = `${auth0Domain}/authorize` + queryParams;
+        //console.log(authUrl);
+        // Perform the authentication
+        //const response = await AuthSession.startAsync({ authUrl });
+        try {
+            await fetch(authUrl).then((response) => (response.text())
+                .then((code) => {
+                    //console.log("Silent Auth ->", code);
+                    if (response.type === 'success') {
+                        //console.log(response);
+                        console.log(code);
+                        if (this.handleResponse(response.params)) {
+                            return true;
+                        }
+                    } else {
+                        // Silent auth failed, log in normally
+                        this.logout();
+                    }
+                }))
+        } catch (e) {
+            // Silent auth failed, log in normally
+            this.logout();
+        }
+        //console.log('Authentication response', response);
 
+    }
 
+    // Not silent
     login = async () => {
         pray();
         const setReady = this.props.setReady;
@@ -190,7 +206,7 @@ export class HomeScreen extends Component {
             nonce: randomString(5),//'nonce', // ideally, this will be a random value, TODO actually check the nonce to see if it matches
         });
         const authUrl = `${auth0Domain}/authorize` + queryParams;
-        console.log(authUrl);
+        //console.log(authUrl);
         // Perform the authentication
         const response = await AuthSession.startAsync({ authUrl });
         //console.log('Authentication response', response);
@@ -238,16 +254,20 @@ export class HomeScreen extends Component {
     };
 
 
-
     render() {
+
         const { navigate } = this.props.navigation;
         const i = this.props.i;
         const profile = this.props.profile;
         const readyState = this.props.ready;
+        var epResult;
+        //console.log(this.props.profile);
         if (profile.length != 0) {
             this.privEndpointTest();
-
+            //epResult  = this.getEndpointText();
+            this.privScopedEndpointTest();
         }
+
         //console.log(readyState);
         //console.log(profile);
         //const setReady = this.props.setReady;
@@ -321,7 +341,13 @@ export class HomeScreen extends Component {
                         <Text style={{ color: 'rgba(44,44,46,1)', paddingBottom: 10, paddingTop: 20, paddingLeft: 40, alignSelf: 'flex-start', fontSize: 30 }}>{"Private Endpoint Test"}</Text>
                         <View style={{ backgroundColor: 'rgba(199,199,204,1)', padding: 5 }}>
 
-                            <Text>{this.state.endpointTest}</Text>
+                            <Text>{this.state.pEndpointTest}</Text>
+
+                        </View>
+                        <Text style={{ color: 'rgba(44,44,46,1)', paddingBottom: 10, paddingTop: 20, paddingLeft: 40, alignSelf: 'flex-start', fontSize: 30 }}>{"Priv Scoped Endpoint Test"}</Text>
+                        <View style={{ backgroundColor: 'rgba(199,199,204,1)', padding: 5 }}>
+
+                            <Text>{this.state.psEndpointTest}</Text>
 
                         </View>
                     </ScrollView>
