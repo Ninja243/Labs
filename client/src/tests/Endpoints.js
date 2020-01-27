@@ -21,7 +21,9 @@ export default class endpointTestClass {
     state = { 
         i: 0,
         profile: [],
-        ready: false
+        ready: false,
+        pseResult: "",
+        peResult: "",
     }
 
     scopedEndpointTest () { 
@@ -95,7 +97,7 @@ export default class endpointTestClass {
         const profile = this.state.profile;
         const readyState = this.state.ready;
 
-        
+        this.state.peResult = "Updating..."
         var x = null;
         if (profile.length != 0) {
             x = profile[0].length - 1;
@@ -119,9 +121,13 @@ export default class endpointTestClass {
                 if (quote != "{\"message\":\"Hello from a private endpoint! You need to be authenticated to see this.\"}") {
                     console.log(quote);
                 }
-                return quote;
+                this.state.peResult = quote;
+                console.log(this.state.peResult);
+                return this.state.peResult;
             })
             .done();
+        console.log(this.state.peResult);
+        return this.state.peResult;
     }
 
 }
