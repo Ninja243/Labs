@@ -18,7 +18,7 @@ import { bindActionCreators } from 'redux';
 import { GenIcon } from 'react-icons/lib/cjs';
 import { enableExpoCliLogging } from 'expo/build/logs/Logs';
 
-import { endpointTestClass } from '../tests/Endpoints.js'
+import endpointTestClass from '../tests/Endpoints.js'
 
 // Black magic
 // https://stackoverflow.com/questions/59589158/expo-authsession-immediately-resolves-as-dismissed
@@ -258,7 +258,7 @@ export class HomeScreen extends Component {
 
         const { navigate } = this.props.navigation;
         const i = this.props.i;
-        const profile = this.props.profile;
+        var profile = this.props.profile;
         const readyState = this.props.ready;
         //console.log(this.props.profile);
         // Do NOT put API calls in the render method
@@ -348,8 +348,9 @@ export class HomeScreen extends Component {
                             </View>
                             <Button style={{ alignSelf: 'center' }} title="Update" onPress={
                                 () => {
-                                    let obj = new endpointTestClass(i, profile, readyState);
-                                    this.setState({ psEndpointTest: obj.privEndpointTest() });
+                                    const obj = new endpointTestClass(i, profile, readyState);
+                                    var x = obj.privEndpointTest();
+                                    this.setState({ pEndpointTest:  x});
                                 }
                             } />
                             <Text style={{ color: 'rgba(44,44,46,1)', paddingBottom: 10, paddingTop: 20, paddingLeft: 40, alignSelf: 'flex-start', fontSize: 30 }}>{"Priv Scoped Endpoint Test"}</Text>
@@ -360,8 +361,9 @@ export class HomeScreen extends Component {
                             </View>
                             <Button style={{ alignSelf: 'center' }} title="Update" onPress={
                                 () => {
-                                    let obj = new endpointTestClass(i, profile, readyState);
-                                    this.setState({ psEndpointTest: obj.privScopedEndpointTest() });
+                                    const obj = new endpointTestClass(i, profile, readyState);
+                                    var x = obj.scopedEndpointTest();
+                                    this.setState({ psEndpointTest: x });
                                 }
                             } />
                         </ScrollView>
