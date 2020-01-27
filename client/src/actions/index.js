@@ -3,7 +3,7 @@ export function increment(){
 }
 
 export function logIn(profile) { 
-  console.log("Action -> ", profile);
+  //console.log("Action -> ", profile);
   return {type: "LOG_IN", payload: profile}
 }
 

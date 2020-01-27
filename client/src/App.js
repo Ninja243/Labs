@@ -19,6 +19,7 @@ import { FaCode } from "react-icons/fa/index";
 import PolicyViewer from './screens/PolicyView.js';
 import NavigationService from './components/navService';
 import profileReducer from './components/reducer';
+import endpointTestClass from './tests/Endpoints'
 
 // Screen navigation is declared here
 const MainNavigator = createStackNavigator({
@@ -28,8 +29,9 @@ const MainNavigator = createStackNavigator({
   HiringQuestion: { screen: PortfolioGate },
   AboutMe: { screen: Me },
   Policy: { screen: PolicyViewer },
-  Splash: {screen: SplashScreen}
-
+  Splash: {screen: SplashScreen},
+  // Tests
+  EndpointTest: {screen: endpointTestClass}
 },
   {
     initialRouteName: 'Home',

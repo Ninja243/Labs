@@ -2,19 +2,33 @@ import { connect } from 'react-redux';
 import { increment } from '../actions/index.js';
 import { logIn } from '../actions/index.js';
 import { setReady } from '../actions/index.js'
-import { Component } from 'react'
+import React, { Component } from 'react'
 
 
-export class endpointTestClass extends Component{
-    constructor(props) {
-        super(props);
+export default class endpointTestClass {
+    constructor(i_old, profile_old, ready_old) {
+        //super(props);
+        /*this.setState({
+            i: i_old,
+            profile: profile_old,
+            ready: ready_old
+        });*/
+        this.state.i = i_old;
+        this.state.profile = profile_old;
+        this.state.ready = ready_old;
+    }
+
+    state = { 
+        i: 0,
+        profile: [],
+        ready: false
     }
 
     scopedEndpointTest () { 
-        //const { navigate } = this.props.navigation;
-        const i = this.props.i;
-        const profile = this.props.profile;
-        const readyState = this.props.ready;
+        //const { navigate } = this.state.navigation;
+        const i = this.state.i;
+        const profile = this.state.profile;
+        const readyState = this.state.ready;
         
         var x;
         if (profile.length != 0) {
@@ -45,10 +59,10 @@ export class endpointTestClass extends Component{
     }
 
      getEndpointTest() { 
-        //const { navigate } = this.props.navigation;
-        const i = this.props.i;
-        const profile = this.props.profile;
-        const readyState = this.props.ready;
+        //const { navigate } = this.state.navigation;
+        const i = this.state.i;
+        const profile = this.state.profile;
+        const readyState = this.state.ready;
         // Throttle this to once every 5 seconds
         var q = this.state.pEndpointTest;
         var lc = Date.now();
@@ -76,10 +90,10 @@ export class endpointTestClass extends Component{
     }
 
     privEndpointTest ()  {
-        //const { navigate } = this.props.navigation;
-        const i = this.props.i;
-        const profile = this.props.profile;
-        const readyState = this.props.ready;
+        //const { navigate } = this.state.navigation;
+        const i = this.state.i;
+        const profile = this.state.profile;
+        const readyState = this.state.ready;
 
         
         var x = null;
@@ -112,7 +126,7 @@ export class endpointTestClass extends Component{
 
 }
 
-const mapStateToProps = (state) => {
+/*const mapStateToProps = (state) => {
     return {
         i: state.blank.i,
         profile: state.blank.profile,
@@ -127,4 +141,4 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(endpointTestClass);
+export default connect(mapStateToProps, mapDispatchToProps)(endpointTestClass);*/

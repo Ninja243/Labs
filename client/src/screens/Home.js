@@ -348,7 +348,7 @@ export class HomeScreen extends Component {
                             </View>
                             <Button style={{ alignSelf: 'center' }} title="Update" onPress={
                                 () => {
-                                    let obj = new endpointTestClass();
+                                    let obj = new endpointTestClass(i, profile, readyState);
                                     this.setState({ psEndpointTest: obj.privEndpointTest() });
                                 }
                             } />
@@ -360,7 +360,7 @@ export class HomeScreen extends Component {
                             </View>
                             <Button style={{ alignSelf: 'center' }} title="Update" onPress={
                                 () => {
-                                    let obj = new endpointTestClass();
+                                    let obj = new endpointTestClass(i, profile, readyState);
                                     this.setState({ psEndpointTest: obj.privScopedEndpointTest() });
                                 }
                             } />
