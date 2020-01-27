@@ -10,7 +10,6 @@ import jwtDecode from 'jwt-decode';
 import Footer from '../components/footer';
 import { s1, s2 } from '../components/translations';
 
-
 import { increment } from '../actions/index.js';
 import { logIn } from '../actions/index.js';
 import { setReady } from '../actions/index.js'
@@ -19,7 +18,7 @@ import { bindActionCreators } from 'redux';
 import { GenIcon } from 'react-icons/lib/cjs';
 import { enableExpoCliLogging } from 'expo/build/logs/Logs';
 
-import { privEndpointTest, privScopedEndpointTest, getEndpointText } from '../tests/Endpoints.js'
+import { endpointTestClass } from '../tests/Endpoints.js'
 
 // Black magic
 // https://stackoverflow.com/questions/59589158/expo-authsession-immediately-resolves-as-dismissed
@@ -54,7 +53,8 @@ export class HomeScreen extends Component {
         accepted: false,
         pEndpointTest: "Not updated",
         psEndpointTest: "Not updated",
-        lastSilentCheck: Date.now()
+        lastSilentCheck: Date.now(),
+        debugMode: true
     }
 
     toString = s => {
@@ -260,13 +260,13 @@ export class HomeScreen extends Component {
         const i = this.props.i;
         const profile = this.props.profile;
         const readyState = this.props.ready;
-        var epResult;
         //console.log(this.props.profile);
-        if (profile.length != 0) {
-            this.privEndpointTest();
-            //epResult  = this.getEndpointText();
-            this.privScopedEndpointTest();
-        }
+        // Do NOT put API calls in the render method
+        //if (profile.length != 0) {
+        //    this.privEndpointTest();
+        //epResult  = this.getEndpointText();
+        //    this.privScopedEndpointTest();
+        //}
 
         //console.log(readyState);
         //console.log(profile);
@@ -331,26 +331,44 @@ export class HomeScreen extends Component {
                 :
                 // Undefined if the app didn't have time to set it when starting
                 (readyState == true || readyState == undefined) ?
-                    <ScrollView>
-                        <Text style={{ color: 'rgba(44,44,46,1)', paddingBottom: 10, paddingTop: 20, paddingLeft: 40, alignSelf: 'flex-start', fontSize: 30 }}>{"User Profile"}</Text>
-                        <View style={{ backgroundColor: 'rgba(199,199,204,1)', padding: 5 }}>
+                    (this.state.debugMode == true) ?
+                        <ScrollView>
+                            <Text style={{ color: 'rgba(44,44,46,1)', paddingBottom: 10, paddingTop: 20, paddingLeft: 40, alignSelf: 'flex-start', fontSize: 30 }}>{"User Profile"}</Text>
+                            <View style={{ backgroundColor: 'rgba(199,199,204,1)', padding: 5 }}>
 
-                            <Text>{profile[0].toString()}</Text>
+                                <Text>{profile[0].toString()}</Text>
 
-                        </View>
-                        <Text style={{ color: 'rgba(44,44,46,1)', paddingBottom: 10, paddingTop: 20, paddingLeft: 40, alignSelf: 'flex-start', fontSize: 30 }}>{"Private Endpoint Test"}</Text>
-                        <View style={{ backgroundColor: 'rgba(199,199,204,1)', padding: 5 }}>
+                            </View>
 
-                            <Text>{this.state.pEndpointTest}</Text>
+                            <Text style={{ color: 'rgba(44,44,46,1)', paddingBottom: 10, paddingTop: 20, paddingLeft: 40, alignSelf: 'flex-start', fontSize: 30 }}>{"Private Endpoint Test"}</Text>
+                            <View style={{ backgroundColor: 'rgba(199,199,204,1)', padding: 5 }}>
 
-                        </View>
-                        <Text style={{ color: 'rgba(44,44,46,1)', paddingBottom: 10, paddingTop: 20, paddingLeft: 40, alignSelf: 'flex-start', fontSize: 30 }}>{"Priv Scoped Endpoint Test"}</Text>
-                        <View style={{ backgroundColor: 'rgba(199,199,204,1)', padding: 5 }}>
+                                <Text>{this.state.pEndpointTest}</Text>
 
-                            <Text>{this.state.psEndpointTest}</Text>
+                            </View>
+                            <Button style={{ alignSelf: 'center' }} title="Update" onPress={
+                                () => {
+                                    let obj = new endpointTestClass();
+                                    this.setState({ psEndpointTest: obj.privEndpointTest() });
+                                }
+                            } />
+                            <Text style={{ color: 'rgba(44,44,46,1)', paddingBottom: 10, paddingTop: 20, paddingLeft: 40, alignSelf: 'flex-start', fontSize: 30 }}>{"Priv Scoped Endpoint Test"}</Text>
+                            <View style={{ backgroundColor: 'rgba(199,199,204,1)', padding: 5 }}>
 
-                        </View>
-                    </ScrollView>
+                                <Text>{this.state.psEndpointTest}</Text>
+
+                            </View>
+                            <Button style={{ alignSelf: 'center' }} title="Update" onPress={
+                                () => {
+                                    let obj = new endpointTestClass();
+                                    this.setState({ psEndpointTest: obj.privScopedEndpointTest() });
+                                }
+                            } />
+                        </ScrollView>
+                        :
+                        <ScrollView>
+                            <Text style={{ color: 'rgba(44,44,46,1)', paddingBottom: 10, paddingTop: 20, paddingLeft: 40, alignSelf: 'flex-start', fontSize: 30 }}>{"Splash Screen"}</Text>
+                        </ScrollView>
                     :
                     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
 
