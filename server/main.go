@@ -6,7 +6,7 @@
 //	    - Togglable cache keeping some structs in RAM
 //   - Legal package
 package main
-
+//"github.com/gorilla/context" <-  too old
 import (
 	"context"
 	"encoding/json"
@@ -30,6 +30,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
 	"github.com/rs/cors"
+	
 )
 
 //
@@ -213,6 +214,11 @@ func helloPublic(w http.ResponseWriter, r *http.Request) {
 
 func helloPrivate(w http.ResponseWriter, r *http.Request) {
 	message := "Hello from a private endpoint! You need to be authenticated to see this."
+	responseJSON(message, w, http.StatusOK)
+}
+
+func echoToken(w http.ResponseWriter, r *http.Request) {
+	message := r.Context().Value("token")
 	responseJSON(message, w, http.StatusOK)
 }
 
@@ -416,7 +422,8 @@ func main() {
 				return token, errors.New("invalid issuer")
 			}
 
-			// Is this where I should get the user's info?
+			// Drop the token into the context for later
+			ctx := context.Context
 
 			cert, err := getPemCert(token)
 			if err != nil {
@@ -445,8 +452,6 @@ func main() {
 	// Privacy policy, static, available to all
 	r.Handle("/legal/privacy", http.HandlerFunc(getPrivacyPolicyJSON)).Methods(http.MethodGet)
 	r.Handle("/legal/terms", http.HandlerFunc(getTermsJSON)).Methods(http.MethodGet)
-	// TODO JSON route?
-	// TODO Terms of Service
 
 	// Account routes
 	//acc := r.PathPrefix("/account").Subrouter()
@@ -483,6 +488,10 @@ func main() {
 	// Ad routes
 	// All users should be able to GET ads
 	// TODO sell and insert ads
+
+	r.Handle("/api/private/echoToken", negroni.New(
+		negroni.HandlerFunc(jwtMiddleware.HandlerWithNext),
+		negroni.Wrap(http.HandlerFunc(echoToken))))
 
 	// Auth0 example routes
 

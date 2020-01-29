@@ -1,4 +1,9 @@
 # Stuff I don't understand
+ * ##  :neckbeard: Go
+   * Context
+     - ~Why~
+     - How do you add info to the context?
+     - When should contexts be created?
  * ##  :neckbeard: Auth0
    * Auth0/Oauth2 authentication flow
    * ~Tokens~
