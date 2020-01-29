@@ -8,7 +8,7 @@
 package main
 //"github.com/gorilla/context" <-  too old
 import (
-	"context"
+	"github.com/gorilla/context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -134,7 +134,7 @@ func addMweya() {
 	mweya := User{
 		"mweya-test", myLabs, time.Now(),
 	}
-	_, err := users.InsertOne(context.TODO(), mweya)
+	_, err := users.InsertOne(nil, mweya)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -145,7 +145,7 @@ func addTestAd() {
 	ad := Ad{
 		"helloworld", "Looking for a developer?", "Hire the developer of this app!", "https://mweya.duckdns.org/lowrez", "", 0, math.MaxInt64, "Mweya Ruider", "https://mweya.duckdns.org/cv",
 	}
-	_, err := ads.InsertOne(context.TODO(), ad)
+	_, err := ads.InsertOne(nil, ad)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -182,7 +182,7 @@ func insertInitialPrivacyPolicy() {
 		"Privacy Policy", time.Now(), string(dat),
 	}
 
-	_, err = legal.InsertOne(context.TODO(), policy)
+	_, err = legal.InsertOne(nil, policy)
 	if err != nil {
 		log.Writer().Write([]byte(err.Error()))
 	}
@@ -199,7 +199,7 @@ func insertInitialToS() {
 		"Terms of Service", time.Now(), string(dat),
 	}
 
-	_, err = legal.InsertOne(context.TODO(), policy)
+	_, err = legal.InsertOne(nil, policy)
 	if err != nil {
 		log.Writer().Write([]byte(err.Error()))
 	}
@@ -217,8 +217,10 @@ func helloPrivate(w http.ResponseWriter, r *http.Request) {
 	responseJSON(message, w, http.StatusOK)
 }
 
+// TODO
 func echoToken(w http.ResponseWriter, r *http.Request) {
-	message := r.Context().Value("token")
+	val := context.Get(r, "user")
+	message, _ := val.(string)
 	responseJSON(message, w, http.StatusOK)
 }
 
@@ -240,7 +242,7 @@ func helloPrivateScoped(w http.ResponseWriter, r *http.Request) {
 func getPrivacyPolicy(w http.ResponseWriter, r *http.Request) {
 	filter := bson.D{{"policytype", "Privacy Policy"}}
 	var policy LegalPolicy
-	err := legal.FindOne(context.TODO(), filter).Decode(&policy)
+	err := legal.FindOne(nil, filter).Decode(&policy) //nil
 	if err != nil {
 		responseJSON(err.Error(), w, http.StatusInternalServerError)
 		return
@@ -255,7 +257,7 @@ func getPrivacyPolicy(w http.ResponseWriter, r *http.Request) {
 func getTermsJSON(w http.ResponseWriter, r *http.Request) {
 	filter := bson.D{{"policytype", "Terms of Service"}}
 	var policy LegalPolicy
-	err := legal.FindOne(context.TODO(), filter).Decode(&policy)
+	err := legal.FindOne(nil, filter).Decode(&policy)
 	if err != nil {
 		responseJSON(err.Error(), w, http.StatusInternalServerError)
 		return
@@ -273,7 +275,7 @@ func getTermsJSON(w http.ResponseWriter, r *http.Request) {
 func getPrivacyPolicyJSON(w http.ResponseWriter, r *http.Request) {
 	filter := bson.D{{"policytype", "Privacy Policy"}}
 	var policy LegalPolicy
-	err := legal.FindOne(context.TODO(), filter).Decode(&policy)
+	err := legal.FindOne(nil, filter).Decode(&policy)
 	if err != nil {
 		responseJSON(err.Error(), w, http.StatusInternalServerError)
 		return
@@ -330,13 +332,13 @@ func addUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	filter := bson.D{{Key: "id", Value: ID}}
-	err = users.FindOne(context.TODO(), filter).Decode(&user)
+	err = users.FindOne(nil, filter).Decode(&user)
 	if err != nil {
 		if err.Error() == "mongo: no documents in result" {
 			// Good news, we can add them!
 			user.AccountCreated = time.Now()
 			err = nil
-			_, err = users.InsertOne(context.TODO(), user)
+			_, err = users.InsertOne(nil, user)
 			if err != nil {
 				w.WriteHeader(http.StatusInternalServerError)
 				w.Write([]byte("{'error': '" + err.Error() + "'}"))
@@ -373,8 +375,8 @@ func main() {
 	//clientOptions := options.Client().ApplyURI("mongodb://localhost:27017")
 	// Mongo in docker
 	clientOptions := options.Client().ApplyURI("mongodb://mongo:27017")
-	dbclient, err := mongo.Connect(context.TODO(), clientOptions)
-	ping := dbclient.Ping(context.TODO(), nil)
+	dbclient, err := mongo.Connect(nil, clientOptions)
+	ping := dbclient.Ping(nil, nil)
 
 	// Print Mongo errors to screen
 	if err != nil {
@@ -423,7 +425,8 @@ func main() {
 			}
 
 			// Drop the token into the context for later
-			ctx := context.Context
+			//ctx := context.Context
+			// That's not ok, we don't have the request to get the context from
 
 			cert, err := getPemCert(token)
 			if err != nil {
@@ -526,7 +529,7 @@ func main() {
 	// graceful shutdown support here
 	//  - Block conn
 	//  - End DB conn
-	//     - err = client.Disconnect(context.TODO())
+	//     - err = client.Disconnect(nil)
 	// TODO
 	// serve React app when / is called
 	// TODO
