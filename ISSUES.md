@@ -4,6 +4,9 @@
      - ~Why~
      - How do you add info to the context?
      - When should contexts be created?
+     - https://github.com/auth0/go-jwt-middleware 
+       - Using it -> negroni
+       - Where the heck is the "User" bit stored in context coming from
  * ##  :neckbeard: Auth0
    * Auth0/Oauth2 authentication flow
    * ~Tokens~
