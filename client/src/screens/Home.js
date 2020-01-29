@@ -260,7 +260,7 @@ export class HomeScreen extends Component {
         const i = this.props.i;
         var profile = this.props.profile;
         const readyState = this.props.ready;
-        //console.log(this.props.profile);
+        console.log(this.props.profile);
         // Do NOT put API calls in the render method
         //if (profile.length != 0) {
         //    this.privEndpointTest();
@@ -343,14 +343,16 @@ export class HomeScreen extends Component {
                             <Text style={{ color: 'rgba(44,44,46,1)', paddingBottom: 10, paddingTop: 20, paddingLeft: 40, alignSelf: 'flex-start', fontSize: 30 }}>{"Private Endpoint Test"}</Text>
                             <View style={{ backgroundColor: 'rgba(199,199,204,1)', padding: 5 }}>
 
-                                <Text>{this.state.pEndpointTest}</Text>
+                                <Text>{this.state.pEndpointTest.toString()}</Text>
 
                             </View>
                             <Button style={{ alignSelf: 'center' }} title="Update" onPress={
                                 () => {
-                                    const obj = new endpointTestClass(i, profile, readyState);
+                                    let obj = new endpointTestClass(i, profile, readyState);
                                     var x = obj.privEndpointTest();
-                                    this.setState({ pEndpointTest:  x});
+                                    //console.log(x);
+                                    this.setState({ pEndpointTest: x });
+                                    //console.log(this.state.pEndpointTest);
                                 }
                             } />
                             <Text style={{ color: 'rgba(44,44,46,1)', paddingBottom: 10, paddingTop: 20, paddingLeft: 40, alignSelf: 'flex-start', fontSize: 30 }}>{"Priv Scoped Endpoint Test"}</Text>
@@ -361,7 +363,7 @@ export class HomeScreen extends Component {
                             </View>
                             <Button style={{ alignSelf: 'center' }} title="Update" onPress={
                                 () => {
-                                    const obj = new endpointTestClass(i, profile, readyState);
+                                    let obj = new endpointTestClass(i, profile, readyState);
                                     var x = obj.scopedEndpointTest();
                                     this.setState({ psEndpointTest: x });
                                 }

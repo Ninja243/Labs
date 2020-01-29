@@ -11,6 +11,9 @@
        - Is the Email they use for Google unique enough to use as a key?
        - Can I resolve a user's information from the JWT they supply to the API?
          - What would the flow for checking that look like?
+         - Giving the {authdomain}/userinfo the access token looks like it will return a normalized user profile
+           - Just need the middleware to pass the token to a function
+           - Or add to the middleware and return a profile with the response writer and the location of the request?
        - ~Should I be sending the JWT over to the API for Auth?~
    * Scopes
      - How should I be using them?

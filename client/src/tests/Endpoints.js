@@ -91,7 +91,7 @@ export default class endpointTestClass {
         return q;
     }
 
-    privEndpointTest ()  {
+    async privEndpointTest ()  {
         //const { navigate } = this.state.navigation;
         const i = this.state.i;
         const profile = this.state.profile;
@@ -109,9 +109,11 @@ export default class endpointTestClass {
             'authorization': 'Bearer ' + profile[0][x],
 
         };
+        var self = this;
+        //self.state.peResult = "test"
         //console.log(hdrs)
         // aud: "https://mweya-labs.eu.auth0.com/api/v2/"
-        fetch("https://jl.x-mweya.duckdns.org/api/private", {
+        const q = await fetch("https://jl.x-mweya.duckdns.org/api/private", {
             method: "GET",
             headers: hdrs
 
@@ -119,18 +121,23 @@ export default class endpointTestClass {
             .then((response) => response.text())
             .then((quote) => {
                 if (quote != "{\"message\":\"Hello from a private endpoint! You need to be authenticated to see this.\"}") {
-                    console.log(quote);
+                    //console.log(quote);
                 }
-                this.state.peResult = quote;
-                console.log(this.state.peResult);
-                return this.state.peResult;
+                //console.log(quote)
+                self.state.peResult = quote;
+                //console.log(self.state.peResult)
+                //
+                return quote;
+                
             })
             .done();
-        console.log(this.state.peResult);
-        return this.state.peResult;
+        //console.log(self.state.peResult)
+        return q;
     }
 
 }
+
+
 
 /*const mapStateToProps = (state) => {
     return {

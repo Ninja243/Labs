@@ -347,7 +347,17 @@ func addUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func robots(w http.ResponseWriter, r *http.Request) {
-	// TODO
+	// Get outta here ya filthy bots
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Content-Type", "text/text")
+	w.WriteHeader(http.StatusOK)
+	// Not reading from the file, this is small enough to keep in memory and that's probably quicker
+	w.Write([]byte(`User-agent: *
+Disallow: /api/
+Disallow: /user/
+Disallow: /lab/
+Disallow: /tmp/
+Disallow: /superSecretSiteDontHack/`))
 }
 
 func main() {
@@ -382,12 +392,15 @@ func main() {
 	insertInitialToS()
 
 	// Template continues here
+
+	// Read the .env file for config options
 	err = nil
 	err = godotenv.Load()
 	if err != nil {
 		log.Print("Error loading .env file")
 	}
 
+	// Define the middleware to be used to verify the audience and iss claims
 	jwtMiddleware := jwtmiddleware.New(jwtmiddleware.Options{
 		ValidationKeyGetter: func(token *jwt.Token) (interface{}, error) {
 			// Verify 'aud' claim
@@ -403,6 +416,8 @@ func main() {
 				return token, errors.New("invalid issuer")
 			}
 
+			// Is this where I should get the user's info?
+
 			cert, err := getPemCert(token)
 			if err != nil {
 				panic(err.Error())
@@ -414,6 +429,7 @@ func main() {
 		SigningMethod: jwt.SigningMethodRS256,
 	})
 
+	// CORS
 	c := cors.New(cors.Options{
 		AllowedOrigins:   []string{"http://localhost:3000"},
 		AllowCredentials: true,
@@ -467,8 +483,6 @@ func main() {
 	// Ad routes
 	// All users should be able to GET ads
 	// TODO sell and insert ads
-
-
 
 	// Auth0 example routes
 
