@@ -14,21 +14,21 @@ nonce = "nonce"
 redirect_uri = "https://auth.expo.io/@mweya/labsclient"
 connection = "google-oauth2"
 
-#print("1. Get Token (POST)\n")
+print("1. Get Token (POST)\n")
 
-# payload = "{\"client_id\":\"" + client_id + "\", \"client_secret\":\"" + \
-#    client_secret + "\", \"audience\":\""+audience + \
-#    "\", \"grant_type\":\""+grant_type+"\"}"
-#headers = {'content-type': "application/json"}
-# print("Request:\n\tHeader\n"+str(headers)+"\n\tPayload\n"+payload)
-#conn.request("POST", "/oauth/token", payload, headers)
+payload = "{\"client_id\":\"" + client_id + "\", \"client_secret\":\"" + \
+    client_secret + "\", \"audience\":\""+audience + \
+    "\", \"grant_type\":\""+grant_type+"\"}"
+headers = {'content-type': "application/json"}
+print("Request:\n\tHeader\n"+str(headers)+"\n\tPayload\n"+payload)
+conn.request("POST", "/oauth/token", payload, headers)
 
-print("1. Get Token (GET)")
+#print("1. Get Token (GET)")
 
-url = "/authorize?client_id=" + client_id  + "&audience=" + audience +  "&response_type="+response_type + "&nonce="+nonce + "&redirect_uri="+redirect_uri+"&connection="+connection
-conn.request("GET", url)
+#url = "/authorize?client_id=" + client_id  + "&audience=" + audience +  "&response_type="+response_type + "&nonce="+nonce + "&redirect_uri="+redirect_uri+"&connection="+connection
+#conn.request("GET", url)
 
-print("Getting ->"+"https://mweya-labs.eu.auth0.com"+url)
+#print("Getting ->"+"https://mweya-labs.eu.auth0.com"+url)
 
 res = conn.getresponse()
 data = res.read()

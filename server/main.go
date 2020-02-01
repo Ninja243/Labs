@@ -107,16 +107,26 @@ type LegalPolicy struct {
 	Policy       string    `json:"content"`
 }
 
+// TODO
+// Cache is a struct that will be used to store recently accessed user data to reduce
+// the number of network requests sent
+type Cache struct {
+	
+}
+
 // Auth0 structs I don't quite understand yet go here
 
+// Response is a struct that defines a message gotten from a JSON document
 type Response struct {
 	Message string `json:"message"`
 }
 
+// Jwks is a struct containing an array of JSONWebKeys (defined below)
 type Jwks struct {
 	Keys []JSONWebKeys `json:"keys"`
 }
 
+// JSONWebKeys is a struct that contains the web keys in the token
 type JSONWebKeys struct {
 	Kty string   `json:"kty"`
 	Kid string   `json:"kid"`
@@ -134,7 +144,7 @@ func addMweya() {
 	mweya := User{
 		"mweya-test", myLabs, time.Now(),
 	}
-	_, err := users.InsertOne(nil, mweya)
+	_, err := users.InsertOne(context.Background(), mweya)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -145,7 +155,7 @@ func addTestAd() {
 	ad := Ad{
 		"helloworld", "Looking for a developer?", "Hire the developer of this app!", "https://mweya.duckdns.org/lowrez", "", 0, math.MaxInt64, "Mweya Ruider", "https://mweya.duckdns.org/cv",
 	}
-	_, err := ads.InsertOne(nil, ad)
+	_, err := ads.InsertOne(context.Background(), ad)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -182,7 +192,7 @@ func insertInitialPrivacyPolicy() {
 		"Privacy Policy", time.Now(), string(dat),
 	}
 
-	_, err = legal.InsertOne(nil, policy)
+	_, err = legal.InsertOne(context.Background(), policy)
 	if err != nil {
 		log.Writer().Write([]byte(err.Error()))
 	}
@@ -199,7 +209,7 @@ func insertInitialToS() {
 		"Terms of Service", time.Now(), string(dat),
 	}
 
-	_, err = legal.InsertOne(nil, policy)
+	_, err = legal.InsertOne(context.Background(), policy)
 	if err != nil {
 		log.Writer().Write([]byte(err.Error()))
 	}
@@ -212,6 +222,7 @@ func helloPublic(w http.ResponseWriter, r *http.Request) {
 	responseJSON(message, w, http.StatusOK)
 }
 
+// Test function for a private endpoint that requires an authenticated client to be used
 func helloPrivate(w http.ResponseWriter, r *http.Request) {
 	message := "Hello from a private endpoint! You need to be authenticated to see this."
 	responseJSON(message, w, http.StatusOK)
@@ -224,6 +235,7 @@ func echoToken(w http.ResponseWriter, r *http.Request) {
 	responseJSON(message, w, http.StatusOK)
 }
 
+// Test function for a private endpoint that requires the read:messages scope to be used
 func helloPrivateScoped(w http.ResponseWriter, r *http.Request) {
 	authHeaderParts := strings.Split(r.Header.Get("Authorization"), " ")
 	token := authHeaderParts[1]
@@ -239,6 +251,9 @@ func helloPrivateScoped(w http.ResponseWriter, r *http.Request) {
 	responseJSON(message, w, http.StatusOK)
 }
 
+
+// DEPRECATED
+// Returns a text representation of the privacy policy
 func getPrivacyPolicy(w http.ResponseWriter, r *http.Request) {
 	filter := bson.D{{"policytype", "Privacy Policy"}}
 	var policy LegalPolicy
@@ -254,6 +269,7 @@ func getPrivacyPolicy(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
+// Returns a JSON representation of the Terms of Service
 func getTermsJSON(w http.ResponseWriter, r *http.Request) {
 	filter := bson.D{{"policytype", "Terms of Service"}}
 	var policy LegalPolicy
@@ -272,6 +288,7 @@ func getTermsJSON(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
+// Returns a JSON representation of the privacy policy
 func getPrivacyPolicyJSON(w http.ResponseWriter, r *http.Request) {
 	filter := bson.D{{"policytype", "Privacy Policy"}}
 	var policy LegalPolicy
@@ -290,8 +307,8 @@ func getPrivacyPolicyJSON(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
+// Returns the homepage advertising the application
 func homePage(w http.ResponseWriter, r *http.Request) {
-	// TODO Make download app page
 	dat, err := ioutil.ReadFile("static/index.html")
 	if err != nil {
 		responseJSON(err.Error(), w, http.StatusInternalServerError)
@@ -354,6 +371,7 @@ func addUser(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
+// Returns the robots.txt file that should stop all compliant bots and crawlers from indexing certain endpoints.
 func robots(w http.ResponseWriter, r *http.Request) {
 	// Get outta here ya filthy bots
 	w.Header().Set("Access-Control-Allow-Origin", "*")
@@ -367,6 +385,25 @@ Disallow: /lab/
 Disallow: /tmp/
 Disallow: /superSecretSiteDontHack/`))
 }
+
+
+// AddContext attempts to add the concept of sessions to the webserver so that tokens can be shared between
+// functions and so that if a session is ended prematurely, the routine handling the session can close down
+// too
+func AddContext(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		//log.Println(r.Method, "-", r.RequestURI)
+		cookie, _ := r.Cookie("username")
+		if cookie != nil {
+			//Add data to context
+			ctx := context.WithValue(r.Context(), "user", cookie.Value)
+			next.ServeHTTP(w, r.WithContext(ctx))
+		} else {
+			next.ServeHTTP(w, r)
+		}
+	})
+}
+
 
 func main() {
 
@@ -518,7 +555,10 @@ func main() {
 	// SEO endpoints (robot.txt and more)
 	r.Handle("/robots.txt", http.HandlerFunc(robots))
 
-	handler := c.Handler(r)
+	// https://gocodecloud.com/blog/2016/11/15/simple-golang-http-request-context-example/
+	serverWithContext := AddContext(r)
+	//handler := c.Handler(r)
+	handler := c.Handler(serverWithContext)
 	http.Handle("/", r)
 	fmt.Println("Listening on http://localhost:3010")
 	http.ListenAndServe("0.0.0.0:3010", handler)
@@ -537,11 +577,14 @@ func main() {
 	// 	- On first run add priv policy to DB
 }
 
+// CustomClaims defines the claims an auth token has to actions it would like to be able to perform
+// on the endpoint
 type CustomClaims struct {
 	Scope string `json:"scope"`
 	jwt.StandardClaims
 }
 
+// Compares the requested scope with the scopes Auth0 claims this client is allowed to access
 func checkScope(scope string, tokenString string) bool {
 	token, _ := jwt.ParseWithClaims(tokenString, &CustomClaims{}, func(token *jwt.Token) (interface{}, error) {
 		cert, err := getPemCert(token)
@@ -567,6 +610,7 @@ func checkScope(scope string, tokenString string) bool {
 	return hasScope
 }
 
+// Gets the PEM certificate from the auth token for comparison's sake
 func getPemCert(token *jwt.Token) (string, error) {
 	cert := ""
 	resp, err := http.Get("https://" + os.Getenv("AUTH0_DOMAIN") + "/.well-known/jwks.json")
@@ -597,6 +641,7 @@ func getPemCert(token *jwt.Token) (string, error) {
 	return cert, nil
 }
 
+// Helper function for forming and sending JSON messages to the client
 func responseJSON(message string, w http.ResponseWriter, statusCode int) {
 	response := Response{message}
 
