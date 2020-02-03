@@ -4,7 +4,7 @@
      - ~Why~
      - ~How do you add info to the context?~
      - ~When should contexts be created?~
-     - ~https://github.com/auth0/go-jwt-middleware 
+     - ~https://github.com/auth0/go-jwt-middleware~ 
        - ~Using it -> negroni~
        - ~Where the heck is the "User" bit stored in context coming from~
        - ~https://stackoverflow.com/questions/39779243/go-restful-jwt-authentication~
