@@ -36,13 +36,27 @@ print("\n\tResponse:\n" + data.decode("utf-8") + "\n\n")
 #decoded = jwt.decode(data.decode("utf-8"), client_secret, algorithms=['RS256'])
 # print("\n\tDecoded:\n"+decoded)
 
+#print("2. Test Token\n")
+
+#conn = http.client.HTTPSConnection("mweya-labs.eu.auth0.com")
+#data = ast.literal_eval(data.decode("utf-8"))
+#headers = {"authorization": data["token_type"]+" "+data["access_token"]}
+
+#conn.request("GET", "/userInfo", headers=headers)
+
+#res = conn.getresponse()
+#data = res.read()
+
+#print("Result: "+data.decode("utf-8"))
+
+
 print("2. Test Token\n")
 
-conn = http.client.HTTPConnection("localhost:3010")
+conn = http.client.HTTPSConnection("mweya-labs.eu.auth0.com")
 data = ast.literal_eval(data.decode("utf-8"))
 headers = {"authorization": data["token_type"]+" "+data["access_token"]}
 
-conn.request("GET", "/api/private/echoToken", headers=headers)
+conn.request("GET", "/userinfo?access_token="+data["access_token"], headers=headers)
 
 res = conn.getresponse()
 data = res.read()

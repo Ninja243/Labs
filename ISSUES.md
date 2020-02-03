@@ -1,15 +1,15 @@
 # Stuff I don't understand
  * ##  :neckbeard: Go
-   * Context
+   * ~Context~
      - ~Why~
-     - How do you add info to the context?
-     - When should contexts be created?
-     - https://github.com/auth0/go-jwt-middleware 
-       - Using it -> negroni
-       - Where the heck is the "User" bit stored in context coming from
-       - https://stackoverflow.com/questions/39779243/go-restful-jwt-authentication
-         - Is the jwt middleware adding it to the user key automatically?!
-         - How do I read it?
+     - ~How do you add info to the context?~
+     - ~When should contexts be created?~
+     - ~https://github.com/auth0/go-jwt-middleware 
+       - ~Using it -> negroni~
+       - ~Where the heck is the "User" bit stored in context coming from~
+       - ~https://stackoverflow.com/questions/39779243/go-restful-jwt-authentication~
+         - ~Is the jwt middleware adding it to the user key automatically?!~
+         - ~How do I read it?~
  * ##  :neckbeard: Auth0
    * Auth0/Oauth2 authentication flow
    * ~Tokens~
@@ -23,8 +23,14 @@
        - Can I resolve a user's information from the JWT they supply to the API?
          - What would the flow for checking that look like?
          - Giving the {authdomain}/userinfo the access token looks like it will return a normalized user profile
-           - Just need the middleware to pass the token to a function
-           - Or add to the middleware and return a profile with the response writer and the location of the request?
+           - https://mweya-labs.eu.auth0.com/?access_token={token}
+             - 2 requests per second with 10 requests in each burst is really not enough
+               - https://auth0.com/docs/policies/rate-limits
+               - Server side cache?
+               - Time to switch away from Implicit Grant?
+                 - Client is not a secure place for a private key
+           - ~Just need the middleware to pass the token to a function~
+           - ~Or add to the middleware and return a profile with the response writer and the location of the request?~
        - ~Should I be sending the JWT over to the API for Auth?~
    * Scopes
      - How should I be using them?

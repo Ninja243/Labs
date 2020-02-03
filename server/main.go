@@ -242,8 +242,15 @@ func echoToken(w http.ResponseWriter, r *http.Request) {
 	//t (jwt.Token) = r.Context().Value("user")
 	val, _ := r.Context().Value("user").(*jwt.Token)
 	message := val.Raw
+	// OK so I now have the auth token
+	//  - How do I swap it for the user token?
+	//  - https://mweya-labs.eu.auth0.com/userinfo?access_token={token}
 	responseJSON(message, w, http.StatusOK)
 
+}
+
+func (User) resolveUser(token jwt.Token) {
+	person := token.
 }
 
 // Test function for a private endpoint that requires the read:messages scope to be used
