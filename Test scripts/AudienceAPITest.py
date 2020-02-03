@@ -38,11 +38,11 @@ print("\n\tResponse:\n" + data.decode("utf-8") + "\n\n")
 
 print("2. Test Token\n")
 
-conn = http.client.HTTPSConnection("jl.x-mweya.duckdns.org")
+conn = http.client.HTTPConnection("localhost:3010")
 data = ast.literal_eval(data.decode("utf-8"))
 headers = {"authorization": data["token_type"]+" "+data["access_token"]}
 
-conn.request("GET", "/api/private", headers=headers)
+conn.request("GET", "/api/private/echoToken", headers=headers)
 
 res = conn.getresponse()
 data = res.read()

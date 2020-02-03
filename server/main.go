@@ -5,10 +5,13 @@
 //   - DataStore package
 //	    - Togglable cache keeping some structs in RAM
 //   - Legal package
+//   - Logging package
+//      - Write actual logfiles
 package main
+
 //"github.com/gorilla/context" <-  too old
 import (
-	"github.com/gorilla/context"
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -30,10 +33,9 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
 	"github.com/rs/cors"
-	
 )
 
-//
+//"path/filepath"
 
 // Global variable to store the global DB client to be used to perform transactions
 var dbclient mongo.Client
@@ -111,7 +113,9 @@ type LegalPolicy struct {
 // Cache is a struct that will be used to store recently accessed user data to reduce
 // the number of network requests sent
 type Cache struct {
-	
+	Users []User `json:"users"`
+	Ads   []Ad   `json:"ads"`
+	Labs  []Lab  `json:"labs"`
 }
 
 // Auth0 structs I don't quite understand yet go here
@@ -137,6 +141,10 @@ type JSONWebKeys struct {
 }
 
 // Functions for debugging go here.
+
+// TODO logging
+
+//
 
 // Adds my information to the system for testing
 func addMweya() {
@@ -230,9 +238,15 @@ func helloPrivate(w http.ResponseWriter, r *http.Request) {
 
 // TODO
 func echoToken(w http.ResponseWriter, r *http.Request) {
-	val := context.Get(r, "user")
-	message, _ := val.(string)
+	//val := context.Get(r, "user")
+	//t (jwt.Token) = r.Context().Value("user")
+	val, _ := r.Context().Value("user").(jwt.Token)
+	message := val.Raw
+	log.Println(val)
+	log.Println(message)
+	log.Printf("%T\n",r.Context().Value("user"))
 	responseJSON(message, w, http.StatusOK)
+
 }
 
 // Test function for a private endpoint that requires the read:messages scope to be used
@@ -250,7 +264,6 @@ func helloPrivateScoped(w http.ResponseWriter, r *http.Request) {
 	message := "Hello from a private endpoint! You need to be authenticated to see this."
 	responseJSON(message, w, http.StatusOK)
 }
-
 
 // DEPRECATED
 // Returns a text representation of the privacy policy
@@ -386,24 +399,24 @@ Disallow: /tmp/
 Disallow: /superSecretSiteDontHack/`))
 }
 
-
 // AddContext attempts to add the concept of sessions to the webserver so that tokens can be shared between
 // functions and so that if a session is ended prematurely, the routine handling the session can close down
 // too
 func AddContext(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		//log.Println(r.Method, "-", r.RequestURI)
-		cookie, _ := r.Cookie("username")
-		if cookie != nil {
-			//Add data to context
-			ctx := context.WithValue(r.Context(), "user", cookie.Value)
-			next.ServeHTTP(w, r.WithContext(ctx))
-		} else {
-			next.ServeHTTP(w, r)
-		}
+		// TODO Keys are case insensitive in HTTP Headers
+		// - https://tools.ietf.org/html/rfc8187
+		token := r.Header["Authorization"][0]
+		// Remove the Bearer bit
+		token = token[7:]
+		//log.Println(token)
+		//Add data to context
+		ctx := context.WithValue(r.Context(), "user", string(token))
+		//log.Println(ctx.Value("user"))
+		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
-
 
 func main() {
 
