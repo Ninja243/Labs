@@ -240,11 +240,8 @@ func helloPrivate(w http.ResponseWriter, r *http.Request) {
 func echoToken(w http.ResponseWriter, r *http.Request) {
 	//val := context.Get(r, "user")
 	//t (jwt.Token) = r.Context().Value("user")
-	val, _ := r.Context().Value("user").(jwt.Token)
+	val, _ := r.Context().Value("user").(*jwt.Token)
 	message := val.Raw
-	log.Println(val)
-	log.Println(message)
-	log.Printf("%T\n",r.Context().Value("user"))
 	responseJSON(message, w, http.StatusOK)
 
 }
