@@ -247,14 +247,24 @@ func echoToken(w http.ResponseWriter, r *http.Request) {
 	// OK so I now have the auth token
 	//  - How do I swap it for the user token?
 	//  - https://mweya-labs.eu.auth0.com/userinfo?access_token={token}
-	responseJSON(message, w, http.StatusOK)
+	user := resolveUser(val)
+	// Convert user to JSON
+	b, err := json.Marshal(policy)
+	if err != nil {
+		responseJSON(err.Error(), w, http.StatusInternalServerError)
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(b)
 
+	// No real need
+	//responseJSON(message, w, http.StatusOK)
 }
 
 // TODO
 func (User) resolveUser(token jwt.Token) {
 	// Send token to Auth0
-	response, err := http.GET("https://mweya-labs.eu.auth0.com")
+	response, err := http.GET("https://mweya-labs.eu.auth0.com/userinfo")
 	if err != nil {
 		log.Println(err)
 	} else {

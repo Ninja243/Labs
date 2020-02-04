@@ -45,6 +45,11 @@
        - ~https://community.auth0.com/t/implementing-auth0-in-react-native-expo-app/17406/14 Seems to suggest that this might not work with Expo 33~
          - ~I mean yes I'm on Expo 36 but still~
    * ~What is the audience parameter and how should it be sent to the API~
+     - Multiple audiences?
+       - https://community.auth0.com/t/multiple-audiences-in-an-access-token/21945
+         - Can't request it but doesn't go against the spec
+         - https://community.auth0.com/t/the-userinfo-endpoint-returns-401-unauthorized/6103/7
+           - Need multiple audiences for /userinfo to work?
      - ~**MIGHT BE USING THE WRONG TOKEN, WE WANT ACCESS NOT ID**~
      - ~https://auth0.com/docs/api-auth/tutorials/client-credentials Seems to suggest that I should be handling the auth browser's functions myself so that I can have access to the data that is about to be posted instead of leaving all of that up to expo, however that also sounds like a pretty bad idea.~
      - ~Should the API automatically resolve acceptable audiences?~
