@@ -54,9 +54,9 @@ print("2. Test Token\n")
 
 conn = http.client.HTTPSConnection("mweya-labs.eu.auth0.com")
 data = ast.literal_eval(data.decode("utf-8"))
-headers = {"authorization": data["token_type"]+" "+data["access_token"]}
+headers = {"authorization": data["token_type"]+" "+data["access_token"], "content-type":"application/json"}
 
-conn.request("GET", "/userinfo?access_token="+data["access_token"], headers=headers)
+conn.request("GET", "/userinfo", headers=headers)
 
 res = conn.getresponse()
 data = res.read()

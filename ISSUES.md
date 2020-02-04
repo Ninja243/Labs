@@ -1,5 +1,6 @@
 # Stuff I don't understand
  * ##  :neckbeard: Go
+   * API doesn't check to see if azp is the same as the Client ID
    * ~Context~
      - ~Why~
      - ~How do you add info to the context?~
@@ -60,6 +61,8 @@
        - I've always just thought that they're interchangable
 
  * ##  :imp: React/JSX
+   * Client does not check nonce
+   * Client does not check aud in id_token to make sure it's legit
    * Loading screens via async/await
      - Do I just not understand async?
 

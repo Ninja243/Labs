@@ -33,6 +33,8 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
 	"github.com/rs/cors"
+
+	"http"
 )
 
 //"path/filepath"
@@ -249,8 +251,23 @@ func echoToken(w http.ResponseWriter, r *http.Request) {
 
 }
 
+// TODO
 func (User) resolveUser(token jwt.Token) {
-	person := token.
+	// Send token to Auth0
+	response, err := http.GET("https://mweya-labs.eu.auth0.com")
+	if err != nil {
+		log.Println(err)
+	} else {
+		// Read response from Auth0
+		defer response.Body.Close()
+		contents, err := ioutil.ReadAll(response.Body)
+		if err != nil {
+			log.Println(err)
+		}
+		// Make new instance of User struct
+		// Populate struct with info from Auth0
+		// Return struct
+	}
 }
 
 // Test function for a private endpoint that requires the read:messages scope to be used
