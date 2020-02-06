@@ -34,7 +34,7 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/rs/cors"
 
-	"http"
+
 )
 
 //"path/filepath"
@@ -243,13 +243,13 @@ func echoToken(w http.ResponseWriter, r *http.Request) {
 	//val := context.Get(r, "user")
 	//t (jwt.Token) = r.Context().Value("user")
 	val, _ := r.Context().Value("user").(*jwt.Token)
-	message := val.Raw
+	//message := val.Raw
 	// OK so I now have the auth token
 	//  - How do I swap it for the user token?
 	//  - https://mweya-labs.eu.auth0.com/userinfo?access_token={token}
-	user := resolveUser(val)
+	user, err := resolveUser(*val)
 	// Convert user to JSON
-	b, err := json.Marshal(policy)
+	b, err := json.Marshal(user)
 	if err != nil {
 		responseJSON(err.Error(), w, http.StatusInternalServerError)
 	}
@@ -257,27 +257,40 @@ func echoToken(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	w.Write(b)
 
-	// No real need
+	// No real need// Return struct and error state
 	//responseJSON(message, w, http.StatusOK)
 }
 
 // TODO
-func (User) resolveUser(token jwt.Token) {
+func resolveUser(token jwt.Token) (User, error) {
 	// Send token to Auth0
-	response, err := http.GET("https://mweya-labs.eu.auth0.com/userinfo")
+	client := &http.Client {	
+	}
+	req, _ := http.NewRequest("GET", "https://mweya-labs.eu.auth0.com/userinfo", nil)
+	req.Header.Add("Authorization", "Bearer "+token.Raw)
+	req.Header.Add("Host", "mweya-labs.eu.auth0.com")
+	resp, err := client.Do(req)
+	// Make new instance of User struct
+	var user User
+	//response, err := client.GET("https://mweya-labs.eu.auth0.com/userinfo")
 	if err != nil {
 		log.Println(err)
-	} else {
+		// Return nil user and error
+		return user, err
+	} 
 		// Read response from Auth0
-		defer response.Body.Close()
-		contents, err := ioutil.ReadAll(response.Body)
+		defer resp.Body.Close()
+		// Convert byte array to JSON
+		//scontents := string(contents)
+		
+		// Populate struct with info from Auth0
+		err = json.NewDecoder(resp.Body).Decode(&user)
 		if err != nil {
 			log.Println(err)
+			return user, err
 		}
-		// Make new instance of User struct
-		// Populate struct with info from Auth0
-		// Return struct
-	}
+		// Return struct and error state
+		return user, nil
 }
 
 // Test function for a private endpoint that requires the read:messages scope to be used
@@ -436,16 +449,21 @@ Disallow: /superSecretSiteDontHack/`))
 func AddContext(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		//log.Println(r.Method, "-", r.RequestURI)
-		// TODO Keys are case insensitive in HTTP Headers
-		// - https://tools.ietf.org/html/rfc8187
-		token := r.Header["Authorization"][0]
-		// Remove the Bearer bit
-		token = token[7:]
-		//log.Println(token)
-		//Add data to context
-		ctx := context.WithValue(r.Context(), "user", string(token))
-		//log.Println(ctx.Value("user"))
-		next.ServeHTTP(w, r.WithContext(ctx))
+		// New users have no authorization header
+		if (len(r.Header["Authorization"]) > 0) {
+			// TODO Keys are case insensitive in HTTP Headers
+			// - https://tools.ietf.org/html/rfc8187
+			token := r.Header["Authorization"][0]
+			// Remove the Bearer bit
+			token = token[7:]
+			//log.Println(token)
+			//Add data to context
+			ctx := context.WithValue(r.Context(), "user", string(token))
+			//log.Println(ctx.Value("user"))
+			next.ServeHTTP(w, r.WithContext(ctx))
+		} else {
+			next.ServeHTTP(w, r)
+		}
 	})
 }
 

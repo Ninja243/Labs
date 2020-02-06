@@ -53,6 +53,7 @@ export class HomeScreen extends Component {
         accepted: false,
         pEndpointTest: "Not updated",
         psEndpointTest: "Not updated",
+        eEndpointTest: "Not updated",
         lastSilentCheck: Date.now(),
         debugMode: true
     }
@@ -366,6 +367,19 @@ export class HomeScreen extends Component {
                                     let obj = new endpointTestClass(i, profile, readyState);
                                     var x = obj.scopedEndpointTest();
                                     this.setState({ psEndpointTest: x });
+                                }
+                            } />
+                            <Text style={{ color: 'rgba(44,44,46,1)', paddingBottom: 10, paddingTop: 20, paddingLeft: 40, alignSelf: 'flex-start', fontSize: 30 }}>{"Echo Endpoint Test"}</Text>
+                            <View style={{ backgroundColor: 'rgba(199,199,204,1)', padding: 5 }}>
+
+                                <Text>{this.state.eEndpointTest}</Text>
+
+                            </View>
+                            <Button style={{ alignSelf: 'center' }} title="Update" onPress={
+                                () => {
+                                    let obj = new endpointTestClass(i, profile, readyState);
+                                    var x = obj.echoEndpointTest();
+                                    this.setState({ eEndpointTest: x });
                                 }
                             } />
                         </ScrollView>

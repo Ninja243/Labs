@@ -24,6 +24,7 @@ export default class endpointTestClass {
         ready: false,
         pseResult: "",
         peResult: "",
+        eeResult: "",
     }
 
     scopedEndpointTest () { 
@@ -135,6 +136,50 @@ export default class endpointTestClass {
         return q;
     }
 
+
+    async echoEndpointTest() {
+        //const { navigate } = this.state.navigation;
+        const i = this.state.i;
+        const profile = this.state.profile;
+        const readyState = this.state.ready;
+
+        this.state.peResult = "Updating..."
+        var x = null;
+        if (profile.length != 0) {
+            x = profile[0].length - 1;
+
+        } else {
+            console.log("Profile", profile)
+        }
+        const hdrs = {
+            'authorization': 'Bearer ' + profile[0][x],
+
+        };
+        var self = this;
+        //self.state.peResult = "test"
+        //console.log(hdrs)
+        // aud: "https://mweya-labs.eu.auth0.com/api/v2/"
+        const q = await fetch("https://jl.x-mweya.duckdns.org/api/priv/echoToken", {
+            method: "GET",
+            headers: hdrs
+
+        })
+            .then((response) => response.text())
+            .then((quote) => {
+                if (quote != "{\"message\":\"Hello from a private endpoint! You need to be authenticated to see this.\"}") {
+                    //console.log(quote);
+                }
+                console.log(quote)
+                self.state.eeResult = quote;
+                //console.log(self.state.peResult)
+                //
+                return quote;
+
+            })
+            .done();
+        //console.log(self.state.peResult)
+        return q;
+    }
 }
 
 
