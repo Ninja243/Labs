@@ -91,6 +91,7 @@ export class HomeScreen extends Component {
         const readyState = this.props.ready;
         //console.log("Ready ->", readyState);
         //console.log(setReady);
+        // TODO testing
         setReady(true);
 
         //console.log("Ready ->",readyState);

@@ -33,8 +33,6 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
 	"github.com/rs/cors"
-
-
 )
 
 //"path/filepath"
@@ -101,6 +99,22 @@ type User struct {
 	ID             string    `json:"id"`
 	LabsCreated    []string  `json:"labs"`
 	AccountCreated time.Time `json:"datecreated"`
+}
+
+// Auth0Details describes the information we expect to recieve from Auth0 when resolving
+// a user's details via a supplied auth token. Information not needed for the user struct
+// can be dropped later.
+type Auth0Details struct {
+	sub            string    `json:"sub"`
+	givenName     string    `json:"given_name"`
+	nickname       string    `json:"nickname"`
+	familyName    string    `json:"family_name"`
+	name           string    `json:"name"`
+	picture        string    `json:"picture"`
+	locale         string    `json:"locale"`
+	email          string    `json:"email"`
+	emailVerified bool      `json:"email_verified"`
+	updatedAt     time.Time `json:"updated_at"`
 }
 
 // LegalPolicy describes a generic type of legal policy governing the terms of use of
@@ -248,49 +262,120 @@ func echoToken(w http.ResponseWriter, r *http.Request) {
 	//  - How do I swap it for the user token?
 	//  - https://mweya-labs.eu.auth0.com/userinfo?access_token={token}
 	user, err := resolveUser(*val)
+	if err != nil {
+		responseJSON(err.Error(), w, http.StatusInternalServerError)
+		return
+	}
 	// Convert user to JSON
 	b, err := json.Marshal(user)
 	if err != nil {
 		responseJSON(err.Error(), w, http.StatusInternalServerError)
+		return
 	}
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	w.Write(b)
-
+	return
 	// No real need// Return struct and error state
 	//responseJSON(message, w, http.StatusOK)
 }
 
 // TODO
+// resolveUser takes a JWT access token and uses it to gretrieve a normalized profile from auth0
+// to populate a new User struct used for identification.
 func resolveUser(token jwt.Token) (User, error) {
+	// TODO Remove this
+	var testArr []string
+
 	// Send token to Auth0
-	client := &http.Client {	
-	}
-	req, _ := http.NewRequest("GET", "https://mweya-labs.eu.auth0.com/userinfo", nil)
+	client := &http.Client{}
+	req, err := http.NewRequest("GET", "https://mweya-labs.eu.auth0.com/userinfo", nil)
 	req.Header.Add("Authorization", "Bearer "+token.Raw)
 	req.Header.Add("Host", "mweya-labs.eu.auth0.com")
+	for name, value := range req.Header {
+    		testArr = append(testArr, name+": "+value[0])
+	}
+	if err != nil {
+		testArr = append(testArr, err.Error())
+	}
+
+
+	testArr = append(testArr, "////////////////////////////////////////////////////////////")
+	
+	
+	
 	resp, err := client.Do(req)
+	if err != nil {
+		testArr = append(testArr, err.Error())
+	} else {
+		for name, value := range resp.Header {
+    		testArr = append(testArr, name+": "+value[0])
+		}
+	}
+
+
+	testArr = append(testArr, "////////////////////////////////////////////////////////////")
+
+
+
 	// Make new instance of User struct
 	var user User
+	
+	testArr = append(testArr, token.Raw)
+	
+	
+	
+	testArr = append(testArr, "////////////////////////////////////////////////////////////")
+
+
+	
+	// Make new instance of the Auth0Details struct
+	var auth0response Auth0Details
 	//response, err := client.GET("https://mweya-labs.eu.auth0.com/userinfo")
 	if err != nil {
-		log.Println(err)
+		testArr = append(testArr, err.Error())
 		// Return nil user and error
 		return user, err
-	} 
-		// Read response from Auth0
-		defer resp.Body.Close()
-		// Convert byte array to JSON
-		//scontents := string(contents)
-		
-		// Populate struct with info from Auth0
-		err = json.NewDecoder(resp.Body).Decode(&user)
-		if err != nil {
-			log.Println(err)
-			return user, err
-		}
-		// Return struct and error state
-		return user, nil
+	}
+	// Read response from Auth0
+	defer resp.Body.Close()
+	// Convert byte array to JSON
+	//scontents := string(contents)
+	// Populate struct with info from Auth0
+	err = json.NewDecoder(resp.Body).Decode(&auth0response)
+	if err != nil {
+		testArr = append(testArr, err.Error())
+	}
+	// TODO TESTING
+	//out, err := string(resp.Body) //json.Marshal(auth0response)
+    //if err != nil {
+    //    panic (err)
+    //}
+	//testArr = append(testArr, string(out))
+	testArr = append(testArr, resp.Status)
+	if resp.StatusCode == http.StatusOK {
+		bodyBytes, err := ioutil.ReadAll(resp.Body)
+		testArr = append(testArr, string(bodyBytes))
+    	if err != nil {
+    	    testArr = append(testArr, string(resp.StatusCode))
+    	}
+	} else {
+		bodyBytes, err := ioutil.ReadAll(resp.Body)
+		testArr = append(testArr, string(bodyBytes))
+    	if err != nil {
+    	    testArr = append(testArr, err.Error())
+    	}
+	}
+	//fmt.Println(resp.Body)
+	user.ID = auth0response.nickname
+	if err != nil {
+		testArr = append(testArr, err.Error())
+		return user, err
+	}
+	// Add test information
+	user.LabsCreated = testArr
+	// Return struct and error state
+	return user, nil
 }
 
 // Test function for a private endpoint that requires the read:messages scope to be used
@@ -450,7 +535,7 @@ func AddContext(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		//log.Println(r.Method, "-", r.RequestURI)
 		// New users have no authorization header
-		if (len(r.Header["Authorization"]) > 0) {
+		if len(r.Header["Authorization"]) > 0 {
 			// TODO Keys are case insensitive in HTTP Headers
 			// - https://tools.ietf.org/html/rfc8187
 			token := r.Header["Authorization"][0]
