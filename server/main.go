@@ -195,14 +195,10 @@ func addTestAd() {
 // Returns all the data a user has given to the system (user struct and their labs) in
 // JSON
 func requestData(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Content-Type", "application/json")
-
-	// Get user struct
-	//var user User
-	// Check scope
-	// Return user struct
-
+	// No need to do work twice lol
+	r.Method = "GET"
+	user(w, r)
+	return
 }
 
 // Inserts the privacy policy into the DB, run this once when setting up
@@ -267,11 +263,68 @@ func user(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method == "GET" {
 		// Get a user's profile from the DB
-
+		filter := bson.D{{Key: "id", Value: user.ID}}
+		err := users.FindOne(r.Context(), filter).Decode(&user)
+		if err != nil {
+			if err.Error() == "mongo: no documents in result" {
+				responseJSON(err.Error(), w, http.StatusNotFound)
+				return
+			}
+			responseJSON(err.Error(), w, http.StatusInternalServerError)
+			return
+		}
+		// Found it! Marshalling it to JSON
+		b, err := json.Marshal(user)
+		if err != nil {
+			responseJSON(err.Error(), w, http.StatusInternalServerError)
+			return
+		}
+		// Sending JSON back to the client
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		w.Write(b)
+		return
 	}
 
 	if r.Method == "POST" {
 		// Update a user's profile
+		// - Nothing to update atm, really
+		filter := bson.D{{Key: "id", Value: user.ID}}
+		// Keep the account creation date in a separate var for later
+		acd := user.AccountCreated
+		err := users.FindOne(r.Context(), filter).Decode(&user)
+		if err != nil {
+			if err.Error() == "mongo: no documents in result" {
+				responseJSON(err.Error(), w, http.StatusNotFound)
+				return
+			}
+			responseJSON(err.Error(), w, http.StatusInternalServerError)
+			return
+		}
+		// We must have found it! Attempting to update the user struct
+		err = json.NewDecoder(r.Body).Decode(&user)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			w.Write([]byte("{'error':'" + err.Error() + "'}"))
+			return
+		}
+		// Updating worked, restoring the account creation date
+		user.AccountCreated = acd
+		// Time to write the changes to the DB
+		// Converting user to BSON for MongoDB
+		b, err := bson.Marshal(user)
+		if err != nil {
+			responseJSON(err.Error(), w, http.StatusInternalServerError)
+			return
+		}
+		// Write to Mongo
+		_, err = users.UpdateOne(r.Context(), filter, b)
+		if err != nil {
+			responseJSON(err.Error(), w, http.StatusInternalServerError)
+		}
+		// It worked!
+		w.WriteHeader(http.StatusOK)
+		return
 	}
 
 	// Add a new user to the system
@@ -279,28 +332,34 @@ func user(w http.ResponseWriter, r *http.Request) {
 		// Check to see if the user exists already
 		filter := bson.D{{Key: "id", Value: user.ID}}
 		// This should fail
-		err := users.FindOne(nil, filter).Decode(&user)
+		err := users.FindOne(r.Context(), filter).Decode(&user)
 		if err != nil {
 			if err.Error() == "mongo: no documents in result" {
 				// Good news, we can add them!
 				user.AccountCreated = time.Now()
 				err = nil
-				_, err = users.InsertOne(nil, user)
+				_, err = users.InsertOne(r.Context(), user)
 				if err != nil {
-					w.WriteHeader(http.StatusInternalServerError)
-					w.Write([]byte("{'error': '" + err.Error() + "'}"))
+					responseJSON(err.Error(), w, http.StatusInternalServerError)
 				}
 				return
 			}
 		}
 		// Must have found a user with the same username
-		w.WriteHeader(http.StatusConflict)
-		w.Write([]byte("{'error': 'user already exists'}"))
+		responseJSON("user already exists", w, http.StatusConflict)
 		return
 	}
 
 	if r.Method == "DELETE" {
 		// Remove a user from this system
+		filter := bson.D{{Key: "id", Value: user.ID}}
+		_, err := users.DeleteOne(context.TODO(), filter)
+		if err != nil {
+			responseJSON(err.Error(), w, http.StatusInternalServerError)
+			return
+		}
+		w.WriteHeader(http.StatusOK)
+		return
 	}
 
 	if r.Method == "OPTIONS" {
@@ -518,10 +577,6 @@ func main() {
 				return token, errors.New("invalid issuer")
 			}
 
-			// Drop the token into the context for later
-			//ctx := context.Context
-			// That's not ok, we don't have the request to get the context from
-
 			cert, err := getPemCert(token)
 			if err != nil {
 				panic(err.Error())
@@ -543,7 +598,6 @@ func main() {
 	r := mux.NewRouter()
 
 	// Homepage, static, shows links to download the app or (TODO) a web client
-	// and a link to the privacy policy
 	r.Handle("/", http.HandlerFunc(homePage))
 
 	// Privacy policy, static, available to all
