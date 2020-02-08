@@ -105,16 +105,16 @@ type User struct {
 // a user's details via a supplied auth token. Information not needed for the user struct
 // can be dropped later.
 type Auth0Details struct {
-	sub            string    `json:"sub"`
-	givenName     string    `json:"given_name"`
-	nickname       string    `json:"nickname"`
-	familyName    string    `json:"family_name"`
-	name           string    `json:"name"`
-	picture        string    `json:"picture"`
-	locale         string    `json:"locale"`
-	email          string    `json:"email"`
-	emailVerified bool      `json:"email_verified"`
-	updatedAt     time.Time `json:"updated_at"`
+	Sub            string    `json:"sub"`
+	GivenName     string    `json:"given_name"`
+	Nickname       string    `json:"nickname"`
+	FamilyName    string    `json:"family_name"`
+	Name           string    `json:"name"`
+	Picture        string    `json:"picture"`
+	Locale         string    `json:"locale"`
+	Email          string    `json:"email"`
+	EmailVerified bool      `json:"email_verified"`
+	UpdatedAt     time.Time `json:"updated_at"`
 }
 
 // LegalPolicy describes a generic type of legal policy governing the terms of use of
@@ -292,40 +292,40 @@ func resolveUser(token jwt.Token) (User, error) {
 	req, err := http.NewRequest("GET", "https://mweya-labs.eu.auth0.com/userinfo", nil)
 	req.Header.Add("Authorization", "Bearer "+token.Raw)
 	req.Header.Add("Host", "mweya-labs.eu.auth0.com")
-	for name, value := range req.Header {
-    		testArr = append(testArr, name+": "+value[0])
-	}
+	//for name, value := range req.Header {
+    //		testArr = append(testArr, name+": "+value[0])
+	//}
 	if err != nil {
 		testArr = append(testArr, err.Error())
 	}
 
 
-	testArr = append(testArr, "////////////////////////////////////////////////////////////")
+	//testArr = append(testArr, "////////////////////////////////////////////////////////////")
 	
 	
 	
 	resp, err := client.Do(req)
 	if err != nil {
 		testArr = append(testArr, err.Error())
-	} else {
-		for name, value := range resp.Header {
-    		testArr = append(testArr, name+": "+value[0])
-		}
-	}
+	} //else {
+		//for name, value := range resp.Header {
+    		//testArr = append(testArr, name+": "+value[0])
+		//}
+	//}
 
 
-	testArr = append(testArr, "////////////////////////////////////////////////////////////")
+	//testArr = append(testArr, "////////////////////////////////////////////////////////////")
 
 
 
 	// Make new instance of User struct
 	var user User
 	
-	testArr = append(testArr, token.Raw)
+	//testArr = append(testArr, token.Raw)
 	
 	
 	
-	testArr = append(testArr, "////////////////////////////////////////////////////////////")
+	//testArr = append(testArr, "////////////////////////////////////////////////////////////")
 
 
 	
@@ -337,16 +337,23 @@ func resolveUser(token jwt.Token) (User, error) {
 	// Convert byte array to JSON
 	//scontents := string(contents)
 	// Populate struct with info from Auth0
-	testArr = append(testArr, resp.Status)
-	bodyBytes, err := ioutil.ReadAll(resp.Body)
-	testArr = append(testArr, string(bodyBytes))
-    if err != nil {
-        testArr = append(testArr, string(resp.StatusCode))
-    }
+	//testArr = append(testArr, resp.Status)
+	//bodyBytes, err := ioutil.ReadAll(resp.Body)
+	//testArr = append(testArr, string(bodyBytes))
+    //if err != nil {
+    //    testArr = append(testArr, string(resp.StatusCode))
+	//}
+	
 	err = json.NewDecoder(resp.Body).Decode(&auth0response)
 	if err != nil {
 		testArr = append(testArr, err.Error())
 	}
+	jauth, err := json.Marshal(auth0response)
+	if err != nil {
+		testArr = append(testArr, err.Error())
+	}
+	testArr = append(testArr, string(jauth))
+	//testArr = append(testArr, "////////////////////////////////////////////////////////////")
 	// TODO TESTING
 	//out, err := string(resp.Body) //json.Marshal(auth0response)
     //if err != nil {
@@ -355,11 +362,11 @@ func resolveUser(token jwt.Token) (User, error) {
 	//testArr = append(testArr, string(out))
 	
 	//fmt.Println(resp.Body)
-	user.ID = auth0response.nickname
-	if err != nil {
-		testArr = append(testArr, err.Error())
-		return user, err
-	}
+	user.ID = auth0response.Nickname
+	//if err != nil {
+	//	testArr = append(testArr, err.Error())
+	//	return user, err
+	//}
 	// Add test information
 	user.LabsCreated = testArr
 	// Return struct and error state
