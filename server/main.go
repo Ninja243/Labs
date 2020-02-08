@@ -375,7 +375,7 @@ func helloPrivateScoped(w http.ResponseWriter, r *http.Request) {
 
 // Returns a JSON representation of the Terms of Service
 func getTermsJSON(w http.ResponseWriter, r *http.Request) {
-	filter := bson.D{{"policytype", "Terms of Service"}}
+	filter := bson.D{{Key: "policytype", Value: "Terms of Service"}}
 	var policy LegalPolicy
 	err := legal.FindOne(nil, filter).Decode(&policy)
 	if err != nil {
@@ -394,7 +394,7 @@ func getTermsJSON(w http.ResponseWriter, r *http.Request) {
 
 // Returns a JSON representation of the privacy policy
 func getPrivacyPolicyJSON(w http.ResponseWriter, r *http.Request) {
-	filter := bson.D{{"policytype", "Privacy Policy"}}
+	filter := bson.D{{Key: "policytype", Value: "Privacy Policy"}}
 	var policy LegalPolicy
 	err := legal.FindOne(nil, filter).Decode(&policy)
 	if err != nil {
