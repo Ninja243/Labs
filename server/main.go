@@ -332,16 +332,17 @@ func resolveUser(token jwt.Token) (User, error) {
 	// Make new instance of the Auth0Details struct
 	var auth0response Auth0Details
 	//response, err := client.GET("https://mweya-labs.eu.auth0.com/userinfo")
-	if err != nil {
-		testArr = append(testArr, err.Error())
-		// Return nil user and error
-		return user, err
-	}
 	// Read response from Auth0
 	defer resp.Body.Close()
 	// Convert byte array to JSON
 	//scontents := string(contents)
 	// Populate struct with info from Auth0
+	testArr = append(testArr, resp.Status)
+	bodyBytes, err := ioutil.ReadAll(resp.Body)
+	testArr = append(testArr, string(bodyBytes))
+    if err != nil {
+        testArr = append(testArr, string(resp.StatusCode))
+    }
 	err = json.NewDecoder(resp.Body).Decode(&auth0response)
 	if err != nil {
 		testArr = append(testArr, err.Error())
@@ -352,20 +353,7 @@ func resolveUser(token jwt.Token) (User, error) {
     //    panic (err)
     //}
 	//testArr = append(testArr, string(out))
-	testArr = append(testArr, resp.Status)
-	if resp.StatusCode == http.StatusOK {
-		bodyBytes, err := ioutil.ReadAll(resp.Body)
-		testArr = append(testArr, string(bodyBytes))
-    	if err != nil {
-    	    testArr = append(testArr, string(resp.StatusCode))
-    	}
-	} else {
-		bodyBytes, err := ioutil.ReadAll(resp.Body)
-		testArr = append(testArr, string(bodyBytes))
-    	if err != nil {
-    	    testArr = append(testArr, err.Error())
-    	}
-	}
+	
 	//fmt.Println(resp.Body)
 	user.ID = auth0response.nickname
 	if err != nil {
