@@ -252,26 +252,66 @@ func helloPrivate(w http.ResponseWriter, r *http.Request) {
 	responseJSON(message, w, http.StatusOK)
 }
 
-// DEPRECATED
-// echoToken is really just quality assurance for the resolveUser method.
-func echoToken(w http.ResponseWriter, r *http.Request) {
+// Handles interactions with the user endpoint
+func user(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Content-Type", "application/json")
 
+	// Attempt to get the user's access JWT from the context
 	val, _ := r.Context().Value("user").(*jwt.Token)
-
 	user, err := resolveUser(*val)
 	if err != nil {
 		responseJSON(err.Error(), w, http.StatusInternalServerError)
 		return
 	}
-	// Convert user to JSON
-	b, err := json.Marshal(user)
-	if err != nil {
-		responseJSON(err.Error(), w, http.StatusInternalServerError)
+
+	if r.Method == "GET" {
+		// Get a user's profile from the DB
+
+	}
+
+	if r.Method == "POST" {
+		// Update a user's profile
+	}
+
+	// Add a new user to the system
+	if r.Method == "PUT" {
+		// Check to see if the user exists already
+		filter := bson.D{{Key: "id", Value: user.ID}}
+		// This should fail
+		err := users.FindOne(nil, filter).Decode(&user)
+		if err != nil {
+			if err.Error() == "mongo: no documents in result" {
+				// Good news, we can add them!
+				user.AccountCreated = time.Now()
+				err = nil
+				_, err = users.InsertOne(nil, user)
+				if err != nil {
+					w.WriteHeader(http.StatusInternalServerError)
+					w.Write([]byte("{'error': '" + err.Error() + "'}"))
+				}
+				return
+			}
+		}
+		// Must have found a user with the same username
+		w.WriteHeader(http.StatusConflict)
+		w.Write([]byte("{'error': 'user already exists'}"))
 		return
 	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	w.Write(b)
+
+	if r.Method == "DELETE" {
+		// Remove a user from this system
+	}
+
+	if r.Method == "OPTIONS" {
+		// Tell the client what it can do
+		w.Header().Set("Allow", "GET, POST, PUT, DELETE, OPTIONS")
+		w.WriteHeader(http.StatusOK)
+		return
+	}
+
+	// Some weird method was sent
+	w.WriteHeader(http.StatusInternalServerError)
 	return
 }
 
@@ -333,23 +373,6 @@ func helloPrivateScoped(w http.ResponseWriter, r *http.Request) {
 	responseJSON(message, w, http.StatusOK)
 }
 
-// DEPRECATED
-// Returns a text representation of the privacy policy
-func getPrivacyPolicy(w http.ResponseWriter, r *http.Request) {
-	filter := bson.D{{"policytype", "Privacy Policy"}}
-	var policy LegalPolicy
-	err := legal.FindOne(nil, filter).Decode(&policy) //nil
-	if err != nil {
-		responseJSON(err.Error(), w, http.StatusInternalServerError)
-		return
-	}
-	//responseJSON(b, w, http.StatusOK)
-	w.Header().Set("Content-Type", "text/text")
-	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(policy.Policy))
-	return
-}
-
 // Returns a JSON representation of the Terms of Service
 func getTermsJSON(w http.ResponseWriter, r *http.Request) {
 	filter := bson.D{{"policytype", "Terms of Service"}}
@@ -397,58 +420,6 @@ func homePage(w http.ResponseWriter, r *http.Request) {
 	}
 	w.Header().Set("Content-Type", "text/html")
 	w.Write(dat)
-	return
-}
-
-// Adds a new user to the system.
-func addUser(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Content-Type", "application/json")
-	vars := mux.Vars(r)
-	urlID := vars["userName"]
-	var user User
-	err := json.NewDecoder(r.Body).Decode(&user)
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte("{'error': '" + err.Error() + "'}"))
-		return
-	}
-
-	// Test to make sure all fields are populated
-	if user.ID == "" {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte("{'error':'Bad request. Don't leave anything blank'"))
-		return
-	}
-
-	// Test to see if the user exists or not
-	ID := user.ID
-	if ID != urlID {
-		// Wot
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte("{'error':'Bad Request. Your actions might be reported'}"))
-		return
-	}
-	filter := bson.D{{Key: "id", Value: ID}}
-	err = users.FindOne(nil, filter).Decode(&user)
-	if err != nil {
-		if err.Error() == "mongo: no documents in result" {
-			// Good news, we can add them!
-			user.AccountCreated = time.Now()
-			err = nil
-			_, err = users.InsertOne(nil, user)
-			if err != nil {
-				w.WriteHeader(http.StatusInternalServerError)
-				w.Write([]byte("{'error': '" + err.Error() + "'}"))
-			}
-			return
-		}
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte("{'error': '" + err.Error() + "'}"))
-		return
-	}
-	w.WriteHeader(http.StatusConflict)
-	w.Write([]byte("{'error':'User already exists'"))
 	return
 }
 
@@ -604,20 +575,14 @@ func main() {
 	//l.HandleFunc("/{labID}", deleteLab).Methods(http.MethodDelete)
 	//l.HandleFunc("/{labID}", modLab).Methods(http.MethodPost)
 
-	// User routes
-	//u := r.PathPrefix("/user").Subrouter()
-	//u.HandleFunc("/{userName}", getUser).Methods(http.MethodGet)
-	//u.HandleFunc("/{userName}", createUser).Methods(http.MethodPut)
-	//u.HandleFunc("/{userName}", deleteUser).Methods(http.MethodDelete)
-	//u.HandleFunc("/{userName}", modUser).Methods(http.MethodPost)
-
 	// Ad routes
 	// All users should be able to GET ads
 	// TODO sell and insert ads
 
-	r.Handle("/api/private/echoToken", negroni.New(
+	// User route
+	r.Handle("/user", negroni.New(
 		negroni.HandlerFunc(jwtMiddleware.HandlerWithNext),
-		negroni.Wrap(http.HandlerFunc(echoToken))))
+		negroni.Wrap(http.HandlerFunc(user))))
 
 	// Auth0 example routes
 
