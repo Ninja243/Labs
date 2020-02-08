@@ -21,10 +21,10 @@
      - How do I restrict the requests that these users can make to their accounts only?
      - Currently the client stores a user's JWT and the name bit of their OpenID profile
        - Is the Email they use for Google unique enough to use as a key?
-       - Can I resolve a user's information from the JWT they supply to the API?
-         - What would the flow for checking that look like?
-         - Giving the {authdomain}/userinfo the access token looks like it will return a normalized user profile
-           - https://mweya-labs.eu.auth0.com/?access_token={token}
+       - ~Can I resolve a user's information from the JWT they supply to the API?~
+         - ~What would the flow for checking that look like?~
+         - ~Giving the {authdomain}/userinfo the access token looks like it will return a normalized user profile~
+           - ~https://mweya-labs.eu.auth0.com/?access_token={token}~
              - 2 requests per second with 10 requests in each burst is really not enough
                - https://auth0.com/docs/policies/rate-limits
                - Server side cache?
