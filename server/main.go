@@ -105,14 +105,14 @@ type User struct {
 // a user's details via a supplied auth token. Information not needed for the user struct
 // can be dropped later.
 type Auth0Details struct {
-	Sub            string    `json:"sub"`
+	Sub           string    `json:"sub"`
 	GivenName     string    `json:"given_name"`
-	Nickname       string    `json:"nickname"`
+	Nickname      string    `json:"nickname"`
 	FamilyName    string    `json:"family_name"`
-	Name           string    `json:"name"`
-	Picture        string    `json:"picture"`
-	Locale         string    `json:"locale"`
-	Email          string    `json:"email"`
+	Name          string    `json:"name"`
+	Picture       string    `json:"picture"`
+	Locale        string    `json:"locale"`
+	Email         string    `json:"email"`
 	EmailVerified bool      `json:"email_verified"`
 	UpdatedAt     time.Time `json:"updated_at"`
 }
@@ -252,15 +252,12 @@ func helloPrivate(w http.ResponseWriter, r *http.Request) {
 	responseJSON(message, w, http.StatusOK)
 }
 
-// TODO
+// DEPRECATED
+// echoToken is really just quality assurance for the resolveUser method.
 func echoToken(w http.ResponseWriter, r *http.Request) {
-	//val := context.Get(r, "user")
-	//t (jwt.Token) = r.Context().Value("user")
+
 	val, _ := r.Context().Value("user").(*jwt.Token)
-	//message := val.Raw
-	// OK so I now have the auth token
-	//  - How do I swap it for the user token?
-	//  - https://mweya-labs.eu.auth0.com/userinfo?access_token={token}
+
 	user, err := resolveUser(*val)
 	if err != nil {
 		responseJSON(err.Error(), w, http.StatusInternalServerError)
@@ -276,99 +273,46 @@ func echoToken(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	w.Write(b)
 	return
-	// No real need// Return struct and error state
-	//responseJSON(message, w, http.StatusOK)
 }
 
-// TODO
 // resolveUser takes a JWT access token and uses it to gretrieve a normalized profile from auth0
 // to populate a new User struct used for identification.
 func resolveUser(token jwt.Token) (User, error) {
-	// TODO Remove this
-	var testArr []string
 
 	// Send token to Auth0
 	client := &http.Client{}
 	req, err := http.NewRequest("GET", "https://mweya-labs.eu.auth0.com/userinfo", nil)
 	req.Header.Add("Authorization", "Bearer "+token.Raw)
 	req.Header.Add("Host", "mweya-labs.eu.auth0.com")
-	//for name, value := range req.Header {
-    //		testArr = append(testArr, name+": "+value[0])
-	//}
+
 	if err != nil {
-		testArr = append(testArr, err.Error())
+		log.Println(err)
 	}
 
-
-	//testArr = append(testArr, "////////////////////////////////////////////////////////////")
-	
-	
-	
 	resp, err := client.Do(req)
 	if err != nil {
-		testArr = append(testArr, err.Error())
-	} //else {
-		//for name, value := range resp.Header {
-    		//testArr = append(testArr, name+": "+value[0])
-		//}
-	//}
-
-
-	//testArr = append(testArr, "////////////////////////////////////////////////////////////")
-
-
-
-	// Make new instance of User struct
+		log.Println(err)
+	}
 	var user User
-	
-	//testArr = append(testArr, token.Raw)
-	
-	
-	
-	//testArr = append(testArr, "////////////////////////////////////////////////////////////")
 
-
-	
-	// Make new instance of the Auth0Details struct
 	var auth0response Auth0Details
-	//response, err := client.GET("https://mweya-labs.eu.auth0.com/userinfo")
+
 	// Read response from Auth0
 	defer resp.Body.Close()
-	// Convert byte array to JSON
-	//scontents := string(contents)
-	// Populate struct with info from Auth0
-	//testArr = append(testArr, resp.Status)
-	//bodyBytes, err := ioutil.ReadAll(resp.Body)
-	//testArr = append(testArr, string(bodyBytes))
-    //if err != nil {
-    //    testArr = append(testArr, string(resp.StatusCode))
-	//}
-	
+
 	err = json.NewDecoder(resp.Body).Decode(&auth0response)
 	if err != nil {
-		testArr = append(testArr, err.Error())
+		log.Println(err)
 	}
-	jauth, err := json.Marshal(auth0response)
+
 	if err != nil {
-		testArr = append(testArr, err.Error())
+		log.Println(err)
 	}
-	testArr = append(testArr, string(jauth))
-	//testArr = append(testArr, "////////////////////////////////////////////////////////////")
-	// TODO TESTING
-	//out, err := string(resp.Body) //json.Marshal(auth0response)
-    //if err != nil {
-    //    panic (err)
-    //}
-	//testArr = append(testArr, string(out))
-	
-	//fmt.Println(resp.Body)
-	user.ID = auth0response.Nickname
-	//if err != nil {
-	//	testArr = append(testArr, err.Error())
-	//	return user, err
-	//}
-	// Add test information
-	user.LabsCreated = testArr
+
+	// Nicknames might not be unique and can be changed, therefore email is used instead
+	strparts := strings.Split(auth0response.Email, "@")
+	user.ID = strparts[0]
+
 	// Return struct and error state
 	return user, nil
 }
