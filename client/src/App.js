@@ -2,7 +2,7 @@
 
 // OLD
 import React, { Component } from 'react';
-import { View, Text, StatusBar } from 'react-native';
+import { View, Text, StatusBar, TouchableOpacity } from 'react-native';
 import { createAppContainer, SafeAreaView } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 import jwtDecode from 'jwt-decode';
@@ -14,12 +14,19 @@ import OptionScreen from './screens/Options.js';
 import PortfolioGate from './screens/HireMe.js';
 import Me from './screens/AboutMe.js';
 import SplashScreen from './screens/splash.js';
+import settings from './screens/Settings.js';
+import appSource from './screens/AppSource.js';
+import tipJar from './screens/TipJar.js';
+import legalPortal from './screens/LegalPortal'
 
 import { FaCode } from "react-icons/fa/index";
 import PolicyViewer from './screens/PolicyView.js';
 import NavigationService from './components/navService';
 import profileReducer from './components/reducer';
 import endpointTestClass from './tests/Endpoints'
+
+
+import Feather from '@expo/vector-icons'
 
 // Screen navigation is declared here
 const MainNavigator = createStackNavigator({
@@ -29,7 +36,11 @@ const MainNavigator = createStackNavigator({
   HiringQuestion: { screen: PortfolioGate },
   AboutMe: { screen: Me },
   Policy: { screen: PolicyViewer },
-  Splash: {screen: SplashScreen},
+  Splash: { screen: SplashScreen },
+  Settings: { screen: settings },
+  AppSource: { screen: appSource },
+  TipJar: { screen: tipJar },
+  LegalPortal: {screen: legalPortal},
   // Tests
   EndpointTest: {screen: endpointTestClass}
 },
@@ -53,7 +64,7 @@ const MainNavigator = createStackNavigator({
       headerTitleAlign: "center",
       headerTintColor: 'rgba(0,122,255,1)',
       headerTitle: () => <View style={{ flexDirection: 'column', flex: 1, alignItems: 'stretch', justifyContent: 'center' }}>
-        <Text style={{ padding: 5, alignSelf: "center", color: 'rgba(0, 122, 255, 1)', fontSize: 32, alignItems: 'center', justifyContent: 'center', flex: 1 }}>{"</> Labs"}</Text>
+        <Text style={{ padding: 5, alignSelf: "center", color: 'rgba(0, 122, 255, 1)', fontSize: 40, alignItems: 'center', justifyContent: 'center', flex: 1 }}>{"</> Labs"}</Text>
       </View>,
       // Disable to see page names
       headerTitleStyle: {

@@ -7,10 +7,12 @@ import { connect } from 'react-redux';
 import { AuthSession, Linking } from 'expo';
 import jwtDecode from 'jwt-decode';
 
+import { Feather } from '@expo/vector-icons'
+
 import Footer from '../components/footer';
 import { s1, s2 } from '../components/translations';
 
-import { increment } from '../actions/index.js';
+import { increment, logOut } from '../actions/index.js';
 import { logIn } from '../actions/index.js';
 import { setReady } from '../actions/index.js'
 
@@ -97,50 +99,8 @@ export class HomeScreen extends Component {
         //console.log("Ready ->",readyState);
         //console.log("ready ->", this.state.ready)
         //navigate("Splash");
-        this.privEndpointTest();
-        this.privScopedEndpointTest();
-    }
-
-
-    // NEEDS REWRITE
-    logout = () => {
-
-        const deauthURL = "https://mweya-labs.eu.auth0.com/v2/logout?returnTo=";
-        //AuthSession.dismiss();
-        /*const response = await AuthSession.startAsync({deauthURL});
-        console.log('Deauth response', response);
-        if (response.type === 'success') {
-          this.handleResponse(response.params);
-        }*/
-        /*await Linking.openURL(
-          //config.logoutUrl +
-          deauthURL +
-            encodeURIComponent(
-              ""
-            ) 
-            +"&client_id="+
-            encodeURIComponent(auth0ClientId)// __DEV__ ? "exp://localhost:19000" : "app:/callback"
-        );*/
-        // TODO WARNING AuthOut has been replaced by LogOut which takes an empty array
-        fetch(deauthURL + encodeURIComponent("") + "&client_id=" + encodeURIComponent(auth0ClientId))
-            .then((response) => response.text())
-            .then((code) => {
-                // I kinda hate myself for this one
-                if (code === "OK") {
-
-                    const logIn = this.props.logIn;
-                    var p = [];
-                    logIn(p);
-                    return true;
-                }
-
-            })
-            .catch((error) => {
-                console.error(error, ", logging out anyway");
-            });
-        const logIn = this.props.logIn;
-        var p = [];
-        logIn(p);
+        //this.privEndpointTest();
+        //this.privScopedEndpointTest();
     }
 
     // Silent auth for refreshing
@@ -176,12 +136,13 @@ export class HomeScreen extends Component {
                         }
                     } else {
                         // Silent auth failed, log in normally
-                        this.logout();
+                        const logOut = this.props.logOut;
+                        logOut()
                     }
                 }))
         } catch (e) {
             // Silent auth failed, log in normally
-            this.logout();
+            return e
         }
         //console.log('Authentication response', response);
 
@@ -290,7 +251,8 @@ export class HomeScreen extends Component {
 
                                 }
                             }
-                        } />
+                        }
+                            color= 'rgba(0, 122, 255, 1)'/>
                         <View style={{ width: '50%', paddingTop: 40, paddingBottom: 10, flexDirection: 'column', justifyContent: 'center', alignContent: "flex-end" }}>
                             <Text style={{ fontSize: 15 }}>"I have read and agree with the Privacy Policy and Terms of Service"</Text>
                             <Text style={{ alignSelf: 'flex-end' }}>-You</Text>
@@ -333,7 +295,7 @@ export class HomeScreen extends Component {
                 :
                 // Undefined if the app didn't have time to set it when starting
                 (readyState == true || readyState == undefined) ?
-                    (this.state.debugMode == true) ?
+                    (this.state.debugMode == false) ?
                         <ScrollView>
                             <Text style={{ color: 'rgba(44,44,46,1)', paddingBottom: 10, paddingTop: 20, paddingLeft: 40, alignSelf: 'flex-start', fontSize: 30 }}>{"User Profile"}</Text>
                             <View style={{ backgroundColor: 'rgba(199,199,204,1)', padding: 5 }}>
@@ -386,7 +348,28 @@ export class HomeScreen extends Component {
                         </ScrollView>
                         :
                         <ScrollView>
-                            <Text style={{ color: 'rgba(44,44,46,1)', paddingBottom: 10, paddingTop: 20, paddingLeft: 40, alignSelf: 'flex-start', fontSize: 30 }}>{"Splash Screen"}</Text>
+                            <View style={{ flex: 1, width: '90%', alignSelf: 'center',  paddingTop: '60%' }}>
+                                
+                                <TouchableOpacity onPress={() => { }} style={{  }}>
+                                    <View style={{ flex: 1, flexDirection: 'row', borderColor: 'rgba(0, 122, 255, 1)', borderWidth: 0, padding: 10, justifyContent: 'center' }}>
+                                        <Feather name="upload-cloud" size={40} color="rgba(0, 122, 255, 1)" />
+                                        <Text style={{ color: "rgba(0, 122, 255, 1)", fontSize: 30 }}> UPLOAD</Text>
+                                    </View>
+                                </TouchableOpacity>
+                                <TouchableOpacity onPress={() => { }} style={{ paddingTop: 10 }}>
+                                    <View style={{ flex: 1, flexDirection: 'row', borderColor: 'rgba(0, 122, 255, 1)', borderWidth: 0, padding: 10, justifyContent: 'center' }}>
+                                        <Feather name="download-cloud" size={40} color="rgba(0, 122, 255, 1)" />
+                                        <Text style={{ color: "rgba(0, 122, 255, 1)", fontSize: 30 }}> DOWNLOAD</Text>
+                                    </View>
+                                </TouchableOpacity>
+                                <TouchableOpacity onPress={() => { navigate('Settings'), { userName: 'Lucy' } }} style={{ paddingTop: 10 }}>
+                                    <View style={{ flex: 1, flexDirection: 'row', borderColor: 'rgba(0, 122, 255, 1)', borderWidth: 0, padding: 10, justifyContent: 'center' }}>
+                                        <Feather name="settings" size={40} color="rgba(0, 122, 255, 1)" />
+                                        <Text style={{ color: "rgba(0, 122, 255, 1)", fontSize: 30 }}> SETTINGS</Text>
+                                    </View>
+                                </TouchableOpacity>
+                                
+                            </View>
                         </ScrollView>
                     :
                     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -423,7 +406,8 @@ const mapDispatchToProps = (dispatch) => {
     return {
         increment: () => dispatch(increment()),
         logIn: p => dispatch(logIn(p)),
-        setReady: b => dispatch(setReady(b))
+        setReady: b => dispatch(setReady(b)),
+        logOut: () => dispatch(logOut())
     };
 };
 /*const mapDispatchToProps = dispatch => (
