@@ -150,9 +150,10 @@ type LegalPolicy struct {
 	Policy       string    `json:"content"`
 }
 
-// TODO
+
 // Cache is a struct that will be used to store recently accessed user data to reduce
 // the number of network requests sent
+// TODO
 type Cache struct {
 	Users []User `json:"users"`
 	Ads   []Ad   `json:"ads"`
@@ -855,7 +856,7 @@ func getPemCert(token *jwt.Token) (string, error) {
 		return cert, err
 	}
 
-	for k, _ := range jwks.Keys {
+	for k := range jwks.Keys {
 		if token.Header["kid"] == jwks.Keys[k].Kid {
 			cert = "-----BEGIN CERTIFICATE-----\n" + jwks.Keys[k].X5c[0] + "\n-----END CERTIFICATE-----"
 		}
