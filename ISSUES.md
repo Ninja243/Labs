@@ -63,9 +63,9 @@
    * Legality
      - I can't be the only one here who's keen on doing this, why hasn't anyone else?
    * Optimization
-     - Can I remove adverts from the DB if the amount of views they have paid for has run out?
-     - What's the best way to archive/warehouse the older ones?
-       - Should I just make a new collection for them? 
+     - ~Can I remove adverts from the DB if the amount of views they have paid for has run out?~
+     - ~What's the best way to archive/warehouse the older ones?~
+       - ~Should I just make a new collection for them? ~
 
  * ##  :bamboo: NoSQL DBs
    * RAM usage
