@@ -20,12 +20,12 @@ import (
 	"io/ioutil"
 	"log"
 	"math"
+	"math/rand"
 	"net/http"
 	"os"
+	
 	"strings"
 	"time"
-
-	"math/rand"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -88,6 +88,7 @@ type Lab struct {
 	Uploaded time.Time `json:"uploaded"`
 	Rating   float64   `json:"rating"`
 	Language string    `json:"language"`
+	Author string `json:"author"`
 }
 
 // Ad contains an ID for identification as well as a title, subtitle and a link to
@@ -149,7 +150,6 @@ type LegalPolicy struct {
 	LastModified time.Time `json:"modified"`
 	Policy       string    `json:"content"`
 }
-
 
 // Cache is a struct that will be used to store recently accessed user data to reduce
 // the number of network requests sent
@@ -222,6 +222,7 @@ func addTestAd() {
 // JSON
 func requestData(w http.ResponseWriter, r *http.Request) {
 	// No need to do work twice lol
+	// TODO, labs uploaded should probably also be supplied in full
 	r.Method = "GET"
 	account(w, r)
 	return
@@ -365,6 +366,166 @@ func user(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
+// Handles GET, POST and DELETE for Labs
+// TODO
+func getLab(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Content-Type", "application/json")
+
+	// Get the Lab ID from the URL
+	vars := mux.Vars(r)
+	ID := vars["labID"]
+	//ID, err := strconv.ParseInt(idString, 10, 64)
+	//if err != nil {
+	//	responseJSON("the ID should be a number", w, http.StatusBadRequest)
+	//	return
+	//}
+
+	if r.Method == "GET" {
+		// Retrieve the Lab from the DB
+		var lab Lab
+		filter := bson.D{{Key: "id", Value: ID}}
+		err := labs.FindOne(r.Context(), filter).Decode(&lab)
+		if err != nil {
+			if err.Error() == "mongo: no documents in result" {
+				responseJSON("user not found", w, http.StatusNotFound)
+				return
+			}
+			responseJSON(err.Error(), w, http.StatusInternalServerError)
+			return
+		}
+		// Marshal Lab into JSON
+		b, err := json.Marshal(lab)
+		if err != nil {
+			responseJSON(err.Error(), w, http.StatusInternalServerError)
+			return
+		}
+		// Update state of lab
+		lab.Views = lab.Views +1
+		_, err = labs.UpdateOne(r.Context(), filter, lab)
+		if err != nil {
+			responseJSON(err.Error(), w, http.StatusInternalServerError)
+			return
+		}
+		// Return the lab to the client
+		w.WriteHeader(http.StatusOK)
+		w.Write(b)
+		return
+	}
+
+	// User resolution not needed for GET
+	var user User
+	val, _ := r.Context().Value("user").(*jwt.Token)
+	user, err := resolveUser(*val)
+	if err != nil {
+		responseJSON("bad request", w, http.StatusBadRequest)
+		return
+	}
+	// The JSON request body includes the updated lab
+	if r.Method == "POST" {
+		// Retrieve the Lab from the DB
+		var lab Lab
+		filter := bson.D{{Key: "id", Value: ID}}
+		err = labs.FindOne(r.Context(), filter).Decode(&lab)
+		if err != nil {
+			if err.Error() == "mongo: no documents in result" {
+				responseJSON("lab not found", w, http.StatusNotFound)
+				return
+			}
+			responseJSON(err.Error(), w, http.StatusInternalServerError)
+			return
+		}
+		// Make sure this user owns the lab
+		if user.ID != lab.Author {
+			responseJSON("not acceptable, your actions might have been logged", w, http.StatusNotAcceptable)
+			return
+		}
+		// Read the request body to get the updated state
+		var update Lab
+		err = json.NewDecoder(r.Body).Decode(&update)
+		if err != nil {
+			responseJSON(err.Error(), w, http.StatusInternalServerError)
+			return
+		}
+		// Keep the old uploaded date
+		update.Uploaded = lab.Uploaded
+		// Write changes to DB
+		_, err := labs.UpdateOne(r.Context(), filter, update)
+		if err != nil {
+			responseJSON(err.Error(), w, http.StatusInternalServerError)
+			return
+		}
+		w.WriteHeader(http.StatusOK)
+	}
+	// Self explanatory really
+	if r.Method == "DELETE" {
+		var lab Lab
+		filter := bson.D{{Key: "id", Value: ID}}
+		err = labs.FindOne(r.Context(), filter).Decode(&lab)
+		if err != nil {
+			if err.Error() == "mongo: no documents in result" {
+				responseJSON("lab not found", w, http.StatusNotFound)
+				return
+			}
+			responseJSON(err.Error(), w, http.StatusInternalServerError)
+			return
+		}
+		// Make sure this user owns the lab
+		if user.ID != lab.Author {
+			responseJSON("not acceptable, your actions might have been logged", w, http.StatusNotAcceptable)
+			return
+		}
+		// Actually delete the lab
+		_, err := labs.DeleteOne(r.Context(), filter)
+		if err != nil {
+			responseJSON(err.Error(), w, http.StatusInternalServerError)
+			return
+		}
+		w.WriteHeader(http.StatusOK)
+	}
+	// Some weird method seems to have been used
+	responseJSON("method not allowed", w, http.StatusMethodNotAllowed)
+	return
+}
+
+// Handles PUT for Labs
+// TODO
+func putLab(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Content-Type", "application/json")
+
+	val, _ := r.Context().Value("user").(*jwt.Token)
+	user, err := resolveUser(*val)
+	if err != nil {
+		responseJSON(err.Error(), w, http.StatusBadRequest)
+		return
+	}
+	
+	// Read request body
+	var lab Lab
+	err = json.NewDecoder(r.Body).Decode(&lab)
+	if err != nil {
+		responseJSON(err.Error(), w, http.StatusInternalServerError)
+		return
+	}
+
+	// Fill in/overwrite information
+	lab.Author = user.ID
+	lab.Uploaded = time.Now()
+	lab.Views = 0
+	
+	// Insert into DB
+	_, err = labs.InsertOne(r.Context(), lab)
+	if err != nil {
+		responseJSON(err.Error(), w, http.StatusInternalServerError)
+		return
+	}
+
+	// OK
+	w.WriteHeader(http.StatusOK)
+	return
+}
+
 // Handles interactions with the account endpoint, including CRUD operations for a user
 // struct
 func account(w http.ResponseWriter, r *http.Request) {
@@ -375,7 +536,7 @@ func account(w http.ResponseWriter, r *http.Request) {
 	val, _ := r.Context().Value("user").(*jwt.Token)
 	user, err := resolveUser(*val)
 	if err != nil {
-		responseJSON(err.Error(), w, http.StatusInternalServerError)
+		responseJSON(err.Error(), w, http.StatusBadRequest)
 		return
 	}
 
@@ -639,6 +800,7 @@ func AddContext(next http.Handler) http.Handler {
 	})
 }
 
+// The main function starts here
 func main() {
 
 	// MongoDB initialization
@@ -730,19 +892,20 @@ func main() {
 	r.Handle("/legal/terms", http.HandlerFunc(getTermsJSON)).Methods(http.MethodGet)
 
 	// Lab routes
-	// All users should be able to GET labs
-	// All users should be able to PUT labs
-	// Owner should be able to delete lab
-	//	- All can call but check to see if user matches owner in method?
-	// Owner should be able to modify lab
-	//	- All can call but check to see if user matches owner in method?
-	//l := r.PathPrefix("/lab").Subrouter()
-	// For the splashpage of the app, returns most popular lab, most recent lab and a random lab
-	//l.Path("/splash").HandlerFunc(getSplashLabs).Methods(http.MethodGet)
-	//l.HandleFunc("/{labID}", getLab).Methods(http.MethodGet)
-	//l.HandleFunc("/{labID}", createLab).Methods(http.MethodPut)
-	//l.HandleFunc("/{labID}", deleteLab).Methods(http.MethodDelete)
-	//l.HandleFunc("/{labID}", modLab).Methods(http.MethodPost)
+	// GET, POST, DELETE labs
+	r.Handle("/lab/{labID}", negroni.New(
+		negroni.HandlerFunc(jwtMiddleware.HandlerWithNext),
+		negroni.Wrap(http.HandlerFunc(getLab))))
+
+	// PUT labs
+	r.Handle("/publish", negroni.New(
+		negroni.HandlerFunc(jwtMiddleware.HandlerWithNext),
+		negroni.Wrap(http.HandlerFunc(putLab))))
+
+	// TODO
+	// Search for users and labs
+	// https://docs.mongodb.com/manual/text-search/
+	// Create index for every attribute in struct
 
 	// Ad routes
 	// All users should be able to GET ads
