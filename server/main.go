@@ -10,6 +10,8 @@
 package main
 
 //"github.com/gorilla/context" <-  too old
+//
+
 import (
 	"context"
 	"encoding/json"
@@ -22,6 +24,8 @@ import (
 	"os"
 	"strings"
 	"time"
+
+	"math/rand"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -52,8 +56,27 @@ var ads mongo.Collection
 // Global handle variable that points to the legal collection in the database
 var legal mongo.Collection
 
+// Global handle variable that points to the legal collection in the database
+var adarchive mongo.Collection
+
+// Number of adverts in the database, this number refreshes every time the application
+// is restarted.
+var totalads int
+
 // Structs describing the kind of data that this application will store. A "Lab"
 // is a single page of code, a user is an account.
+
+// Institution represents an instance of tertiary education, be it a university,
+// a college or a technical highschool. An institution can have both users and
+// labs attributed to it. These attributions can be done by adding the ID of the
+// user or the labs to this object.
+// TODO think about how these institutions should be verified when added
+type Institution struct {
+	ID    string   `json:"id"`
+	Name  string   `json:"name"`
+	Users []string `json:"users"`
+	Labs  []string `json:"labs"`
+}
 
 // Lab contains an ID for identification as well as a name (very similar to a title)
 // as well as code to display and metadata pertaining to it.
@@ -73,8 +96,10 @@ type Lab struct {
 // that the user is interested in the product so the user can then migrate away to the
 // "action" link the advertiser has payed for. This is NOT meant to be an intrusive
 // experience and can be removed with minimal effort.
+// Making the ID an integer makes pulling a random one of the database more efficient,
+// assuming we know how many ads there are in the database.
 type Ad struct {
-	ID             string `json:"id"`
+	ID             int64  `json:"id"`
 	Title          string `json:"title"`
 	Subtitle       string `json:"subtitle"`
 	BannerImageURL string `json:"bannerURL"`
@@ -177,7 +202,7 @@ func addMweya() {
 // Adds a test advert to they system for testing
 func addTestAd() {
 	ad := Ad{
-		"helloworld", "Looking for a developer?", "Hire the developer of this app!", "https://mweya.duckdns.org/lowrez", "", 0, math.MaxInt64, "Mweya Ruider", "https://mweya.duckdns.org/cv",
+		0, "Looking for a developer?", "Hire the developer of this app!", "https://mweya.duckdns.org/lowrez", "", 0, math.MaxInt64, "Mweya Ruider", "https://mweya.duckdns.org/cv",
 	}
 	_, err := ads.InsertOne(context.Background(), ad)
 	if err != nil {
@@ -197,7 +222,7 @@ func addTestAd() {
 func requestData(w http.ResponseWriter, r *http.Request) {
 	// No need to do work twice lol
 	r.Method = "GET"
-	user(w, r)
+	account(w, r)
 	return
 }
 
@@ -248,8 +273,100 @@ func helloPrivate(w http.ResponseWriter, r *http.Request) {
 	responseJSON(message, w, http.StatusOK)
 }
 
-// Handles interactions with the user endpoint
+// Returns a random advert
+func advert(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Content-Type", "application/json")
+	// Get random advert
+	// Links that will help with optimization later
+	//
+	// https://stackoverflow.com/questions/26456375/aggregation-in-golang-mgo-for-mongodb
+	// https://stackoverflow.com/questions/2824157/random-record-from-mongodb
+	// https://godoc.org/go.mongodb.org/mongo-driver/mongo
+
+	// id != _id, id counts up from 0
+	randomID := rand.Intn(totalads)
+	filter := bson.D{{Key: "id", Value: randomID}}
+	var ad Ad
+	err := ads.FindOne(r.Context(), filter).Decode(&ad)
+	if err != nil {
+		responseJSON(err.Error(), w, http.StatusInternalServerError)
+		return
+	}
+
+	// Marshal advert to JSON
+	b, err := json.Marshal(ad)
+	if err != nil {
+		responseJSON(err.Error(), w, http.StatusInternalServerError)
+		return
+	}
+
+	// Serve random advert
+	w.WriteHeader(http.StatusOK)
+	w.Write(b)
+
+	// Update view count of random advert
+	ad.Views = ad.Views + 1
+
+	// Check if view count > views paid for
+	if ad.Views > ad.ViewsPaidFor {
+		// Archive
+		_, err := ads.DeleteOne(r.Context(), filter)
+		if err != nil {
+			responseJSON(err.Error(), w, http.StatusInternalServerError)
+			return
+		}
+		totalads = totalads - 1
+		return
+	}
+	// Write updated state of ad back to DB
+	_, err = ads.UpdateOne(r.Context(), filter, ad)
+	if err != nil {
+		responseJSON(err.Error(), w, http.StatusInternalServerError)
+		return
+	}
+	return
+}
+
+// Returns information on a certain user in this system. Only GET is allowed.
 func user(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Content-Type", "application/json")
+	// Only GET is allowed
+	if r.Method != "GET" {
+		responseJSON("method not allowed", w, http.StatusMethodNotAllowed)
+		return
+	}
+	// Get the username from the URL
+	vars := mux.Vars(r)
+	ID := vars["userName"]
+	// Get the user from the DB
+	var user User
+	filter := bson.D{{Key: "id", Value: ID}}
+	err := users.FindOne(r.Context(), filter).Decode(&user)
+	if err != nil {
+		if err.Error() == "mongo: no documents in result" {
+			responseJSON("user not found", w, http.StatusNotFound)
+			return
+		}
+		responseJSON(err.Error(), w, http.StatusInternalServerError)
+		return
+	}
+	// Convert the user to JSON
+	b, err := json.Marshal(user)
+	if err != nil {
+		responseJSON(err.Error(), w, http.StatusInternalServerError)
+		return
+	}
+	// Send the JSON back to the client
+	w.WriteHeader(http.StatusOK)
+	w.Write(b)
+	return
+}
+
+// Handles interactions with the account endpoint, including CRUD operations for a user
+// struct
+func account(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "application/json")
 
@@ -267,7 +384,7 @@ func user(w http.ResponseWriter, r *http.Request) {
 		err := users.FindOne(r.Context(), filter).Decode(&user)
 		if err != nil {
 			if err.Error() == "mongo: no documents in result" {
-				responseJSON(err.Error(), w, http.StatusNotFound)
+				responseJSON("user not found", w, http.StatusNotFound)
 				return
 			}
 			responseJSON(err.Error(), w, http.StatusInternalServerError)
@@ -546,6 +663,13 @@ func main() {
 	labs = *dbclient.Database("Labs").Collection("labs")
 	ads = *dbclient.Database("Labs").Collection("ads")
 	legal = *dbclient.Database("Labs").Collection("legal")
+	adarchive = *dbclient.Database("Labs").Collection("adarchive")
+
+	// Count the amount of ads
+	totalads, err = ads.CountDocuments(nil, nil, nil)
+	if err != nil {
+		log.Print(err)
+	}
 
 	// Debug
 	//addMweya()
@@ -604,16 +728,6 @@ func main() {
 	r.Handle("/legal/privacy", http.HandlerFunc(getPrivacyPolicyJSON)).Methods(http.MethodGet)
 	r.Handle("/legal/terms", http.HandlerFunc(getTermsJSON)).Methods(http.MethodGet)
 
-	// Account routes
-	//acc := r.PathPrefix("/account").Subrouter()
-	//acc.Path("/create").HandlerFunc().Methods(http.MethodPut)
-
-	// Authentication routes
-	//a := r.PathPrefix("/auth").Subrouter()
-	//a.Path("/login").HandlerFunc(loginHandler).Methods(http.MethodGet)
-	//a.Path("/logout").HandlerFunc(logoutHandler).Methods(http.MethodGet)
-	//a.Path("/signup").HandlerFunc(signupHandler).Methods(http.MethodPost)
-
 	// Lab routes
 	// All users should be able to GET labs
 	// All users should be able to PUT labs
@@ -631,10 +745,19 @@ func main() {
 
 	// Ad routes
 	// All users should be able to GET ads
-	// TODO sell and insert ads
+	r.Handle("/advert", negroni.New(
+		negroni.HandlerFunc(jwtMiddleware.HandlerWithNext),
+		negroni.Wrap(http.HandlerFunc(advert))))
 
-	// User route
-	r.Handle("/user", negroni.New(
+	// This route handles all the CRUD related activites a user might want to use to use on their
+	// personal account.
+	r.Handle("/account", negroni.New(
+		negroni.HandlerFunc(jwtMiddleware.HandlerWithNext),
+		negroni.Wrap(http.HandlerFunc(account))))
+
+	// This route serves information on all the users in this system. You need to be logged in to
+	// use this.
+	r.Handle("/user/{userName}", negroni.New(
 		negroni.HandlerFunc(jwtMiddleware.HandlerWithNext),
 		negroni.Wrap(http.HandlerFunc(user))))
 

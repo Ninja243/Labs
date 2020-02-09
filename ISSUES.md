@@ -59,6 +59,13 @@
        - ~Ok, this just doesn't work https://manage.auth0.com/dashboard/eu/mweya-labs/apis/5e0f33cea4414107f2bd7929/test~
        - ~Script created that tests the API using creds from auth0. Invalid Audience. https://github.com/Ninja243/Labs/blob/master/Test%20scripts/AudienceAPITest.py~
 
+ * ## :tv: Ads
+   * Legality
+     - I can't be the only one here who's keen on doing this, why hasn't anyone else?
+   * Optimization
+     - Can I remove adverts from the DB if the amount of views they have paid for has run out?
+     - What's the best way to archive/warehouse the older ones?
+       - Should I just make a new collection for them? 
 
  * ##  :bamboo: NoSQL DBs
    * RAM usage
