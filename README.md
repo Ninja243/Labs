@@ -1,6 +1,6 @@
 # Labs
 ## Tl;Dr
-A cross platform application being written in React Native to replace the service currently running at https://jl.mweya.duckdns.org
+A cross platform and GDPR compliant application being written in React Native to replace the service currently running at https://jl.mweya.duckdns.org
 
 Uses Docker, Golang and MongoDB, and comes with setup instructions!
 Check the alpha out at https://jl.x-mweya.duckdns.org, and feel free to use this as a boilerplate for your applications.
@@ -14,3 +14,6 @@ The readme file in that directory contains more potentially helpful information.
 
 ## Troubleshooting
 Problems? Feel free to contact me at mweyaruider@gmail.com and I'll do my best to help!
+
+## Hiring?
+I'm interested! Feel free to contact me at mweyaruider@gmail.com.
