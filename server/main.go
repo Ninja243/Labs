@@ -61,7 +61,7 @@ var adarchive mongo.Collection
 
 // Number of adverts in the database, this number refreshes every time the application
 // is restarted.
-var totalads int
+var totalads int64
 
 // Structs describing the kind of data that this application will store. A "Lab"
 // is a single page of code, a user is an account.
@@ -285,7 +285,7 @@ func advert(w http.ResponseWriter, r *http.Request) {
 	// https://godoc.org/go.mongodb.org/mongo-driver/mongo
 
 	// id != _id, id counts up from 0
-	randomID := rand.Intn(totalads)
+	randomID := rand.Int63n(totalads)
 	filter := bson.D{{Key: "id", Value: randomID}}
 	var ad Ad
 	err := ads.FindOne(r.Context(), filter).Decode(&ad)
