@@ -7,6 +7,8 @@
 //   - Legal package
 //   - Logging package
 //      - Write actual logfiles
+// Search functionality
+//   - Maybe just a find() call on the collection, followed by an iteration through that
 package main
 
 //"github.com/gorilla/context" <-  too old
@@ -203,7 +205,7 @@ func addMweya() {
 // Adds an example lab to the system for testing
 func addLab() {
 	lab := Lab {
-		"test-01", "Hello Test World", "print('hello world')", 0, time.Now(), 1, "Python3", "anon",
+		"test-01", "Hello Test World", "print('hello world')", 0, time.Now(), 1, "Python3", "mweya-test",
 	}
 	_, err := labs.InsertOne(context.Background(), lab)
 	if err != nil {
@@ -333,7 +335,7 @@ func advert(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// Write updated state of ad back to DB
-	_, err = ads.UpdateOne(r.Context(), filter, ad)
+	_, err = ads.ReplaceOne(r.Context(), filter, ad)
 	if err != nil {
 		responseJSON(err.Error(), w, http.StatusInternalServerError)
 		return
@@ -413,7 +415,7 @@ func getLab(w http.ResponseWriter, r *http.Request) {
 		}
 		// Update state of lab
 		lab.Views = lab.Views +1
-		_, err = labs.UpdateOne(r.Context(), filter, lab)
+		_, err = labs.ReplaceOne(r.Context(), filter, lab)
 		if err != nil {
 			responseJSON(err.Error(), w, http.StatusInternalServerError)
 			return
@@ -461,7 +463,7 @@ func getLab(w http.ResponseWriter, r *http.Request) {
 		// Keep the old uploaded date
 		update.Uploaded = lab.Uploaded
 		// Write changes to DB
-		_, err := labs.UpdateOne(r.Context(), filter, update)
+		_, err := labs.ReplaceOne(r.Context(), filter, update)
 		if err != nil {
 			responseJSON(err.Error(), w, http.StatusInternalServerError)
 			return
@@ -613,7 +615,7 @@ func account(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		// Write to Mongo
-		_, err = users.UpdateOne(r.Context(), filter, b)
+		_, err = users.ReplaceOne(r.Context(), filter, b)
 		if err != nil {
 			responseJSON(err.Error(), w, http.StatusInternalServerError)
 		}

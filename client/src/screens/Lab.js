@@ -7,8 +7,9 @@
 import React, { Component } from 'react'
 import { TouchableOpacity, Text, Button, View, SafeAreaView, StatusBar, AppState, Switch, ScreenRect, ScrollView, ActivityIndicator } from 'react-native'
 import CodeBlock from '../components/codeBlock'
+import { connect } from 'react-redux';
 
-export default class LabViewer extends Component {
+export class LabViewer extends Component {
     constructor(props) {
         super(props);
         this.state = { isLoading: true }
@@ -17,8 +18,15 @@ export default class LabViewer extends Component {
     componentDidMount() {
         // Link from props
         //console.log(this.props.navigation.state.params.link);
-        return fetch(this.props.navigation.state.params.link)
-            .then((response) => response.json())
+        var profile = this.props.profile;
+        return fetch(this.props.navigation.state.params.link, {
+            method: "GET",
+            headers: {
+                'User-Agent':'Labs v1',
+                'Authorization': 'Bearer ' + profile[0][profile[0].length - 1]
+            }
+        })
+            .then((response) => response.json() )
 
             .then((code) => {
 
@@ -40,7 +48,7 @@ export default class LabViewer extends Component {
 
     render() {
         const { navigate } = this.props.navigation;
-
+        //console.log(this.state.dataSource)
         if (this.state.isLoading) {
             return (
                 <SafeAreaView>
@@ -51,14 +59,38 @@ export default class LabViewer extends Component {
                 </SafeAreaView>
             )
         }
-
+        if (this.state.dataSource.message) { 
+            return (<SafeAreaView>
+                <ScrollView>
+                    <Text style={{ flexWrap: 'wrap'}}>{this.state.dataSource.message}</Text>
+                </ScrollView>
+            </SafeAreaView>);
+        } 
         return (
             <SafeAreaView>
                 <ScrollView>
-                    <CodeBlock code={this.state.dataSource.code} filename={this.state.dataSource.name} updated={this.state.dataSource.uploaded} language={this.state.datasource.language} author={this.state.datasource.author}></CodeBlock>
+                    <CodeBlock code={this.state.dataSource.code} filename={this.state.dataSource.name} updated={this.state.dataSource.uploaded} language={this.state.dataSource.language} author={this.state.dataSource.author} views={this.state.dataSource.views}></CodeBlock>
                 </ScrollView>
 
             </SafeAreaView>
         );
     }
 }
+
+const mapStateToProps = (state) => {
+    return {
+        i: state.blank.i,
+        profile: state.blank.profile,
+        readyState: state.blank.ready
+    };
+};
+const mapDispatchToProps = (dispatch) => {
+    return {
+        increment: () => dispatch(increment()),
+        logIn: p => dispatch(logIn(p)),
+        setReady: b => dispatch(setReady(b)),
+        logOut: () => dispatch(logOut())
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(LabViewer);

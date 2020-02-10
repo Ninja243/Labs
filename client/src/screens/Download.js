@@ -219,7 +219,7 @@ export default class downloadForm extends Component {
 
                                 <View style={{ flex: 1, flexDirection: 'row', borderColor: 'rgba(0, 122, 255, 1)', borderWidth: 0, padding: 10, justifyContent: 'center' }}>
                                     <TouchableOpacity onPress={() => {
-                                        navigate("Lab", { link: 'https://jl.x-mweya.duckdns.org/lab/' })
+                                        navigate("Lab", { link: 'https://jl.x-mweya.duckdns.org/lab/test-01' })
                                     }}>
                                         <Text style={{ color: 'rgba(0, 122, 255, 1)', textDecorationLine: 'underline' }}>Test Lab Viewer</Text>
                                     </TouchableOpacity>

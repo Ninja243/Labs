@@ -21,6 +21,7 @@ import legalPortal from './screens/LegalPortal'
 import uploadForm from './screens/Upload'
 import downloadForm from './screens/Download'
 import LabViewer from './screens/Lab'
+import ProfilePage from './screens/Profile'
 
 import { FaCode } from "react-icons/fa/index";
 import PolicyViewer from './screens/PolicyView.js';
@@ -46,7 +47,8 @@ const MainNavigator = createStackNavigator({
   LegalPortal: { screen: legalPortal },
   UploadForm: { screen: uploadForm },
   DownloadForm: { screen: downloadForm },
-  Lab: {screen:LabViewer},
+  Lab: { screen: LabViewer },
+  Profile: {screen: ProfilePage},
   // Tests  
   EndpointTest: { screen: endpointTestClass }
 },

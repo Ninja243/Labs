@@ -86,7 +86,7 @@ export class HomeScreen extends Component {
         // TEST
         /*var i = 0;
         while (i < 1000) {
-            console.log(i);
+            //console.log(i);
             i = i + 1;
         }*/
         const setReady = this.props.setReady;
@@ -130,7 +130,7 @@ export class HomeScreen extends Component {
                     //console.log("Silent Auth ->", code);
                     if (response.type === 'success') {
                         //console.log(response);
-                        console.log(code);
+                        //console.log(code);
                         if (this.handleResponse(response.params)) {
                             return true;
                         }
@@ -209,9 +209,31 @@ export class HomeScreen extends Component {
         // Should probably save the token tbh
         p.push(access_token);
         //console.log("Before redux -> ", p);
-        const logIn = this.props.logIn;
-        logIn(p);
-        return true;
+
+        // Account serverside plz
+        var accserverurl = 'https://jl.x-mweya.duckdns.org/account';
+
+        fetch(accserverurl, {
+            method: "PUT",
+            headers: {
+                'User-Agent': 'Labs v1',
+                'Authorization': 'Bearer ' + p[p.length - 1]
+            }
+        })
+            .then((response) => {
+                if (response.status == 200 || response.status == 409) {
+                    const logIn = this.props.logIn;
+                    logIn(p);
+                    return true;
+                } else {
+                    console.error(response.status)
+                }
+            })
+
+            ;
+
+
+
         //console.log("Handled ->", );
 
     };
@@ -223,7 +245,7 @@ export class HomeScreen extends Component {
         const i = this.props.i;
         var profile = this.props.profile;
         const readyState = this.props.ready;
-        console.log(this.props.profile);
+        //console.log(this.props.profile);
         // Do NOT put API calls in the render method
         //if (profile.length != 0) {
         //    this.privEndpointTest();
@@ -252,7 +274,7 @@ export class HomeScreen extends Component {
                                 }
                             }
                         }
-                            color= 'rgba(0, 122, 255, 1)'/>
+                            color='rgba(0, 122, 255, 1)' />
                         <View style={{ width: '50%', paddingTop: 40, paddingBottom: 10, flexDirection: 'column', justifyContent: 'center', alignContent: "flex-end" }}>
                             <Text style={{ fontSize: 15 }}>"I have read and agree with the Privacy Policy and Terms of Service"</Text>
                             <Text style={{ alignSelf: 'flex-end' }}>-You</Text>
@@ -348,9 +370,9 @@ export class HomeScreen extends Component {
                         </ScrollView>
                         :
                         <ScrollView>
-                            <View style={{ flex: 1, width: '90%', alignSelf: 'center',  paddingTop: '60%' }}>
-                                
-                                <TouchableOpacity onPress={() => { navigate('UploadForm') }} style={{  }}>
+                            <View style={{ flex: 1, width: '90%', alignSelf: 'center', paddingTop: '60%' }}>
+
+                                <TouchableOpacity onPress={() => { navigate('UploadForm') }} style={{}}>
                                     <View style={{ flex: 1, flexDirection: 'row', borderColor: 'rgba(0, 122, 255, 1)', borderWidth: 0, padding: 10, justifyContent: 'center' }}>
                                         <Feather name="upload-cloud" size={40} color="rgba(0, 122, 255, 1)" />
                                         <Text style={{ color: "rgba(0, 122, 255, 1)", fontSize: 30 }}> UPLOAD</Text>
@@ -368,7 +390,7 @@ export class HomeScreen extends Component {
                                         <Text style={{ color: "rgba(0, 122, 255, 1)", fontSize: 30 }}> SETTINGS</Text>
                                     </View>
                                 </TouchableOpacity>
-                                
+
                             </View>
                         </ScrollView>
                     :

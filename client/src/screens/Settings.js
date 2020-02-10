@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import { Text, Button, View, SafeAreaView, TouchableOpacity, ScrollView } from 'react-native'
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
-import { Feather, Entypo } from '@expo/vector-icons';
+import { Feather, Entypo, AntDesign } from '@expo/vector-icons';
 import { connect } from 'react-redux';
 import { logOut, logIn } from '../actions';
 
@@ -47,6 +47,13 @@ export class settings extends Component {
                         <View style={{ flex: 1, flexDirection: 'row', borderColor: 'rgba(0, 122, 255, 1)', borderWidth: 0, padding: 10, justifyContent: 'center' }}>
                             <Entypo name="paypal" size={40} color='rgba(0, 122, 255, 1)' />
                             <Text style={{ color: 'rgba(0, 122, 255, 1)', fontSize: 35 }}> TIP ME</Text>
+                        </View>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity onPress={() => { navigate('Profile'), {username: false} }} style={{ paddingTop: 10, }}>
+                        <View style={{ flex: 1, flexDirection: 'row', borderColor: 'rgba(0, 122, 255, 1)', borderWidth: 0, padding: 10, justifyContent: 'center' }}>
+                            <AntDesign name="idcard" size={40} color='rgba(0, 122, 255, 1)' />
+                            <Text style={{ color: 'rgba(0, 122, 255, 1)', fontSize: 35 }}> MY PROFILE</Text>
                         </View>
                     </TouchableOpacity>
 
