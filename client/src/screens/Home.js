@@ -275,10 +275,10 @@ export class HomeScreen extends Component {
                             }
                         }
                             color='rgba(0, 122, 255, 1)' />
-                        <View style={{ width: '50%', paddingTop: 40, paddingBottom: 10, flexDirection: 'column', justifyContent: 'center', alignContent: "flex-end" }}>
+                        <View style={{ width: '50%', marginTop: 40, marginBottom: 10, flexDirection: 'column', justifyContent: 'center', alignContent: "flex-end" }}>
                             <Text style={{ fontSize: 15 }}>"I have read and agree with the Privacy Policy and Terms of Service"</Text>
                             <Text style={{ alignSelf: 'flex-end' }}>-You</Text>
-                            <View style={{ paddingTop: 10, alignSelf: 'flex-start' }}>
+                            <View style={{ marginTop: 10, alignSelf: 'flex-start' }}>
                                 <TouchableOpacity onPress={() => navigate('Policy', { link: 'https://jl.x-mweya.duckdns.org/legal/privacy' })}>
                                     <Text style={{ color: 'rgba(0, 122, 255, 1)', textDecorationLine: 'underline' }}>Privacy Policy</Text>
                                 </TouchableOpacity>
@@ -286,8 +286,8 @@ export class HomeScreen extends Component {
                                     <Text style={{ color: 'rgba(0, 122, 255, 1)', textDecorationLine: 'underline' }}>Terms of Service</Text>
                                 </TouchableOpacity>
                             </View>
-                            <View style={{ flexDirection: 'row', alignSelf: 'flex-start', paddingTop: 10, }}>
-                                <Text style={{ paddingRight: 100 }}>Agreed</Text>
+                            <View style={{ flexDirection: 'row', alignSelf: 'flex-start', marginTop: 10, }}>
+                                <Text style={{ marginRight: 100 }}>Agreed</Text>
                                 <Switch onValueChange={() => { this.setState({ accepted: false }) }} value={this.state.accepted} thumbColor="rgba(0, 122, 255, 1)" />
                             </View>
                         </View>
@@ -297,9 +297,9 @@ export class HomeScreen extends Component {
                     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
 
                         <Button style={{ alignSelf: 'center' }} title="Log in with a google account" disabled />
-                        <View style={{ width: '50%', paddingTop: 40, paddingBottom: 10, flexDirection: 'column', justifyContent: 'center', alignContent: "flex-end" }}>
+                        <View style={{ width: '50%', marginTop: 40, marginBottom: 10, flexDirection: 'column', justifyContent: 'center', alignContent: "flex-end" }}>
                             <Text>You need to have read and agreed with the Privacy Policy and the Terms of Service to use this app. Tap the links below to read them.</Text>
-                            <View style={{ paddingTop: 10, alignSelf: 'flex-start' }}>
+                            <View style={{ marginTop: 10, alignSelf: 'flex-start' }}>
                                 <TouchableOpacity onPress={() => navigate('Policy', { link: 'https://jl.x-mweya.duckdns.org/legal/privacy' })}>
                                     <Text style={{ color: 'rgba(0, 122, 255, 1)', textDecorationLine: 'underline' }}>Privacy Policy</Text>
                                 </TouchableOpacity>
@@ -307,8 +307,8 @@ export class HomeScreen extends Component {
                                     <Text style={{ color: 'rgba(0, 122, 255, 1)', textDecorationLine: 'underline' }}>Terms of Service</Text>
                                 </TouchableOpacity >
                             </View>
-                            <View style={{ flexDirection: 'row', alignSelf: 'flex-start', paddingTop: 10, }}>
-                                <Text style={{ paddingRight: 100 }}>Agreed</Text>
+                            <View style={{ flexDirection: 'row', alignSelf: 'flex-start', marginTop: 10, }}>
+                                <Text style={{ marginRight: 100 }}>Agreed</Text>
                                 <Switch onValueChange={() => { this.setState({ accepted: true }) }} value={this.state.accepted} />
                             </View>
                         </View>
@@ -319,15 +319,15 @@ export class HomeScreen extends Component {
                 (readyState == true || readyState == undefined) ?
                     (this.state.debugMode == false) ?
                         <ScrollView>
-                            <Text style={{ color: 'rgba(44,44,46,1)', paddingBottom: 10, paddingTop: 20, paddingLeft: 40, alignSelf: 'flex-start', fontSize: 30 }}>{"User Profile"}</Text>
-                            <View style={{ backgroundColor: 'rgba(199,199,204,1)', padding: 5 }}>
+                            <Text style={{ color: 'rgba(44,44,46,1)', marginBottom: 10, marginTop: 20, marginLeft: 40, alignSelf: 'flex-start', fontSize: 30 }}>{"User Profile"}</Text>
+                            <View style={{ backgroundColor: 'rgba(199,199,204,1)', margin: 5 }}>
 
                                 <Text>{profile[0].toString()}</Text>
 
                             </View>
 
-                            <Text style={{ color: 'rgba(44,44,46,1)', paddingBottom: 10, paddingTop: 20, paddingLeft: 40, alignSelf: 'flex-start', fontSize: 30 }}>{"Private Endpoint Test"}</Text>
-                            <View style={{ backgroundColor: 'rgba(199,199,204,1)', padding: 5 }}>
+                            <Text style={{ color: 'rgba(44,44,46,1)', marginBottom: 10, marginTop: 20, marginLeft: 40, alignSelf: 'flex-start', fontSize: 30 }}>{"Private Endpoint Test"}</Text>
+                            <View style={{ backgroundColor: 'rgba(199,199,204,1)', margin: 5 }}>
 
                                 <Text>{this.state.pEndpointTest.toString()}</Text>
 
@@ -341,8 +341,8 @@ export class HomeScreen extends Component {
                                     //console.log(this.state.pEndpointTest);
                                 }
                             } />
-                            <Text style={{ color: 'rgba(44,44,46,1)', paddingBottom: 10, paddingTop: 20, paddingLeft: 40, alignSelf: 'flex-start', fontSize: 30 }}>{"Priv Scoped Endpoint Test"}</Text>
-                            <View style={{ backgroundColor: 'rgba(199,199,204,1)', padding: 5 }}>
+                            <Text style={{ color: 'rgba(44,44,46,1)', marginBottom: 10, marginTop: 20, marginLeft: 40, alignSelf: 'flex-start', fontSize: 30 }}>{"Priv Scoped Endpoint Test"}</Text>
+                            <View style={{ backgroundColor: 'rgba(199,199,204,1)', margin: 5 }}>
 
                                 <Text>{this.state.psEndpointTest}</Text>
 
@@ -354,8 +354,8 @@ export class HomeScreen extends Component {
                                     this.setState({ psEndpointTest: x });
                                 }
                             } />
-                            <Text style={{ color: 'rgba(44,44,46,1)', paddingBottom: 10, paddingTop: 20, paddingLeft: 40, alignSelf: 'flex-start', fontSize: 30 }}>{"Echo Endpoint Test"}</Text>
-                            <View style={{ backgroundColor: 'rgba(199,199,204,1)', padding: 5 }}>
+                            <Text style={{ color: 'rgba(44,44,46,1)', marginBottom: 10, marginTop: 20, marginLeft: 40, alignSelf: 'flex-start', fontSize: 30 }}>{"Echo Endpoint Test"}</Text>
+                            <View style={{ backgroundColor: 'rgba(199,199,204,1)', margin: 5 }}>
 
                                 <Text>{this.state.eEndpointTest}</Text>
 
@@ -370,22 +370,22 @@ export class HomeScreen extends Component {
                         </ScrollView>
                         :
                         <ScrollView>
-                            <View style={{ flex: 1, width: '90%', alignSelf: 'center', paddingTop: '60%' }}>
+                            <View style={{ flex: 1, width: '90%', alignSelf: 'center', marginTop: '60%' }}>
 
                                 <TouchableOpacity onPress={() => { navigate('UploadForm') }} style={{}}>
-                                    <View style={{ flex: 1, flexDirection: 'row', borderColor: 'rgba(0, 122, 255, 1)', borderWidth: 0, padding: 10, justifyContent: 'center' }}>
+                                    <View style={{ flex: 1, flexDirection: 'row', borderColor: 'rgba(0, 122, 255, 1)', borderWidth: 0, margin: 10, justifyContent: 'center' }}>
                                         <Feather name="upload-cloud" size={40} color="rgba(0, 122, 255, 1)" />
                                         <Text style={{ color: "rgba(0, 122, 255, 1)", fontSize: 30 }}> UPLOAD</Text>
                                     </View>
                                 </TouchableOpacity>
-                                <TouchableOpacity onPress={() => { navigate('DownloadForm') }} style={{ paddingTop: 10 }}>
-                                    <View style={{ flex: 1, flexDirection: 'row', borderColor: 'rgba(0, 122, 255, 1)', borderWidth: 0, padding: 10, justifyContent: 'center' }}>
+                                <TouchableOpacity onPress={() => { navigate('DownloadForm') }} style={{ marginTop: 10 }}>
+                                    <View style={{ flex: 1, flexDirection: 'row', borderColor: 'rgba(0, 122, 255, 1)', borderWidth: 0, margin: 10, justifyContent: 'center' }}>
                                         <Feather name="download-cloud" size={40} color="rgba(0, 122, 255, 1)" />
                                         <Text style={{ color: "rgba(0, 122, 255, 1)", fontSize: 30 }}> DOWNLOAD</Text>
                                     </View>
                                 </TouchableOpacity>
-                                <TouchableOpacity onPress={() => { navigate('Settings'), { userName: 'Lucy' } }} style={{ paddingTop: 10 }}>
-                                    <View style={{ flex: 1, flexDirection: 'row', borderColor: 'rgba(0, 122, 255, 1)', borderWidth: 0, padding: 10, justifyContent: 'center' }}>
+                                <TouchableOpacity onPress={() => { navigate('Settings'), { userName: 'Lucy' } }} style={{ marginTop: 10 }}>
+                                    <View style={{ flex: 1, flexDirection: 'row', borderColor: 'rgba(0, 122, 255, 1)', borderWidth: 0, margin: 10, justifyContent: 'center' }}>
                                         <Feather name="settings" size={40} color="rgba(0, 122, 255, 1)" />
                                         <Text style={{ color: "rgba(0, 122, 255, 1)", fontSize: 30 }}> SETTINGS</Text>
                                     </View>
@@ -396,11 +396,11 @@ export class HomeScreen extends Component {
                     :
                     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
 
-                        <View style={{ width: '50%', paddingTop: 40, paddingBottom: 10, flexDirection: 'column', }}>
+                        <View style={{ width: '50%', marginTop: 40, marginBottom: 10, flexDirection: 'column', }}>
 
-                            <View style={{ paddingBottom: 70, alignSelf: "center" }}>
+                            <View style={{ marginBottom: 70, alignSelf: "center" }}>
                                 <Text style={{ color: 'rgba(144,144,146,1)', fontSize: 20 }}>Hey {profile[0][1]}, we're setting things up for you.</Text>
-                                <Text style={{ color: 'rgba(164,164,166,1)', paddingLeft: 40 }}>This won't take long.</Text>
+                                <Text style={{ color: 'rgba(164,164,166,1)', marginLeft: 40 }}>This won't take long.</Text>
                             </View>
                             <ActivityIndicator size="large" color={"rgba(0, 122, 255, 1)"} />
 
@@ -456,14 +456,14 @@ export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen);
        <SafeAreaView>
 
                 <ScrollView>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', alignSelf: 'center', paddingTop: 170 }}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', alignSelf: 'center', marginTop: 170 }}>
 
-                        <View style={{ alignSelf: 'center', paddingLeft: 20, paddingRight: 20 }}><Button
+                        <View style={{ alignSelf: 'center', marginLeft: 20, marginRight: 20 }}><Button
                             title={s1}
                             onPress={() => navigate('Code')}
                         /></View>
 
-                        <View style={{ alignSelf: 'center', paddingLeft: 20, paddingRight: 20 }}><Button
+                        <View style={{ alignSelf: 'center', marginLeft: 20, marginRight: 20 }}><Button
                             title={s2}
                             onPress={() => navigate('Options')}
                         /></View>

@@ -19,39 +19,39 @@ export class settings extends Component {
         const  logOut  = this.props.logOut;
         return (
             <ScrollView>
-                <View style={{ flex: 1, width: '90%', alignSelf: 'center', paddingTop: '20%' }}>
+                <View style={{ flex: 1, width: '90%', alignSelf: 'center', marginTop: '20%' }}>
 
 
                     <TouchableOpacity onPress={() => {  }}>
-                        <View style={{ flex: 1, flexDirection: 'row', borderColor: 'rgba(0, 122, 255, 1)', borderWidth: 0, padding: 10, justifyContent: 'center' }}>
+                        <View style={{ flex: 1, flexDirection: 'row', borderColor: 'rgba(0, 122, 255, 1)', borderWidth: 0, margin: 10, justifyContent: 'center' }}>
                             <Feather name="trending-up" size={40} color='rgba(0, 122, 255, 1)' style={{alignSelf:'flex-end'}}/>
                             <Text style={{ color: 'rgba(0, 122, 255, 1)', fontSize: 35 }}> GO PRO</Text>
                         </View>
                     </TouchableOpacity>
 
-                    <TouchableOpacity onPress={() => { navigate('AppSource') }} style={{ paddingTop:10 }}>
-                        <View style={{ flex: 1, flexDirection: 'row', borderColor: 'rgba(0, 122, 255, 1)', borderWidth: 0, padding: 10, justifyContent: 'center' }}>
+                    <TouchableOpacity onPress={() => { navigate('AppSource') }} style={{ marginTop:10 }}>
+                        <View style={{ flex: 1, flexDirection: 'row', borderColor: 'rgba(0, 122, 255, 1)', borderWidth: 0, margin: 10, justifyContent: 'center' }}>
                             <Feather name="github" size={40} color='rgba(0, 122, 255, 1)' />
                             <Text style={{ color: 'rgba(0, 122, 255, 1)', fontSize: 35 }}> VIEW SOURCE</Text>
                         </View>
                     </TouchableOpacity>
 
-                    <TouchableOpacity onPress={() => { navigate('LegalPortal') }} style={{ paddingTop: 10 }}>
-                        <View style={{ flex: 1, flexDirection: 'row', borderColor: 'rgba(0, 122, 255, 1)', borderWidth: 0, padding: 10, justifyContent: 'center' }}>
+                    <TouchableOpacity onPress={() => { navigate('LegalPortal') }} style={{ marginTop: 10 }}>
+                        <View style={{ flex: 1, flexDirection: 'row', borderColor: 'rgba(0, 122, 255, 1)', borderWidth: 0, margin: 10, justifyContent: 'center' }}>
                             <Feather name="book" size={40} color='rgba(0, 122, 255, 1)' />
                             <Text style={{ color: 'rgba(0, 122, 255, 1)', fontSize: 35 }}> LEGAL</Text>
                         </View>
                     </TouchableOpacity>
 
-                    <TouchableOpacity onPress={() => { navigate('TipJar')}} style={{ paddingTop: 10,  }}>
-                        <View style={{ flex: 1, flexDirection: 'row', borderColor: 'rgba(0, 122, 255, 1)', borderWidth: 0, padding: 10, justifyContent: 'center' }}>
+                    <TouchableOpacity onPress={() => { navigate('TipJar')}} style={{ marginTop: 10,  }}>
+                        <View style={{ flex: 1, flexDirection: 'row', borderColor: 'rgba(0, 122, 255, 1)', borderWidth: 0, margin: 10, justifyContent: 'center' }}>
                             <Entypo name="paypal" size={40} color='rgba(0, 122, 255, 1)' />
                             <Text style={{ color: 'rgba(0, 122, 255, 1)', fontSize: 35 }}> TIP ME</Text>
                         </View>
                     </TouchableOpacity>
 
-                    <TouchableOpacity onPress={() => { navigate('Profile'), {username: false} }} style={{ paddingTop: 10, }}>
-                        <View style={{ flex: 1, flexDirection: 'row', borderColor: 'rgba(0, 122, 255, 1)', borderWidth: 0, padding: 10, justifyContent: 'center' }}>
+                    <TouchableOpacity onPress={() => { navigate('Profile'), {username: false} }} style={{ marginTop: 10, }}>
+                        <View style={{ flex: 1, flexDirection: 'row', borderColor: 'rgba(0, 122, 255, 1)', borderWidth: 0, margin: 10, justifyContent: 'center' }}>
                             <AntDesign name="idcard" size={40} color='rgba(0, 122, 255, 1)' />
                             <Text style={{ color: 'rgba(0, 122, 255, 1)', fontSize: 35 }}> MY PROFILE</Text>
                         </View>
@@ -63,15 +63,15 @@ export class settings extends Component {
                         var p = [];
                         logOut();
                         navigate('Home')
-                     }} style={{ paddingTop: 10 }}>
-                        <View style={{ flex: 1, flexDirection: 'row', borderColor: 'rgba(0, 122, 255, 1)', borderWidth: 0, padding: 10, justifyContent: 'center' }}>
+                     }} style={{ marginTop: 10 }}>
+                        <View style={{ flex: 1, flexDirection: 'row', borderColor: 'rgba(0, 122, 255, 1)', borderWidth: 0, margin: 10, justifyContent: 'center' }}>
                             <Feather name="user-minus" size={40} color='rgba(0, 122, 255, 1)' />
                             <Text style={{ color: 'rgba(0, 122, 255, 1)', fontSize: 35 }}> LOG OUT</Text>
                         </View>
                     </TouchableOpacity>
 
-                    <TouchableOpacity onPress={() => { navigate('TipJar') }} style={{ paddingTop: '40%', }}>
-                        <View style={{ flex: 1, flexDirection: 'row', borderColor: 'rgba(255, 30, 0, 1)', borderWidth: 0, padding: 10, justifyContent: 'center' }}>
+                    <TouchableOpacity onPress={() => { navigate('TipJar') }} style={{ marginTop: '40%', }}>
+                        <View style={{ flex: 1, flexDirection: 'row', borderColor: 'rgba(255, 30, 0, 1)', borderWidth: 0, margin: 10, justifyContent: 'center' }}>
                             <Feather name="user-x" size={40} color='rgba(255, 30, 0, 1)' />
                             <Text style={{ color: 'rgba(255, 30, 0, 1)', fontSize: 35 }}> DELETE ACCOUNT</Text>
                         </View>
