@@ -8,6 +8,7 @@ import React, { Component } from 'react'
 import { TouchableOpacity, Text, Button, View, SafeAreaView, StatusBar, AppState, Switch, ScreenRect, ScrollView, ActivityIndicator } from 'react-native'
 import CodeBlock from '../components/codeBlock'
 import { connect } from 'react-redux';
+import { Feather, Entypo, AntDesign } from '@expo/vector-icons';
 
 export class ProfilePage extends Component {
     constructor(props) {
@@ -97,14 +98,50 @@ export class ProfilePage extends Component {
             </SafeAreaView>);
         }
         return (
-            <SafeAreaView>
-                <ScrollView>
-                    <Text>@{this.state.dataSource.id}</Text>
-                    <Text>Labs: {this.state.dataSource.labs}</Text>
-                    <Text>Created: {this.state.dataSource.datecreated}</Text>
-                </ScrollView>
+            (this.state.dataSource.labs != null) ?
+                <SafeAreaView>
+                    <ScrollView>
+                        <View style={{ flex: 1, width: '90%', alignSelf: 'center', marginTop: '20%' }}>
+                            <View style={{ flex: 1, flexDirection: 'row', borderColor: 'rgba(0, 122, 255, 1)', borderWidth: 0, margin: 10, justifyContent: 'center' }}>
+                                <Text style={{ color: 'rgba(0, 122, 255, 1)', fontSize: 35, textDecorationLine: "underline" }}>@{this.state.dataSource.id}</Text>
+                            </View>
+                        </View>
 
-            </SafeAreaView>
+                        <View style={{ flex: 1, width: '90%', alignSelf: 'center', }}>
+                            <View style={{ flex: 1, flexDirection: 'row', borderColor: 'rgba(0, 122, 255, 1)', borderWidth: 0, margin: 10, justifyContent: 'center' }}>
+                                <Text style={{ color: 'rgba(0, 122, 255, 1)', fontSize: 35 }}>Labs: {this.state.dataSource.labs}</Text>
+                            </View>
+                        </View>
+
+                        <View style={{ flex: 1, width: '90%', alignSelf: 'center', }}>
+                            <View style={{ flex: 1, flexDirection: 'row', borderColor: 'rgba(0, 122, 255, 1)', borderWidth: 0, margin: 10, justifyContent: 'center' }}>
+                                <Text style={{ color: 'rgba(44,44,46,1)', fontSize: 25 }}>Created: {this.state.dataSource.datecreated.substring(0, 10)}</Text>
+                            </View>
+                        </View>
+                        <Text></Text>
+                        <Text></Text>
+                    </ScrollView>
+
+                </SafeAreaView>
+                :
+                <SafeAreaView>
+                    <ScrollView>
+                        <View style={{ flex: 1, width: '90%', alignSelf: 'center', marginTop: '20%' }}>
+                            <View style={{ flex: 1, flexDirection: 'row', borderColor: 'rgba(0, 122, 255, 1)', borderWidth: 0, margin: 10, justifyContent: 'center' }}>
+                                <Text style={{ color: 'rgba(0, 122, 255, 1)', fontSize: 35, textDecorationLine: "underline" }}>@{this.state.dataSource.id}</Text>
+                            </View>
+                        </View>
+
+                        <View style={{ flex: 1, width: '90%', alignSelf: 'center', }}>
+                            <View style={{ flex: 1, flexDirection: 'row', borderColor: 'rgba(0, 122, 255, 1)', borderWidth: 0, margin: 10, justifyContent: 'center' }}>
+                                <Text style={{ color: 'rgba(44,44,46,1)', fontSize: 25 }}>Created: {this.state.dataSource.datecreated.substring(0, 10)}</Text>
+                            </View>
+                        </View>
+                        <Text></Text>
+                        <Text></Text>
+                    </ScrollView>
+
+                </SafeAreaView>
         );
     }
 }
