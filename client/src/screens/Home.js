@@ -350,13 +350,13 @@ export class HomeScreen extends Component {
                         <ScrollView>
                             <View style={{ flex: 1, width: '90%', alignSelf: 'center',  paddingTop: '60%' }}>
                                 
-                                <TouchableOpacity onPress={() => { }} style={{  }}>
+                                <TouchableOpacity onPress={() => { navigate('UploadForm') }} style={{  }}>
                                     <View style={{ flex: 1, flexDirection: 'row', borderColor: 'rgba(0, 122, 255, 1)', borderWidth: 0, padding: 10, justifyContent: 'center' }}>
                                         <Feather name="upload-cloud" size={40} color="rgba(0, 122, 255, 1)" />
                                         <Text style={{ color: "rgba(0, 122, 255, 1)", fontSize: 30 }}> UPLOAD</Text>
                                     </View>
                                 </TouchableOpacity>
-                                <TouchableOpacity onPress={() => { }} style={{ paddingTop: 10 }}>
+                                <TouchableOpacity onPress={() => { navigate('DownloadForm') }} style={{ paddingTop: 10 }}>
                                     <View style={{ flex: 1, flexDirection: 'row', borderColor: 'rgba(0, 122, 255, 1)', borderWidth: 0, padding: 10, justifyContent: 'center' }}>
                                         <Feather name="download-cloud" size={40} color="rgba(0, 122, 255, 1)" />
                                         <Text style={{ color: "rgba(0, 122, 255, 1)", fontSize: 30 }}> DOWNLOAD</Text>

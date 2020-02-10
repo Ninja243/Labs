@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Platform, Text, Button, View } from 'react-native'
+import { Platform, Text, Button, View, TouchableOpacity } from 'react-native'
 //import { createAppContainer } from 'react-navigation';
 //import { createStackNavigator } from 'react-navigation-stack';
 import { Highlight } from 'react-fast-highlight';
@@ -16,6 +16,11 @@ export default class CodeBlock extends Component {
                         <Text>{this.props.code}</Text>
                     
                 </View>
+                <Text>{this.props.views} views</Text>
+                <Text>Written in {this.props.language}</Text>
+                <TouchableOpacity>
+                    <Text style={{ color: 'rgba(0, 122, 255, 1)', textDecorationLine: 'underline' }}>@{this.props.author}</Text>
+                </TouchableOpacity>
             </View>
         );
     }

@@ -18,6 +18,9 @@ import settings from './screens/Settings.js';
 import appSource from './screens/AppSource.js';
 import tipJar from './screens/TipJar.js';
 import legalPortal from './screens/LegalPortal'
+import uploadForm from './screens/Upload'
+import downloadForm from './screens/Download'
+import LabViewer from './screens/Lab'
 
 import { FaCode } from "react-icons/fa/index";
 import PolicyViewer from './screens/PolicyView.js';
@@ -40,9 +43,12 @@ const MainNavigator = createStackNavigator({
   Settings: { screen: settings },
   AppSource: { screen: appSource },
   TipJar: { screen: tipJar },
-  LegalPortal: {screen: legalPortal},
-  // Tests
-  EndpointTest: {screen: endpointTestClass}
+  LegalPortal: { screen: legalPortal },
+  UploadForm: { screen: uploadForm },
+  DownloadForm: { screen: downloadForm },
+  Lab: {screen:LabViewer},
+  // Tests  
+  EndpointTest: { screen: endpointTestClass }
 },
   {
     initialRouteName: 'Home',

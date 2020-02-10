@@ -200,6 +200,17 @@ func addMweya() {
 	}
 }
 
+// Adds an example lab to the system for testing
+func addLab() {
+	lab := Lab {
+		"test-01", "Hello Test World", "print('hello world')", 0, time.Now(), 1, "Python3", "anon",
+	}
+	_, err := labs.InsertOne(context.Background(), lab)
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
 // Adds a test advert to they system for testing
 func addTestAd() {
 	ad := Ad{
@@ -510,8 +521,13 @@ func putLab(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Fill in/overwrite information
+	//totallabs, err := labs.CountDocuments(nil, nil, nil)
+	//if err != nil {
+	//	log.Print(err)
+	//}
 	lab.Author = user.ID
 	lab.Uploaded = time.Now()
+	lab.ID = lab.Author+"-"+lab.Name
 	lab.Views = 0
 	
 	// Insert into DB
@@ -835,7 +851,8 @@ func main() {
 	}
 
 	// Debug
-	//addMweya()
+	addLab()
+	addMweya()
 	insertInitialPrivacyPolicy()
 	insertInitialToS()
 
