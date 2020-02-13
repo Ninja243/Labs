@@ -1,6 +1,7 @@
 # Stuff I don't understand
  * ##  :neckbeard: Go
    * API doesn't check to see if azp is the same as the Client ID
+   * Make endpoint for searching
    * ~Context~
      - ~Why~
      - ~How do you add info to the context?~
@@ -78,6 +79,10 @@
    * Loading screens via async/await
      - Do I just not understand async?
    * Parameters not being passed to profile screen?
+   * Client ignoring labs created?
+   * Search API endpoint not handled
+   * Component for list in search results needed
+     - Infinite scrolling?
 
  * ##  :imp: React/Redux
    * readyState has an initial state of false, however when checked on boot it's 'undefined'

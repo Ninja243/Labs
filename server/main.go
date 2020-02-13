@@ -401,7 +401,7 @@ func getLab(w http.ResponseWriter, r *http.Request) {
 		err := labs.FindOne(r.Context(), filter).Decode(&lab)
 		if err != nil {
 			if err.Error() == "mongo: no documents in result" {
-				responseJSON("user not found", w, http.StatusNotFound)
+				responseJSON("lab not found", w, http.StatusNotFound)
 				return
 			}
 			responseJSON(err.Error(), w, http.StatusInternalServerError)
