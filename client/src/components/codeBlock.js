@@ -4,6 +4,7 @@ import { Platform, Text, Button, View, TouchableOpacity } from 'react-native'
 //import { createStackNavigator } from 'react-navigation-stack';
 import { Highlight } from 'react-fast-highlight';
 import { ScrollView } from 'react-native-gesture-handler';
+import NavigationService from '../components/navService'
 
 const fontFamily = Platform.OS === 'ios' ? 'Courier' : 'monospace';
 
@@ -21,7 +22,7 @@ export default class CodeBlock extends Component {
                     <View style={{ flexDirection: "row", paddingTop: '20%', width: '100%', flexWrap: 'wrap' }}>
                         <Text>This lab has {this.props.views} views and has been </Text>
                         <Text>written in {this.props.language} by </Text>
-                        <TouchableOpacity>
+                        <TouchableOpacity onPress={() => { NavigationService.navigate('Profile'), { username: this.props.author }}}>
                             <Text style={{ color: 'rgba(0, 122, 255, 1)', textDecorationLine: 'underline' }}>
                                 @{this.props.author}
                             </Text>

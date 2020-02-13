@@ -29,7 +29,7 @@ export default class CodeScreen extends Component {
             .catch((error) => {
                 const { navigate } = this.props.navigation;
                 navigate("FatalError", {
-                    message: "While trying to fetch the code for this block, our server said '" + response.error_description + "' which is really rude and quite frankly, uncalled for. We're sorry for it's behaviour."
+                    message: "While trying to fetch the code for this block, our server said '" + response.error_description.replace("\n", "") + "' which is really rude and quite frankly, uncalled for. We're sorry for it's behaviour."
                 });
             });
     }

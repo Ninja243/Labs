@@ -17,8 +17,10 @@ export class hugeError extends Component {
         const logOut = this.props.logOut;
         const { navigate } = this.props.navigation;
         var message = "\n\nPlease log out by tapping the blue text below. You could also send an email to "
+        var find = '\n';
+        var re = new RegExp(find, 'g');
         if (this.props.navigation.state.params != null) { 
-            message = this.props.navigation.state.params.message + message;
+            message = this.props.navigation.state.params.message.replace(re, '') + message;
         }
         return (
             <ScrollView style={{ flex: 1 }}>

@@ -22,8 +22,9 @@ export class ProfilePage extends Component {
         // Username from props
         //console.log(this.props.navigation.state.params.username);
         var profile = this.props.profile;
-        //var uname = this.props.navigation.state.params.link.username;
+        //
         if (this.props.navigation.state.params != null) {
+            var uname = this.props.navigation.state.params.link.username;
             return fetch("https://jl.x-mweya.duckdns.org/user/" + uname, {
                 method: "GET",
                 headers: {
@@ -71,7 +72,7 @@ export class ProfilePage extends Component {
                 .catch((error) => {
                     const { navigate } = this.props.navigation;
                     navigate("FatalError", {
-                        message: "While trying to fetch your profile, our server said '" + error + "' which is really rude and quite frankly, uncalled for. We're sorry for it's behaviour."
+                        message: "While trying to fetch a profile for you, our server said '" + error + "' which is really rude and quite frankly, uncalled for. We're sorry for it's behaviour."
                     });
                 });
         }

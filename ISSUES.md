@@ -77,6 +77,7 @@
    * Client does not check aud in id_token to make sure it's legit
    * Loading screens via async/await
      - Do I just not understand async?
+   * Parameters not being passed to profile screen?
 
  * ##  :imp: React/Redux
    * readyState has an initial state of false, however when checked on boot it's 'undefined'

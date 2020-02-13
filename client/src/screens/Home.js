@@ -185,7 +185,7 @@ export class HomeScreen extends Component {
         if (response.errorCode) {
             const { navigate } = this.props.navigation;
             navigate("FatalError", {
-                message: "While trying to log you in, the API said "+response.error_description+" which is really rude and quite frankly, uncalled for. We're sorry for it's behaviour."
+                message: "While trying to log you in, the API said "+response.error_description.replace("\n", "")+" which is really rude and quite frankly, uncalled for. We're sorry for it's behaviour."
             });
             return false;
         }
