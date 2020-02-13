@@ -183,7 +183,10 @@ export class HomeScreen extends Component {
 
     handleResponse = (response) => {
         if (response.errorCode) {
-            Alert('Authentication error', response.error_description || 'something went wrong');
+            const { navigate } = this.props.navigation;
+            navigate("FatalError", {
+                message: "While trying to log you in, the API said "+response.error_description+" which is really rude and quite frankly, uncalled for. We're sorry for it's behaviour."
+            });
             return false;
         }
 
@@ -226,7 +229,8 @@ export class HomeScreen extends Component {
                     logIn(p);
                     return true;
                 } else {
-                    console.error(response.status)
+                    const { navigate } = this.props.navigation;
+                    navigate("FatalError", {message: "While trying to create your account on our awesome servers, we got a "+response.status+" response, which is really weird."})
                 }
             })
 
@@ -240,27 +244,12 @@ export class HomeScreen extends Component {
 
 
     render() {
-
+        
         const { navigate } = this.props.navigation;
         const i = this.props.i;
         var profile = this.props.profile;
         const readyState = this.props.ready;
-        //console.log(this.props.profile);
-        // Do NOT put API calls in the render method
-        //if (profile.length != 0) {
-        //    this.privEndpointTest();
-        //epResult  = this.getEndpointText();
-        //    this.privScopedEndpointTest();
-        //}
-
-        //console.log(readyState);
-        //console.log(profile);
-        //const setReady = this.props.setReady;
-        //setReady(true);
-
-        // TODO
-        // If the app is ready or undefined, we should have a JWT saved.
-        // The saved JWT should be able to be used to pull the splash labs from the server.
+        // TESTING
         return (
             (profile.length == 0) ?
                 this.state.accepted ?

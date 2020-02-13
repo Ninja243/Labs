@@ -25,7 +25,7 @@ import (
 	"math/rand"
 	"net/http"
 	"os"
-	
+
 	"strings"
 	"time"
 
@@ -90,7 +90,7 @@ type Lab struct {
 	Uploaded time.Time `json:"uploaded"`
 	Rating   float64   `json:"rating"`
 	Language string    `json:"language"`
-	Author string `json:"author"`
+	Author   string    `json:"author"`
 }
 
 // Ad contains an ID for identification as well as a title, subtitle and a link to
@@ -204,7 +204,7 @@ func addMweya() {
 
 // Adds an example lab to the system for testing
 func addLab() {
-	lab := Lab {
+	lab := Lab{
 		"test-01", "Hello Test World", "print('hello world')", 0, time.Now(), 1, "Python3", "mweya-test",
 	}
 	_, err := labs.InsertOne(context.Background(), lab)
@@ -414,7 +414,7 @@ func getLab(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		// Update state of lab
-		lab.Views = lab.Views +1
+		lab.Views = lab.Views + 1
 		_, err = labs.ReplaceOne(r.Context(), filter, lab)
 		if err != nil {
 			responseJSON(err.Error(), w, http.StatusInternalServerError)
@@ -513,7 +513,7 @@ func putLab(w http.ResponseWriter, r *http.Request) {
 		responseJSON(err.Error(), w, http.StatusBadRequest)
 		return
 	}
-	
+
 	// Read request body
 	var lab Lab
 	err = json.NewDecoder(r.Body).Decode(&lab)
@@ -529,9 +529,9 @@ func putLab(w http.ResponseWriter, r *http.Request) {
 	//}
 	lab.Author = user.ID
 	lab.Uploaded = time.Now()
-	lab.ID = lab.Author+"-"+lab.Name
+	lab.ID = lab.Author + "-" + lab.Name
 	lab.Views = 0
-	
+
 	// Insert into DB
 	_, err = labs.InsertOne(r.Context(), lab)
 	if err != nil {

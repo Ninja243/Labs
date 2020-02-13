@@ -8,7 +8,7 @@ import React, { Component } from 'react'
 import { TouchableOpacity, Text, Button, View, SafeAreaView, StatusBar, AppState, Switch, ScreenRect, ScrollView, ActivityIndicator } from 'react-native'
 import CodeBlock from '../components/codeBlock'
 import { connect } from 'react-redux';
-import { Feather, Entypo, AntDesign } from '@expo/vector-icons';
+import { Feather, Entypo, AntDesign, Iconicons, Octicons } from '@expo/vector-icons';
 
 export class ProfilePage extends Component {
     constructor(props) {
@@ -69,7 +69,10 @@ export class ProfilePage extends Component {
 
                 })
                 .catch((error) => {
-                    console.error(error);
+                    const { navigate } = this.props.navigation;
+                    navigate("FatalError", {
+                        message: "While trying to fetch your profile, our server said '" + error + "' which is really rude and quite frankly, uncalled for. We're sorry for it's behaviour."
+                    });
                 });
         }
     }
@@ -126,7 +129,14 @@ export class ProfilePage extends Component {
                 :
                 <SafeAreaView>
                     <ScrollView>
-                        <View style={{ flex: 1, width: '90%', alignSelf: 'center', marginTop: '20%' }}>
+
+                        <View style={{ flex: 1, width: '90%', alignSelf: 'center', marginTop: '30%' }}>
+                            <View style={{ flex: 1, flexDirection: 'row', borderColor: 'rgba(0, 122, 255, 1)', borderWidth: 0, margin: 10, justifyContent: 'center' }}>
+                                <Octicons name="person" size={90} color='rgba(0, 122, 255, 1)' style={{ alignSelf: 'flex-end' }} />
+                            </View>
+                        </View>
+
+                        <View style={{ flex: 1, width: '90%', alignSelf: 'center', marginTop: '10%' }}>
                             <View style={{ flex: 1, flexDirection: 'row', borderColor: 'rgba(0, 122, 255, 1)', borderWidth: 0, margin: 10, justifyContent: 'center' }}>
                                 <Text style={{ color: 'rgba(0, 122, 255, 1)', fontSize: 35, textDecorationLine: "underline" }}>@{this.state.dataSource.id}</Text>
                             </View>

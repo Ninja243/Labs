@@ -29,6 +29,8 @@ import NavigationService from './components/navService';
 import profileReducer from './components/reducer';
 import endpointTestClass from './tests/Endpoints'
 
+import AdModal from './components/AdModal'
+import hugeError from './screens/HugeError'
 
 import Feather from '@expo/vector-icons'
 
@@ -48,7 +50,8 @@ const MainNavigator = createStackNavigator({
   UploadForm: { screen: uploadForm },
   DownloadForm: { screen: downloadForm },
   Lab: { screen: LabViewer },
-  Profile: {screen: ProfilePage},
+  Profile: { screen: ProfilePage },
+  FatalError: {screen: hugeError},
   // Tests  
   EndpointTest: { screen: endpointTestClass }
 },
@@ -100,6 +103,7 @@ export default class App extends React.Component {
   render() {
 
     //, marginTop: StatusBar.currentHeight
+    // <AdModal /> <- Banner ad
     return (
       <View style={{ flex: 1 }}>
         <StatusBar hidden={true} />
@@ -109,8 +113,8 @@ export default class App extends React.Component {
             NavigationService.setTopLevelNavigator(navigatorRef);
           }}
         />
+        
         <Footer style={{ alignSelf: 'flex-end' }} />
-
       </View>
     );
   }
