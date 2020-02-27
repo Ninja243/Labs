@@ -2,6 +2,7 @@
  * ##  :neckbeard: Go
    * API doesn't check to see if azp is the same as the Client ID
    * Make endpoint for searching
+   * Appending to user string array for lab ID doesn't work?
    * ~Context~
      - ~Why~
      - ~How do you add info to the context?~
@@ -72,6 +73,8 @@
    * RAM usage
      - Is it higher? Which solutions are better when? 
        - I've always just thought that they're interchangable
+       - *DO NOT LEAVE THE DEBUG FUNCTIONS FOR INSERTING POLICIES ON*
+         - HAVING 96 COPIES OF ANYTHING IS NOT OK
 
  * ##  :imp: React/JSX
    * Client does not check nonce
@@ -94,3 +97,7 @@
    * Do I need to register my Ad Engine somewhere?
    * Everything posted to the app will be done so under a Creative Commons license. Is this enough to stop DMCA complaints?
    * Do I need to be worried about the DMCA?
+
+
+# TODO
+ * Above

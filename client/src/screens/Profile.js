@@ -45,7 +45,9 @@ export class ProfilePage extends Component {
 
                 })
                 .catch((error) => {
-                    console.error(error);
+                    navigate("FatalError", {
+                        message: "While trying to fetch a profile for you, our server said '" + error + "' which is really rude and quite frankly, uncalled for. We're sorry for it's behaviour."
+                    });
                 });
         } else {
             // Fetch own profile
@@ -81,6 +83,22 @@ export class ProfilePage extends Component {
 
     };
 
+    unpackLabs = (labs) => {
+        const { navigate } = this.props.navigation;
+        var elements = []
+        var i = 0
+        console.log(this.state.dataStore)
+        while (i < labs.length) {
+            var lab = labs[i]
+            elements.push( <Text key={i} style={{ color: 'rgba(0, 122, 255, 1)', fontSize: 15, textDecorationLine: "underline" }} onPress={() => {
+                //console.log('https://jl.x-mweya.duckdns.org/lab/' + lab);
+                navigate("Lab", { link: 'https://jl.x-mweya.duckdns.org/lab/' + lab })
+            }}>/{labs[i]}</Text>)
+            i = i + 1
+        }
+        return elements
+    }
+
     render() {
         const { navigate } = this.props.navigation;
         //console.log(this.state.dataSource)
@@ -97,7 +115,7 @@ export class ProfilePage extends Component {
         if (this.state.dataSource.message) {
             return (<SafeAreaView>
                 <ScrollView>
-                    <Text style={{ flexWrap: 'wrap' }}>{this.state.dataSource.message}</Text>
+                    <Text style={{ flexWrap: 'wrap', alignSelf: "center" }}>{this.state.dataSource.message}</Text>
                 </ScrollView>
             </SafeAreaView>);
         }
@@ -105,15 +123,16 @@ export class ProfilePage extends Component {
             (this.state.dataSource.labs != null) ?
                 <SafeAreaView>
                     <ScrollView>
-                        <View style={{ flex: 1, width: '90%', alignSelf: 'center', marginTop: '20%' }}>
+
+                        <View style={{ flex: 1, width: '90%', alignSelf: 'center', marginTop: '30%' }}>
                             <View style={{ flex: 1, flexDirection: 'row', borderColor: 'rgba(0, 122, 255, 1)', borderWidth: 0, margin: 10, justifyContent: 'center' }}>
-                                <Text style={{ color: 'rgba(0, 122, 255, 1)', fontSize: 35, textDecorationLine: "underline" }}>@{this.state.dataSource.id}</Text>
+                                <Octicons name="person" size={90} color='rgba(0, 122, 255, 1)' style={{ alignSelf: 'flex-end' }} />
                             </View>
                         </View>
 
-                        <View style={{ flex: 1, width: '90%', alignSelf: 'center', }}>
+                        <View style={{ flex: 1, width: '90%', alignSelf: 'center', marginTop: '0%' }}>
                             <View style={{ flex: 1, flexDirection: 'row', borderColor: 'rgba(0, 122, 255, 1)', borderWidth: 0, margin: 10, justifyContent: 'center' }}>
-                                <Text style={{ color: 'rgba(0, 122, 255, 1)', fontSize: 35 }}>Labs: {this.state.dataSource.labs}</Text>
+                                <Text style={{ color: 'rgba(0, 122, 255, 1)', fontSize: 35, textDecorationLine: "underline" }}>@{this.state.dataSource.id}</Text>
                             </View>
                         </View>
 
@@ -122,8 +141,24 @@ export class ProfilePage extends Component {
                                 <Text style={{ color: 'rgba(44,44,46,1)', fontSize: 25 }}>Created: {this.state.dataSource.datecreated.substring(0, 10)}</Text>
                             </View>
                         </View>
-                        <Text></Text>
-                        <Text></Text>
+
+
+                        <View style={{ flex: 1, width: '90%', alignSelf: 'center', marginTop: '5%' }}>
+                            <View style={{ flex: 1, flexDirection: 'row', borderColor: 'rgba(0, 122, 255, 1)', borderWidth: 0, margin: 10, justifyContent: 'center' }}>
+                                <Text style={{ color: 'rgba(0, 122, 255, 1)', fontSize: 35 }}>Labs: </Text>
+                            </View>
+                        </View>
+
+                        <View style={{ flex: 1, width: '90%', alignSelf: 'center', }}>
+                            <View style={{ flex: 1, flexDirection: 'row', borderColor: 'rgba(0, 122, 255, 1)', borderWidth: 0, margin: 10, justifyContent: 'center' }}>
+                                <ScrollView>
+                                    <View style={{ justifyContent: 'center', alignContent: 'center', flexDirection:"column" }}>{this.unpackLabs(this.state.dataSource.labs)}</View>
+                                </ScrollView >
+                            </View>
+                        </View>
+
+
+
                     </ScrollView>
 
                 </SafeAreaView>

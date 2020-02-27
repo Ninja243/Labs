@@ -370,7 +370,7 @@ export class HomeScreen extends Component {
                                 <TouchableOpacity onPress={() => { navigate('DownloadForm') }} style={{ marginTop: 10 }}>
                                     <View style={{ flex: 1, flexDirection: 'row', borderColor: 'rgba(0, 122, 255, 1)', borderWidth: 0, margin: 10, justifyContent: 'center' }}>
                                         <Feather name="download-cloud" size={40} color="rgba(0, 122, 255, 1)" />
-                                        <Text style={{ color: "rgba(0, 122, 255, 1)", fontSize: 30 }}> DOWNLOAD</Text>
+                                        <Text style={{ color: "rgba(0, 122, 255, 1)", fontSize: 30 }}> BROWSE</Text>
                                     </View>
                                 </TouchableOpacity>
                                 <TouchableOpacity onPress={() => { navigate('Settings'), { userName: 'Lucy' } }} style={{ marginTop: 10 }}>

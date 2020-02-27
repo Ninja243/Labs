@@ -8,7 +8,11 @@
 //   - Logging package
 //      - Write actual logfiles
 // Search functionality
-//   - Maybe just a find() call on the collection, followed by an iteration through that
+//   - Maybe just a find() call on the collection, followed by an iteration through that'
+//   - What if it literally just lists all labs in a certain course?
+//     - A Labs would need to be related to courses, which would need to be related to offerings that certain unis have
+//       - e.g. NUST -> Comp Sci. -> WDF -> Labs about WDF
+//       - Would require working out the messy web that is NUST's interconnected courses
 package main
 
 //"github.com/gorilla/context" <-  too old
@@ -539,6 +543,23 @@ func putLab(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Update the user's profile
+	user.LabsCreated = append(user.LabsCreated, lab.ID)
+
+	// Replace the user file in DB
+	filter := bson.D{{Key: "id", Value: user.ID}}
+	// Converting user to BSON for MongoDB
+	b, err := bson.Marshal(user)
+	if err != nil {
+		responseJSON(err.Error(), w, http.StatusInternalServerError)
+		return
+	}
+	// Inserting the user into the DB
+	_, err = users.ReplaceOne(r.Context(), filter, b)
+	if err != nil {
+		responseJSON(err.Error(), w, http.StatusInternalServerError)
+	}
+
 	// OK
 	w.WriteHeader(http.StatusOK)
 	return
@@ -794,6 +815,34 @@ Disallow: /tmp/
 Disallow: /superSecretSiteDontHack/`))
 }
 
+func getAndroidApp(w http.ResponseWriter, r *http.Request){
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Content-Type", "application/vnd.android.package-archive")
+	dat, err := ioutil.ReadFile("static/bin/labs.apk")
+	if err != nil {
+		log.Print(err.Error())
+		responseJSON(err.Error(), w, http.StatusInternalServerError)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	w.Write(dat)
+	return
+}
+
+func getIOSApp(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Content-Type", "application/octet-stream")
+	dat, err := ioutil.ReadFile("static/bin/labs.ipa")
+	if err != nil {
+		log.Print(err.Error())
+		responseJSON(err.Error(), w, http.StatusInternalServerError)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	w.Write(dat)
+	return
+}
+
 // AddContext attempts to add the concept of sessions to the webserver so that tokens can be shared between
 // functions and so that if a session is ended prematurely, the routine handling the session can close down
 // too
@@ -853,10 +902,10 @@ func main() {
 	}
 
 	// Debug
-	addLab()
-	addMweya()
-	insertInitialPrivacyPolicy()
-	insertInitialToS()
+	//addLab()
+	//addMweya()
+	//insertInitialPrivacyPolicy()
+	//insertInitialToS()
 
 	// Template continues here
 
@@ -905,6 +954,10 @@ func main() {
 
 	// Homepage, static, shows links to download the app or (TODO) a web client
 	r.Handle("/", http.HandlerFunc(homePage))
+
+	// App download links, available to all
+	r.Handle("/download/android", http.HandlerFunc(getAndroidApp)).Methods(http.MethodGet)
+	r.Handle("/download/ios", http.HandlerFunc(getIOSApp)).Methods(http.MethodGet)
 
 	// Privacy policy, static, available to all
 	r.Handle("/legal/privacy", http.HandlerFunc(getPrivacyPolicyJSON)).Methods(http.MethodGet)

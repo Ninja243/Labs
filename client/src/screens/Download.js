@@ -12,19 +12,21 @@ export class downloadForm extends Component {
     state = {
         adv: false,
         labs: [],
-        searchString: "",
+        //searchString: "",
         found: ""
     }
     static navigationOptions = {
 
     };
 
-    search = () => {
+    search = (text) => {
         // ID search only
         // TESTING ID ONLY
+        //this.setState({ searchString: text });
         const { navigate } = this.props.navigation;
         const profile = this.props.profile;
-        fetch("https://jl.x-mweya.duckdns.org/lab/" + this.state.searchString, {
+        //console.log("https://jl.x-mweya.duckdns.org/lab/"+this.state.searchString)
+        fetch("https://jl.x-mweya.duckdns.org/lab/" + text, {
             method: "GET",
             headers: {
                 "Authorization": "Bearer " + profile[0][profile[0].length - 1]
@@ -33,11 +35,21 @@ export class downloadForm extends Component {
             if (response.status == 200 || response.status == 404) { 
                 // Parse here
                 // TODO
-                response.json().then((res) => { 
-                    this.setState({
-                        found: this.state.labs.length + " labs found"
+                if (response.status == 200) {
+                    response.json().then((res) => {
+                        console.log(res);
+                        var x = []
+                        x[x.length] = res
+                        this.setState({
+                            labs: x
+                        });
+                        this.setState({ searchString: text });
+                        this.setState({
+                            found: this.state.labs.length + " labs found"
+                        })
                     })
-                })
+                }
+                
             } else {
                 response.text().then((response) => {
                     navigate("FatalError", {
@@ -203,10 +215,14 @@ export class downloadForm extends Component {
                                         placeholder="SEARCH"
                                         returnKeyType="next"
                                         blurOnSubmit={true}
-                                        onChangeText={(text) => { this.setState({ searchString: text }); this.search() }}
+                                        onChangeText={(text) => {  this.search(text) }}
                                         value={this.state.searchString}
                                     ></TextInput>
 
+                                </View>
+
+                                <View style={{ flex: 1, flexDirection: 'row', borderColor: 'rgba(0, 122, 255, 1)', borderWidth: 0, padding: 10, justifyContent: 'center' }}>
+                                    <Text>{this.state.found}</Text>
                                 </View>
 
                                 <View style={{ flex: 1, flexDirection: 'row', borderColor: 'rgba(0, 122, 255, 1)', borderWidth: 0, padding: 10, justifyContent: 'center' }}>
@@ -238,7 +254,7 @@ export class downloadForm extends Component {
                                         placeholder="SEARCH"
                                         returnKeyType="search"
                                         blurOnSubmit={true}
-                                        onChangeText={(text) => { this.setState({ searchString: text }); this.search() }}
+                                        onChangeText={(text) => {  this.search(text) }}
                                         value={this.state.searchString}
                                     ></TextInput>
 

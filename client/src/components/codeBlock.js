@@ -16,10 +16,10 @@ export default class CodeBlock extends Component {
                     <Text style={{ color: 'rgba(44,44,46,1)', paddingBottom: 10, paddingTop: 20, paddingLeft: 40, alignSelf: 'flex-start', fontSize: 30, flexWrap: 'wrap' }}>{this.props.filename}</Text>
                     <View style={{ backgroundColor: 'rgba(199,199,204,1)', padding: 5, marginTop: '10%', flexWrap: 'wrap' }}>
 
-                        <Text>{this.props.code}</Text>
+                        <Text style={{flexWrap:'wrap', width: "100%"}}>{this.props.code}</Text>
 
                     </View>
-                    <View style={{ flexDirection: "row", paddingTop: '20%', width: '100%', flexWrap: 'wrap' }}>
+                    <View style={{ flexDirection: "row", marginTop: '10%', width: '100%', flexWrap: 'wrap' }}>
                         <Text>This lab has {this.props.views} views and has been </Text>
                         <Text>written in {this.props.language} by </Text>
                         <TouchableOpacity onPress={() => { NavigationService.navigate('Profile'), { username: this.props.author }}}>

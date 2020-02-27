@@ -75,7 +75,7 @@ export class uploadForm extends Component {
                                 <Octicons name='file-code' color="rgba(0, 122, 255, 1)" size={40} />
                                 <Text style={{ color: 'rgba(0, 122, 255, 1)', fontSize: 35 }}> </Text>
                                 <TextInput
-                                    style={{ color: 'rgba(0, 122, 255, 1)', fontSize: 35, borderColor: 'rgba(0, 122, 255, 1)', borderWidth: 2, padding: 10, width: '90%' }}
+                                    style={{ color: 'rgba(0, 122, 255, 1)', fontSize: 35, borderColor: 'rgba(0, 122, 255, 1)', borderWidth: 2, padding: 10, width: '90%', maxHeight: "100%" }}
                                     autoCompleteType="off"
                                     autoCorrect={false}
                                     keyboardAppearance="light"
@@ -188,7 +188,7 @@ export class uploadForm extends Component {
                                 <Octicons name='file-code' color="rgba(0, 122, 255, 1)" size={40} />
                                 <Text style={{ color: 'rgba(0, 122, 255, 1)', fontSize: 35 }}> </Text>
                                 <TextInput
-                                    style={{ color: 'rgba(0, 122, 255, 1)', fontSize: 35, borderColor: 'rgba(0, 122, 255, 1)', borderWidth: 0, borderBottomWidth: 2, padding: 10, width: '90%' }}
+                                    style={{ color: 'rgba(0, 122, 255, 1)', fontSize: 35, borderColor: 'rgba(0, 122, 255, 1)', borderWidth: 0, borderBottomWidth: 2, padding: 10, width: '90%', maxHeight: "100%" }}
                                     autoCompleteType="off"
                                     autoCorrect={false}
                                     keyboardAppearance="light"

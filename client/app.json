@@ -22,9 +22,13 @@
       "**/*"
     ],
     "android": {
+      "package": "com.mweya.labs",
+      "versionCode": 1,
       "permissions": []
     },
     "ios": {
+      "bundleIdentifier": "com.mweya.labs",
+      "buildNumber":"0.0.1",
       "supportsTablet": true,
       "requireFullScreen": false
     },

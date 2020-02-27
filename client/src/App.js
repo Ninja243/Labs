@@ -32,26 +32,131 @@ import endpointTestClass from './tests/Endpoints'
 import AdModal from './components/AdModal'
 import hugeError from './screens/HugeError'
 
-import Feather from '@expo/vector-icons'
+import { Feather, MaterialCommunityIcons} from '@expo/vector-icons'
 
 // Screen navigation is declared here
 const MainNavigator = createStackNavigator({
   Home: { screen: HomeScreen },
-  Code: { screen: CodeScreen },
-  Options: { screen: OptionScreen },
-  HiringQuestion: { screen: PortfolioGate },
-  AboutMe: { screen: Me },
-  Policy: { screen: PolicyViewer },
-  Splash: { screen: SplashScreen },
-  Settings: { screen: settings },
-  AppSource: { screen: appSource },
-  TipJar: { screen: tipJar },
-  LegalPortal: { screen: legalPortal },
-  UploadForm: { screen: uploadForm },
-  DownloadForm: { screen: downloadForm },
-  Lab: { screen: LabViewer },
-  Profile: { screen: ProfilePage },
-  FatalError: {screen: hugeError},
+  Code: {
+    screen: CodeScreen,
+    navigationOptions: {
+      headerTitle: () => <View style={{ flexDirection: 'column', flex: 1, alignItems: 'stretch', justifyContent: 'center' }}>
+        <Text style={{ padding: 5, alignSelf: "center", color: 'rgba(0, 122, 255, 1)', fontSize: 30, alignItems: 'center', justifyContent: 'center', flex: 1 }}>{"Code"}</Text>
+      </View>,
+    },
+  },
+  Options: {
+    screen: OptionScreen,
+    navigationOptions: {
+      headerTitle: () => <View style={{ flexDirection: 'column', flex: 1, alignItems: 'stretch', justifyContent: 'center' }}>
+        <Text style={{ padding: 5, alignSelf: "center", color: 'rgba(0, 122, 255, 1)', fontSize: 30, alignItems: 'center', justifyContent: 'center', flex: 1 }}>{"Options"}</Text>
+      </View>,
+    },
+  },
+  HiringQuestion: {
+    screen: PortfolioGate,
+    navigationOptions: {
+      headerTitle: () => <View style={{ flexDirection: 'column', flex: 1, alignItems: 'stretch', justifyContent: 'center' }}>
+        <Text style={{ padding: 5, alignSelf: "center", color: 'rgba(0, 122, 255, 1)', fontSize: 30, alignItems: 'center', justifyContent: 'center', flex: 1 }}><MaterialCommunityIcons name="egg-easter" size={40}></MaterialCommunityIcons></Text>
+      </View>,
+    },
+  },
+  AboutMe: {
+    screen: Me,
+    navigationOptions: {
+      headerTitle: () => <View style={{ flexDirection: 'column', flex: 1, alignItems: 'stretch', justifyContent: 'center' }}>
+        <Text style={{ padding: 5, alignSelf: "center", color: 'rgba(0, 122, 255, 1)', fontSize: 30, alignItems: 'center', justifyContent: 'center', flex: 1 }}><MaterialCommunityIcons name="egg-easter" size={40}></MaterialCommunityIcons></Text>
+      </View>,
+    },
+  },
+  Policy: {
+    screen: PolicyViewer,
+    navigationOptions: {
+      headerTitle: () => <View style={{ flexDirection: 'column', flex: 1, alignItems: 'stretch', justifyContent: 'center' }}>
+        <Text style={{ padding: 5, alignSelf: "center", color: 'rgba(0, 122, 255, 1)', fontSize: 30, alignItems: 'center', justifyContent: 'center', flex: 1 }}>{"Legal"}</Text>
+      </View>,
+    },
+  },
+  Splash: {
+    screen: SplashScreen,
+    navigationOptions: {
+      headerTitle: () => <View style={{ flexDirection: 'column', flex: 1, alignItems: 'stretch', justifyContent: 'center' }}>
+        <Text style={{ padding: 5, alignSelf: "center", color: 'rgba(0, 122, 255, 1)', fontSize: 30, alignItems: 'center', justifyContent: 'center', flex: 1 }}>{"Splash"}</Text>
+      </View>,
+    },
+  },
+  Settings: {
+    screen: settings,
+    navigationOptions: {
+      headerTitle: () => <View style={{ flexDirection: 'column', flex: 1, alignItems: 'stretch', justifyContent: 'center' }}>
+        <Text style={{ padding: 5, alignSelf: "center", color: 'rgba(0, 122, 255, 1)', fontSize: 30, alignItems: 'center', justifyContent: 'center', flex: 1 }}>{"Settings"}</Text>
+      </View>,
+    },
+  },
+  AppSource: {
+    screen: appSource,
+    navigationOptions: {
+      headerTitle: () => <View style={{ flexDirection: 'column', flex: 1, alignItems: 'stretch', justifyContent: 'center' }}>
+        <Text style={{ padding: 5, alignSelf: "center", color: 'rgba(0, 122, 255, 1)', fontSize: 30, alignItems: 'center', justifyContent: 'center', flex: 1 }}>{"Source"}</Text>
+      </View>,
+    },
+  },
+  TipJar: {
+    screen: tipJar,
+    navigationOptions: {
+      headerTitle: () => <View style={{ flexDirection: 'column', flex: 1, alignItems: 'stretch', justifyContent: 'center' }}>
+        <Text style={{ padding: 5, alignSelf: "center", color: 'rgba(0, 122, 255, 1)', fontSize: 30, alignItems: 'center', justifyContent: 'center', flex: 1 }}>{"Donate"}</Text>
+      </View>,
+    },
+  },
+  LegalPortal: {
+    screen: legalPortal,
+    navigationOptions: {
+      headerTitle: () => <View style={{ flexDirection: 'column', flex: 1, alignItems: 'stretch', justifyContent: 'center' }}>
+        <Text style={{ padding: 5, alignSelf: "center", color: 'rgba(0, 122, 255, 1)', fontSize: 30, alignItems: 'center', justifyContent: 'center', flex: 1 }}>{"Legal"}</Text>
+      </View>,
+    },
+  },
+  UploadForm: {
+    screen: uploadForm,
+    navigationOptions: {
+      headerTitle: () => <View style={{ flexDirection: 'column', flex: 1, alignItems: 'stretch', justifyContent: 'center' }}>
+        <Text style={{ padding: 5, alignSelf: "center", color: 'rgba(0, 122, 255, 1)', fontSize: 30, alignItems: 'center', justifyContent: 'center', flex: 1 }}>{"Upload"}</Text>
+      </View>,
+    },
+  },
+  DownloadForm: {
+    screen: downloadForm,
+    navigationOptions: {
+      headerTitle: () => <View style={{ flexDirection: 'column', flex: 1, alignItems: 'stretch', justifyContent: 'center' }}>
+        <Text style={{ padding: 5, alignSelf: "center", color: 'rgba(0, 122, 255, 1)', fontSize: 30, alignItems: 'center', justifyContent: 'center', flex: 1 }}>{"Browse"}</Text>
+      </View>,
+    },
+  },
+  Lab: {
+    screen: LabViewer,
+    navigationOptions: {
+      headerTitle: () => <View style={{ flexDirection: 'column', flex: 1, alignItems: 'stretch', justifyContent: 'center' }}>
+        <Text style={{ padding: 5, alignSelf: "center", color: 'rgba(0, 122, 255, 1)', fontSize: 30, alignItems: 'center', justifyContent: 'center', flex: 1 }}>{"Lab"}</Text>
+      </View>,
+    },
+  },
+  Profile: {
+    screen: ProfilePage,
+    navigationOptions: {
+      headerTitle: () => <View style={{ flexDirection: 'column', flex: 1, alignItems: 'stretch', justifyContent: 'center' }}>
+        <Text style={{ padding: 5, alignSelf: "center", color: 'rgba(0, 122, 255, 1)', fontSize: 30, alignItems: 'center', justifyContent: 'center', flex: 1 }}>{"Profile"}</Text>
+      </View>,
+    },
+  },
+  FatalError: {
+    screen: hugeError,
+    navigationOptions: {
+      headerTitle: () => <View style={{ flexDirection: 'column', flex: 1, alignItems: 'stretch', justifyContent: 'center' }}>
+        <Text style={{ padding: 5, alignSelf: "center", color: 'rgba(0, 122, 255, 1)', fontSize: 30, alignItems: 'center', justifyContent: 'center', flex: 1 }}>{"Fatal Error"}</Text>
+      </View>,
+    },
+  },
   // Tests  
   EndpointTest: { screen: endpointTestClass }
 },
@@ -69,6 +174,7 @@ const MainNavigator = createStackNavigator({
 
       },
       // Deprecated soon
+      title:"Labs </>",
       // headerForceInset will be deprecated soon <>
       safeAreaInsets: { vertical: 'middle' },
       headerMode: 'float',
@@ -113,7 +219,7 @@ export default class App extends React.Component {
             NavigationService.setTopLevelNavigator(navigatorRef);
           }}
         />
-        
+
         <Footer style={{ alignSelf: 'flex-end' }} />
       </View>
     );
