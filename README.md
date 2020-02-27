@@ -1,4 +1,4 @@
-# Labs
+# ![My Face](https://mweya.duckdns.org/lowrez) Labs
 ## Tl;Dr
 A cross platform and GDPR compliant application being written in React Native to replace the service currently running at https://jl.mweya.duckdns.org
 
