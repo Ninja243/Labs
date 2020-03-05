@@ -47,8 +47,6 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
 	"github.com/rs/cors"
-
-	"net/smtp"
 )
 
 //"path/filepath"
@@ -549,6 +547,11 @@ func putLab(w http.ResponseWriter, r *http.Request) {
 	lab.Uploaded = time.Now()
 	lab.ID = lab.Author + "-" + lab.Name
 	lab.Views = 0
+
+	if lab.Name == "" || lab.Code == "" || lab.Language == "" {
+		responseJSON("Can't find the name, code or language", w, http.StatusBadRequest)
+		return
+	}
 
 	// Insert into DB
 	_, err = labs.InsertOne(r.Context(), lab)

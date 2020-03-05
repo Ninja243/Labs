@@ -1,20 +1,24 @@
 //
 import React, { Component } from 'react'
-import { Text, Button, View, SafeAreaView, TouchableOpacity, ScrollView, TextInput } from 'react-native'
+import { Text, Button, View, SafeAreaView, TouchableOpacity, ScrollView, TextInput, Dimensions } from 'react-native'
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 import { AntDesign, Octicons, Entypo, Feather, MaterialCommunityIcons, EvilIcons } from '@expo/vector-icons'
 import { connect } from 'react-redux';
 
+const h = Dimensions.get('window').height;
+
 export class uploadForm extends Component {
+
     //title: 'JavaLabs',
     // TODO state
     state = {
         filename: "",
         language: "",
         code: "",
-        filenameReady: false,
-        languageReady: false,
+        filenameReady: true,
+        // Debugging
+        languageReady: true,
         codeReady: false,
         notOK: false
     }
@@ -43,13 +47,78 @@ export class uploadForm extends Component {
         return true
     }
 
+    postCode = () => {
+        if (this.state.code == "") {
+            return
+        }
+        var obj = {
+            "name": this.state.filename,
+            "language": this.state.language,
+            "code": this.state.code
+        }
+        var profile = this.props.profile
+        var load = JSON.stringify(obj)
+        fetch("https://jl.x-mweya.duckdns.org/publish", {
+            method: "PUT",
+            headers: {
+                "Authorization": "Bearer " + profile[0][profile[0].length - 1]
+            },
+            body: load
+        }).then((response) => { 
+            if (response.status == 200 || response.status == 409) {
+                
+            } else { 
+                const { navigate } = this.props.navigation;
+                navigate("FatalError", {
+                    message: "While trying to post your lab, our server threw a temper tantrum and screamed \""+response.status+" - "+response.statusText+"\" at us, which was not only rude but kinda hurtful. We're sorry about that."
+                });
+            }
+        })
+    }
+
     render() {
         const { navigate } = this.props.navigation;
         return (
             (this.state.filenameReady) ?
                 (this.state.languageReady) ?
-                    <ScrollView>
+                    <ScrollView style={{ flex: 1 }}>
+                        <View style={{ flex: 1 }}>
+                            <ScrollView style={{ flex: 1, width: '90%', flexDirection: 'column', alignSelf: 'center', }}>
+                                <View style={{ alignSelf: "center", marginTop: 50, flex: 1 }}>
+                                    <View style={{ flex: 1, flexDirection: 'row', borderColor: 'rgba(0, 122, 255, 1)', borderWidth: 0, margin: 10, justifyContent: 'center', }}>
+                                        <TextInput
+                                            style={{ marginRight: '5%', color: 'rgba(0,122,255,1)', fontSize: 35, borderColor: 'rgba(0, 122,255,1)', borderWidth: 0, borderBottomWidth: 2, maxHeight: h * .4, paddingBottom: 2, }}
+                                            autoCapitalize="none"
+                                            autoCompleteType="off"
+                                            multiline={true}
+                                            autoCorrect={false}
+                                            autoFocus={true}
+                                            blurOnSubmit={true}
+                                            caretHidden={true}
+                                            clearTextOnFocus={true}
+                                            disableFullscreenUI={true}
+                                            enablesReturnKeyAutomatically={true}
+                                            keyboardAppearance="light"
+                                            placeholder="print('Hello World!')"
+                                            returnKeyType="next"
+                                            spellCheck={false}
+                                            onChangeText={text => this.setState({ code: text })}
+                                            value={this.state.code}
+                                            onSubmitEditing={() => {
+                                                this.postCode()
+                                            }}
+                                        />
+                                    </View>
+                                    <View style={{ flex: 1, alignItems: 'center' }}>
+                                        <TouchableOpacity onPress={() => {
+                                            alert("Sent!")
+                                        }}><Text style={{ color: 'rgba(0,122,255,1)', fontSize: 35, marginTop: 70 }}>Post <Feather name="send" size={40} color='rgba(0, 122, 255, 1)' /></Text></TouchableOpacity>
+                                    </View>
+                                </View>
 
+
+                            </ScrollView>
+                        </View>
                     </ScrollView>
                     :
                     this.state.notOK ?
@@ -133,7 +202,7 @@ export class uploadForm extends Component {
                                                     }
                                                 }}
                                             />
-                                            <TouchableOpacity onPress={ () => {
+                                            <TouchableOpacity onPress={() => {
                                                 if (this.inputOK(this.state.language)) {
                                                     this.setState({ languageReady: true })
                                                 } else {
