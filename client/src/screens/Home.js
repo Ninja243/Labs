@@ -57,7 +57,8 @@ export class HomeScreen extends Component {
         psEndpointTest: "Not updated",
         eEndpointTest: "Not updated",
         lastSilentCheck: Date.now(),
-        debugMode: true
+        debugMode: true,
+        loginFailed: false
     }
 
     toString = s => {
@@ -185,7 +186,7 @@ export class HomeScreen extends Component {
         if (response.errorCode) {
             const { navigate } = this.props.navigation;
             navigate("FatalError", {
-                message: "While trying to log you in, the API said "+response.error_description.replace("\n", "")+" which is really rude and quite frankly, uncalled for. We're sorry for it's behaviour."
+                message: "While trying to log you in, the API said " + response.error_description.replace("\n", "") + " which is really rude and quite frankly, uncalled for. We're sorry for it's behaviour."
             });
             return false;
         }
@@ -230,7 +231,7 @@ export class HomeScreen extends Component {
                     return true;
                 } else {
                     const { navigate } = this.props.navigation;
-                    navigate("FatalError", {message: "While trying to create your account on our awesome servers, we got a "+response.status+" response, which is really weird."})
+                    navigate("FatalError", { message: "While trying to create your account on our awesome servers, we got a " + response.status + " response, which is really weird." })
                 }
             })
 
@@ -244,7 +245,7 @@ export class HomeScreen extends Component {
 
 
     render() {
-        
+
         const { navigate } = this.props.navigation;
         const i = this.props.i;
         var profile = this.props.profile;
@@ -253,56 +254,119 @@ export class HomeScreen extends Component {
         return (
             (profile.length == 0) ?
                 this.state.accepted ?
-                    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                    this.state.loginFailed ?
+                        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
 
-                        <Button style={{ alignSelf: 'center' }} title="Log in with a google account" onPress={
-                            () => {
-                                if (this.login()) {
-                                    this.init();
+                            <Button style={{ alignSelf: 'center' }} title="Log in with a google account" onPress={
+                                () => {
+                                    if (this.login()) {
+                                        this.init();
 
+                                    }
                                 }
                             }
-                        }
-                            color='rgba(0, 122, 255, 1)' />
-                        <View style={{ width: '50%', marginTop: 40, marginBottom: 10, flexDirection: 'column', justifyContent: 'center', alignContent: "flex-end" }}>
-                            <Text style={{ fontSize: 15 }}>"I have read and agree with the Privacy Policy and Terms of Service"</Text>
-                            <Text style={{ alignSelf: 'flex-end' }}>-You</Text>
-                            <View style={{ marginTop: 10, alignSelf: 'flex-start' }}>
-                                <TouchableOpacity onPress={() => navigate('Policy', { link: 'https://jl.x-mweya.duckdns.org/legal/privacy' })}>
-                                    <Text style={{ color: 'rgba(0, 122, 255, 1)', textDecorationLine: 'underline' }}>Privacy Policy</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity onPress={() => navigate('Policy', { link: 'https://jl.x-mweya.duckdns.org/legal/terms' })}>
-                                    <Text style={{ color: 'rgba(0, 122, 255, 1)', textDecorationLine: 'underline' }}>Terms of Service</Text>
-                                </TouchableOpacity>
+                                color='rgba(0, 122, 255, 1)' />
+                            <View style={{ width: '50%', marginTop: 40, marginBottom: 10, flexDirection: 'column', justifyContent: 'center', alignContent: "flex-end" }}>
+                                <Text style={{ fontSize: 15 }}>"I have read and agree with the Privacy Policy and Terms of Service"</Text>
+                                <Text style={{ alignSelf: 'flex-end' }}>-You</Text>
+                                <View style={{ marginTop: 10, alignSelf: 'flex-start' }}>
+                                    <TouchableOpacity onPress={() => navigate('Policy', { link: 'https://jl.x-mweya.duckdns.org/legal/privacy' })}>
+                                        <Text style={{ color: 'rgba(0, 122, 255, 1)', textDecorationLine: 'underline' }}>Privacy Policy</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity onPress={() => navigate('Policy', { link: 'https://jl.x-mweya.duckdns.org/legal/terms' })}>
+                                        <Text style={{ color: 'rgba(0, 122, 255, 1)', textDecorationLine: 'underline' }}>Terms of Service</Text>
+                                    </TouchableOpacity>
+                                </View>
+                                <View style={{ flexDirection: 'row', alignSelf: 'flex-start', marginTop: 10, }}>
+                                    <Text style={{ marginRight: 100 }}>Agreed</Text>
+                                    <Switch onValueChange={() => { this.setState({ accepted: false }) }} value={this.state.accepted} thumbColor="rgba(0, 122, 255, 1)" />
+                                </View>
+                                <View style={{ flexDirection: 'row', alignSelf: 'flex-start', marginTop: 10, }}>
+                                    <Text style={{ fontSize: 15 }}>Having issues logging in? Make sure Google Chrome is your default browser!</Text>
+                                </View>
                             </View>
-                            <View style={{ flexDirection: 'row', alignSelf: 'flex-start', marginTop: 10, }}>
-                                <Text style={{ marginRight: 100 }}>Agreed</Text>
-                                <Switch onValueChange={() => { this.setState({ accepted: false }) }} value={this.state.accepted} thumbColor="rgba(0, 122, 255, 1)" />
-                            </View>
-                        </View>
 
-                    </View>
+                        </View>
+                        :
+                        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+
+                            <Button style={{ alignSelf: 'center' }} title="Log in with a google account" onPress={
+                                () => {
+                                    if (this.login()) {
+                                        this.init();
+
+                                    }
+                                    this.setState({
+                                        loginFailed: true
+                                    })
+                                }
+                            }
+                                color='rgba(0, 122, 255, 1)' />
+                            <View style={{ width: '50%', marginTop: 40, marginBottom: 10, flexDirection: 'column', justifyContent: 'center', alignContent: "flex-end" }}>
+                                <Text style={{ fontSize: 15 }}>"I have read and agree with the Privacy Policy and Terms of Service"</Text>
+                                <Text style={{ alignSelf: 'flex-end' }}>-You</Text>
+                                <View style={{ marginTop: 10, alignSelf: 'flex-start' }}>
+                                    <TouchableOpacity onPress={() => navigate('Policy', { link: 'https://jl.x-mweya.duckdns.org/legal/privacy' })}>
+                                        <Text style={{ color: 'rgba(0, 122, 255, 1)', textDecorationLine: 'underline' }}>Privacy Policy</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity onPress={() => navigate('Policy', { link: 'https://jl.x-mweya.duckdns.org/legal/terms' })}>
+                                        <Text style={{ color: 'rgba(0, 122, 255, 1)', textDecorationLine: 'underline' }}>Terms of Service</Text>
+                                    </TouchableOpacity>
+                                </View>
+                                <View style={{ flexDirection: 'row', alignSelf: 'flex-start', marginTop: 10, }}>
+                                    <Text style={{ marginRight: 100 }}>Agreed</Text>
+                                    <Switch onValueChange={() => { this.setState({ accepted: false }) }} value={this.state.accepted} thumbColor="rgba(0, 122, 255, 1)" />
+                                </View>
+                            </View>
+
+                        </View>
                     :
-                    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                    this.state.loginFailed ?
+                        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
 
-                        <Button style={{ alignSelf: 'center' }} title="Log in with a google account" disabled />
-                        <View style={{ width: '50%', marginTop: 40, marginBottom: 10, flexDirection: 'column', justifyContent: 'center', alignContent: "flex-end" }}>
-                            <Text>You need to have read and agreed with the Privacy Policy and the Terms of Service to use this app. Tap the links below to read them.</Text>
-                            <View style={{ marginTop: 10, alignSelf: 'flex-start' }}>
-                                <TouchableOpacity onPress={() => navigate('Policy', { link: 'https://jl.x-mweya.duckdns.org/legal/privacy' })}>
-                                    <Text style={{ color: 'rgba(0, 122, 255, 1)', textDecorationLine: 'underline' }}>Privacy Policy</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity onPress={() => navigate('Policy', { link: 'https://jl.x-mweya.duckdns.org/legal/terms' })}>
-                                    <Text style={{ color: 'rgba(0, 122, 255, 1)', textDecorationLine: 'underline' }}>Terms of Service</Text>
-                                </TouchableOpacity >
+                            <Button style={{ alignSelf: 'center' }} title="Log in with a google account" disabled />
+                            <View style={{ width: '50%', marginTop: 40, marginBottom: 10, flexDirection: 'column', justifyContent: 'center', alignContent: "flex-end" }}>
+                                <Text>You need to have read and agreed with the Privacy Policy and the Terms of Service to use this app. Tap the links below to read them.</Text>
+                                <View style={{ marginTop: 10, alignSelf: 'flex-start' }}>
+                                    <TouchableOpacity onPress={() => navigate('Policy', { link: 'https://jl.x-mweya.duckdns.org/legal/privacy' })}>
+                                        <Text style={{ color: 'rgba(0, 122, 255, 1)', textDecorationLine: 'underline' }}>Privacy Policy</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity onPress={() => navigate('Policy', { link: 'https://jl.x-mweya.duckdns.org/legal/terms' })}>
+                                        <Text style={{ color: 'rgba(0, 122, 255, 1)', textDecorationLine: 'underline' }}>Terms of Service</Text>
+                                    </TouchableOpacity >
+                                </View>
+                                <View style={{ flexDirection: 'row', alignSelf: 'flex-start', marginTop: 10, }}>
+                                    <Text style={{ marginRight: 100 }}>Agreed</Text>
+                                    <Switch onValueChange={() => { this.setState({ accepted: true }) }} value={this.state.accepted} />
+                                </View>
+                                <View style={{ flexDirection: 'row', alignSelf: 'flex-start', marginTop: 10, }}>
+                                    <Text style={{ fontSize: 15 }}>Having issues logging in? Make sure Google Chrome is your default browser!</Text>
+                                </View>
                             </View>
-                            <View style={{ flexDirection: 'row', alignSelf: 'flex-start', marginTop: 10, }}>
-                                <Text style={{ marginRight: 100 }}>Agreed</Text>
-                                <Switch onValueChange={() => { this.setState({ accepted: true }) }} value={this.state.accepted} />
-                            </View>
+
                         </View>
+                        :
+                        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
 
-                    </View>
+                            <Button style={{ alignSelf: 'center' }} title="Log in with a google account" disabled />
+                            <View style={{ width: '50%', marginTop: 40, marginBottom: 10, flexDirection: 'column', justifyContent: 'center', alignContent: "flex-end" }}>
+                                <Text>You need to have read and agreed with the Privacy Policy and the Terms of Service to use this app. Tap the links below to read them.</Text>
+                                <View style={{ marginTop: 10, alignSelf: 'flex-start' }}>
+                                    <TouchableOpacity onPress={() => navigate('Policy', { link: 'https://jl.x-mweya.duckdns.org/legal/privacy' })}>
+                                        <Text style={{ color: 'rgba(0, 122, 255, 1)', textDecorationLine: 'underline' }}>Privacy Policy</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity onPress={() => navigate('Policy', { link: 'https://jl.x-mweya.duckdns.org/legal/terms' })}>
+                                        <Text style={{ color: 'rgba(0, 122, 255, 1)', textDecorationLine: 'underline' }}>Terms of Service</Text>
+                                    </TouchableOpacity >
+                                </View>
+                                <View style={{ flexDirection: 'row', alignSelf: 'flex-start', marginTop: 10, }}>
+                                    <Text style={{ marginRight: 100 }}>Agreed</Text>
+                                    <Switch onValueChange={() => { this.setState({ accepted: true }) }} value={this.state.accepted} />
+                                </View>
+
+                            </View>
+
+                        </View>
                 :
                 // Undefined if the app didn't have time to set it when starting
                 (readyState == true || readyState == undefined) ?

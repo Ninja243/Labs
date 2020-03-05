@@ -81,7 +81,7 @@ export class settings extends Component {
                         });
                         logOut();
                         navigate('Home');
-                     }} style={{ marginTop: '40%', }}>
+                     }} style={{ marginTop: '30%', }}>
                         <View style={{ flex: 1, flexDirection: 'row', borderColor: 'rgba(255, 30, 0, 1)', borderWidth: 0, margin: 10, justifyContent: 'center' }}>
                             <Feather name="user-x" size={40} color='rgba(255, 30, 0, 1)' />
                             <Text style={{ color: 'rgba(255, 30, 0, 1)', fontSize: 35 }}> DELETE ACCOUNT</Text>

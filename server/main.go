@@ -13,6 +13,10 @@
 //     - A Labs would need to be related to courses, which would need to be related to offerings that certain unis have
 //       - e.g. NUST -> Comp Sci. -> WDF -> Labs about WDF
 //       - Would require working out the messy web that is NUST's interconnected courses
+//         - Could drop the Comp Sci. level?
+//           - e.g. NUST -> WDF -> Labs about WDF
+//             - Would still require a list of courses
+//             - CRUD for courses :(
 package main
 
 //"github.com/gorilla/context" <-  too old
@@ -43,6 +47,8 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
 	"github.com/rs/cors"
+
+	"net/smtp"
 )
 
 //"path/filepath"
@@ -242,7 +248,17 @@ func requestData(w http.ResponseWriter, r *http.Request) {
 	// TODO, labs uploaded should probably also be supplied in full
 	r.Method = "GET"
 	account(w, r)
-	return
+	// TODO send data to email
+	// - How2 keep password safe tho
+	// - https://gist.github.com/jpillora/cb46d183eca0710d909a
+	/*c, err := smtp.Dial("smtp.gmail.com:465")
+	if err != nil {
+		log.Print(err.Error())
+		responseJSON(err.Error(), w, http.StatusInternalServerError)
+		return
+	}
+	err = c.Mail("mweyaruider@gmail.com")
+	return*/
 }
 
 // Inserts the privacy policy into the DB, run this once when setting up
@@ -384,7 +400,6 @@ func user(w http.ResponseWriter, r *http.Request) {
 }
 
 // Handles GET, POST and DELETE for Labs
-// TODO
 func getLab(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "application/json")
@@ -506,7 +521,6 @@ func getLab(w http.ResponseWriter, r *http.Request) {
 }
 
 // Handles PUT for Labs
-// TODO
 func putLab(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "application/json")
@@ -670,8 +684,9 @@ func account(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method == "DELETE" {
 		// Remove a user from this system
+		// TODO remove all the user's labs from the system
 		filter := bson.D{{Key: "id", Value: user.ID}}
-		_, err := users.DeleteOne(context.TODO(), filter)
+		_, err := users.DeleteOne(r.Context(), filter)
 		if err != nil {
 			responseJSON(err.Error(), w, http.StatusInternalServerError)
 			return
@@ -789,6 +804,7 @@ func getPrivacyPolicyJSON(w http.ResponseWriter, r *http.Request) {
 }
 
 // Returns the homepage advertising the application
+// This should probably be kept in RAM later.
 func homePage(w http.ResponseWriter, r *http.Request) {
 	dat, err := ioutil.ReadFile("static/index.html")
 	if err != nil {
@@ -815,7 +831,10 @@ Disallow: /tmp/
 Disallow: /superSecretSiteDontHack/`))
 }
 
-func getAndroidApp(w http.ResponseWriter, r *http.Request){
+// Serves the Android app file stored in the static/bin/ directory, returning a JSON message if something fails.
+// This does not tell the browser how big the file is and just pushes the data to the client's browser which might be quicker,
+// but could also be annoying.
+func getAndroidApp(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "application/vnd.android.package-archive")
 	dat, err := ioutil.ReadFile("static/bin/labs.apk")
@@ -829,6 +848,9 @@ func getAndroidApp(w http.ResponseWriter, r *http.Request){
 	return
 }
 
+// Serves the iOS app file stored in the static/bin/ directory, returning a JSON message if something fails.
+// This does not tell the browser how big the file is and just pushes the data to the client's browser which might be quicker,
+// but could also be annoying.
 func getIOSApp(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "application/octet-stream")
