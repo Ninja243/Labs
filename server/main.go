@@ -697,7 +697,7 @@ func account(w http.ResponseWriter, r *http.Request) {
 		}
 		// Remove all the user's labs from the system
 		filter  = bson.D{{Key: "author", Value: user.ID}}
-		_, err = users.DeleteMany(r.Context(), filter)
+		_, err = labs.DeleteMany(r.Context(), filter)
 		if err != nil {
 			responseJSON(err.Error(), w, http.StatusInternalServerError)
 			return
