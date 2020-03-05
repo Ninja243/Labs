@@ -28,7 +28,7 @@
     },
     "ios": {
       "bundleIdentifier": "com.mweya.labs",
-      "buildNumber":"0.0.1",
+      "buildNumber": "0.0.1",
       "supportsTablet": true,
       "requireFullScreen": false
     },
@@ -43,7 +43,7 @@
       "barStyle": "light-content"
     },
     "updates": {
-      "checkAutomatically": "ON_ERROR_RECOVERY",
+      "enabled": true,
       "fallbackToCacheTimeout": 0
     }
   }
