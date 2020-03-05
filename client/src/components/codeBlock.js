@@ -4,7 +4,8 @@ import { Platform, Text, Button, View, TouchableOpacity } from 'react-native'
 //import { createStackNavigator } from 'react-navigation-stack';
 import { Highlight } from 'react-fast-highlight';
 import { ScrollView } from 'react-native-gesture-handler';
-import NavigationService from '../components/navService'
+import NavigationService from '../components/navService';
+import { Feather, Entypo, AntDesign } from '@expo/vector-icons';
 
 const fontFamily = Platform.OS === 'ios' ? 'Courier' : 'monospace';
 
@@ -13,7 +14,7 @@ export default class CodeBlock extends Component {
         return (
             <ScrollView>
                 <View style={{ flex: 1, width: '90%', alignSelf: 'center', paddingTop: '10%' }}>
-                    <Text style={{ color: 'rgba(44,44,46,1)', paddingBottom: 10, paddingTop: 20, paddingLeft: 40, alignSelf: 'flex-start', fontSize: 30, flexWrap: 'wrap' }}>{this.props.filename}</Text>
+                    <Text style={{ color: 'rgba(0,122,255,1)', paddingTop: 0, alignSelf: 'center', fontSize: 50, flexWrap: 'wrap', borderColor: 'rgba(0,122,255,1)', borderWidth: 0, borderBottomWidth: 2 }}>{this.props.filename}</Text>
                     <View style={{ backgroundColor: 'rgba(199,199,204,1)', padding: 5, marginTop: '10%', flexWrap: 'wrap' }}>
 
                         <Text style={{flexWrap:'wrap', width: "100%"}}>{this.props.code}</Text>

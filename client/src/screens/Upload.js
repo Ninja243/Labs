@@ -16,9 +16,9 @@ export class uploadForm extends Component {
         filename: "",
         language: "",
         code: "",
-        filenameReady: true,
+        filenameReady: false,
         // Debugging
-        languageReady: true,
+        languageReady: false,
         codeReady: false,
         notOK: false
     }
@@ -64,13 +64,16 @@ export class uploadForm extends Component {
                 "Authorization": "Bearer " + profile[0][profile[0].length - 1]
             },
             body: load
-        }).then((response) => { 
+        }).then((response) => {
             if (response.status == 200 || response.status == 409) {
-                
-            } else { 
+                const { navigate } = this.props.navigation;
+                var profile = this.props.profile;
+                var uname = profile[0][profile[0].length - 2].substring(0, profile[0][profile[0].length - 2].indexOf('@'));
+                navigate("Lab", { link: "https://jl.x-mweya.duckdns.org/lab/" + uname + "-" + this.state.filename })
+            } else {
                 const { navigate } = this.props.navigation;
                 navigate("FatalError", {
-                    message: "While trying to post your lab, our server threw a temper tantrum and screamed \""+response.status+" - "+response.statusText+"\" at us, which was not only rude but kinda hurtful. We're sorry about that."
+                    message: "While trying to post your lab, our server threw a temper tantrum and screamed \"" + response.status + " - " + response.statusText + "\" at us, which was not only rude but kinda hurtful. We're sorry about that."
                 });
             }
         })
@@ -81,6 +84,7 @@ export class uploadForm extends Component {
         return (
             (this.state.filenameReady) ?
                 (this.state.languageReady) ?
+                    (this.state.code.length>0) ?
                     <ScrollView style={{ flex: 1 }}>
                         <View style={{ flex: 1 }}>
                             <ScrollView style={{ flex: 1, width: '90%', flexDirection: 'column', alignSelf: 'center', }}>
@@ -111,7 +115,7 @@ export class uploadForm extends Component {
                                     </View>
                                     <View style={{ flex: 1, alignItems: 'center' }}>
                                         <TouchableOpacity onPress={() => {
-                                            alert("Sent!")
+                                            this.postCode()
                                         }}><Text style={{ color: 'rgba(0,122,255,1)', fontSize: 35, marginTop: 70 }}>Post <Feather name="send" size={40} color='rgba(0, 122, 255, 1)' /></Text></TouchableOpacity>
                                     </View>
                                 </View>
@@ -119,7 +123,47 @@ export class uploadForm extends Component {
 
                             </ScrollView>
                         </View>
-                    </ScrollView>
+                        </ScrollView>
+                        :
+                        <ScrollView style={{ flex: 1 }}>
+                            <View style={{ flex: 1 }}>
+                                <ScrollView style={{ flex: 1, width: '90%', flexDirection: 'column', alignSelf: 'center', }}>
+                                    <View style={{ alignSelf: "center", marginTop: 50, flex: 1 }}>
+                                        <View style={{ flex: 1, flexDirection: 'row', borderColor: 'rgba(0, 122, 255, 1)', borderWidth: 0, margin: 10, justifyContent: 'center', }}>
+                                            <TextInput
+                                                style={{ marginRight: '5%', color: 'rgba(0,122,255,1)', fontSize: 35, borderColor: 'rgba(0, 122,255,1)', borderWidth: 0, borderBottomWidth: 2, maxHeight: h * .4, paddingBottom: 2, }}
+                                                autoCapitalize="none"
+                                                autoCompleteType="off"
+                                                multiline={true}
+                                                autoCorrect={false}
+                                                autoFocus={true}
+                                                blurOnSubmit={true}
+                                                caretHidden={true}
+                                                clearTextOnFocus={true}
+                                                disableFullscreenUI={true}
+                                                enablesReturnKeyAutomatically={true}
+                                                keyboardAppearance="light"
+                                                placeholder="print('Hello World!')"
+                                                returnKeyType="next"
+                                                spellCheck={false}
+                                                onChangeText={text => this.setState({ code: text })}
+                                                value={this.state.code}
+                                                onSubmitEditing={() => {
+                                                    this.postCode()
+                                                }}
+                                            />
+                                        </View>
+                                        <View style={{ flex: 1, alignItems: 'center' }}>
+                                            <TouchableOpacity onPress={() => {
+                                               
+                                            }}><Text style={{ color: 'rgba(199,199,204,1)', fontSize: 35, marginTop: 70 }}>Post <Feather name="send" size={40} color='rgba(199,199,204,1)' /></Text></TouchableOpacity>
+                                        </View>
+                                    </View>
+
+
+                                </ScrollView>
+                            </View>
+                        </ScrollView>
                     :
                     this.state.notOK ?
                         <ScrollView style={{ flex: 1 }}>
