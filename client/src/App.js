@@ -4,7 +4,7 @@
 import React, { Component } from 'react';
 import { View, Text, StatusBar, TouchableOpacity } from 'react-native';
 import { createAppContainer, SafeAreaView } from 'react-navigation';
-import { createStackNavigator } from 'react-navigation-stack';
+import { createStackNavigator, TransitionPresets } from 'react-navigation-stack';
 import jwtDecode from 'jwt-decode';
 
 import Footer from './components/footer.js';
@@ -161,9 +161,13 @@ const MainNavigator = createStackNavigator({
   EndpointTest: { screen: endpointTestClass }
 },
   {
+    //mode: 'card',
+    //transitionConfig: () => StackViewTransitionConfigs.SlideFromRightIOS,
     initialRouteName: 'Home',
     /* The header config from HomeScreen is now here */
     defaultNavigationOptions: {
+      //animationEnabled: false,
+      ...TransitionPresets.SlideFromRightIOS,
       headerLayoutPreset: 'center',
       headerBackground: () =>
         <View></View>,
