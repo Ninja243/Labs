@@ -687,9 +687,15 @@ func account(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method == "DELETE" {
 		// Remove a user from this system
-		// TODO remove all the user's labs from the system
 		filter := bson.D{{Key: "id", Value: user.ID}}
 		_, err := users.DeleteOne(r.Context(), filter)
+		if err != nil {
+			responseJSON(err.Error(), w, http.StatusInternalServerError)
+			return
+		}
+		// Remove all the user's labs from the system
+		filter  = bson.D{{Key: "author", Value: user.ID}}
+		_, err = users.DeleteMany(r.Context(), filter)
 		if err != nil {
 			responseJSON(err.Error(), w, http.StatusInternalServerError)
 			return
