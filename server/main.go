@@ -561,6 +561,8 @@ func putLab(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Update the user's profile
+	// TODO Glitchy, consider rewriting to ask mongo to find all labs that have 
+	// the right author ID attributed to them
 	user.LabsCreated = append(user.LabsCreated, lab.ID)
 
 	// Replace the user file in DB
