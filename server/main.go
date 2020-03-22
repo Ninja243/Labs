@@ -17,6 +17,22 @@
 //           - e.g. NUST -> WDF -> Labs about WDF
 //             - Would still require a list of courses
 //             - CRUD for courses :(
+// Identification
+//   - Check requests to make sure it's from clients
+//     - User Agents
+// User management
+//   - ban hammer,
+//   - warnings
+//   - emails?
+// Graceful shutdown
+//   - Block conn
+//   - End DB conn
+//      - err = client.Disconnect(nil)
+// React App
+//   - Expo?
+//   - /try redirects to web client?
+// First run detection
+// 	 - On first run add priv policy to DB
 package main
 
 //"github.com/gorilla/context" <-  too old
@@ -159,6 +175,16 @@ type LegalPolicy struct {
 	PolicyType   string    `json:"type"`
 	LastModified time.Time `json:"modified"`
 	Policy       string    `json:"content"`
+}
+
+// SearchResult describes the response to be given to the client when the client requests
+// a search for a specific string. This result includes an array of user IDs and an array of
+// lab IDs.
+// TODO
+type SearchResult struct {
+	Users       []string `json:"users"`
+	Labs        []string `json:"labs"`
+	LazyMatches []string `json:""`
 }
 
 // Cache is a struct that will be used to store recently accessed user data to reduce
@@ -304,6 +330,80 @@ func helloPublic(w http.ResponseWriter, r *http.Request) {
 func helloPrivate(w http.ResponseWriter, r *http.Request) {
 	message := "Hello from a private endpoint! You need to be authenticated to see this."
 	responseJSON(message, w, http.StatusOK)
+}
+
+// Handles requests to search the system for users and labs
+func search(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Content-Type", "application/json")
+	// Only GETs are allowed here
+	if r.Method == "GET" {
+		// Get the search query from mux
+		vars := mux.Vars(r)
+		query := vars["searchQuery"]
+		filter := bson.D{{Key: "id", Value: query}}
+
+		// Create place to store result
+		var result SearchResult
+
+		// Temp vars to store structs while searching
+		var tempUser User
+		var tempLab Lab
+
+		// Find matches for users
+		var usersMatched []string
+		err := users.FindOne(r.Context(), filter).Decode(&tempUser)
+		if err != nil {
+			if err.Error() == "mongo: no documents in result" {
+				// This is normal
+			} else {
+				responseJSON(err.Error(), w, http.StatusInternalServerError)
+				return
+			}
+		}
+		// Add most accurate match first
+		usersMatched = append(usersMatched, tempUser.ID)
+		// TODO lazy substring matches
+
+		// Find matches for labs
+		var labsMatched []string
+		// Search for the name of the lab
+		filter = bson.D{{Key: "name", Value: query}}
+		err = labs.FindOne(r.Context(), filter).Decode(&tempLab)
+		if err != nil {
+			if err.Error() == "mongo: no documents in result" {
+				// This is normal
+			} else {
+				responseJSON(err.Error(), w, http.StatusInternalServerError)
+				return
+			}
+		}
+		// Most accurate match first
+		labsMatched = append(labsMatched, tempLab.ID)
+		// TODO lazy substring matches
+		// Other matches
+		// TODO
+		var otherMatches []string
+
+		// Move everything together
+		result.Users = usersMatched
+		result.Labs = labsMatched
+		result.LazyMatches = otherMatches
+
+		// Make JSON for client
+		b, err := json.Marshall(result)
+		if err != nil {
+			responseJSON(err.Error(), w, http.StatusInternalServerError)
+			return
+		}
+
+		// Return to client
+		w.WriteHeader(http.StatusOK)
+		w.Write(b)
+		return
+	}
+	responseJSON("Bad request", w, http.StatusBadRequest)
+	return
 }
 
 // Returns a random advert
@@ -561,7 +661,7 @@ func putLab(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Update the user's profile
-	// TODO Glitchy, consider rewriting to ask mongo to find all labs that have 
+	// TODO Glitchy, consider rewriting to ask mongo to find all labs that have
 	// the right author ID attributed to them
 	user.LabsCreated = append(user.LabsCreated, lab.ID)
 
@@ -696,7 +796,7 @@ func account(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		// Remove all the user's labs from the system
-		filter  = bson.D{{Key: "author", Value: user.ID}}
+		filter = bson.D{{Key: "author", Value: user.ID}}
 		_, err = labs.DeleteMany(r.Context(), filter)
 		if err != nil {
 			responseJSON(err.Error(), w, http.StatusInternalServerError)
@@ -1007,10 +1107,12 @@ func main() {
 		negroni.HandlerFunc(jwtMiddleware.HandlerWithNext),
 		negroni.Wrap(http.HandlerFunc(putLab))))
 
-	// TODO
 	// Search for users and labs
 	// https://docs.mongodb.com/manual/text-search/
-	// Create index for every attribute in struct
+	// This endpoint handles requests to search the system for users and labs
+	r.Handle("/search/{searchQuery}", negroni.New(
+		negroni.HandlerFunc(jwtMiddleware.HandlerWithNext),
+		negroni.Wrap(http.HandlerFunc(search))))
 
 	// Ad routes
 	// All users should be able to GET ads
@@ -1060,18 +1162,6 @@ func main() {
 	fmt.Println("Listening on http://localhost:3010")
 	http.ListenAndServe("0.0.0.0:3010", handler)
 
-	// TODO
-	// User management, ban hammer, warnings
-	// TODO
-	// graceful shutdown support here
-	//  - Block conn
-	//  - End DB conn
-	//     - err = client.Disconnect(nil)
-	// TODO
-	// serve React app when / is called
-	// TODO
-	// First run detection
-	// 	- On first run add priv policy to DB
 }
 
 // CustomClaims defines the claims an auth token has to actions it would like to be able to perform
