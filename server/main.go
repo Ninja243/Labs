@@ -1037,8 +1037,8 @@ func main() {
 	// Debug
 	//addLab()
 	//addMweya()
-	//insertInitialPrivacyPolicy()
-	//insertInitialToS()
+	insertInitialPrivacyPolicy()
+	insertInitialToS()
 
 	// Template continues here
 

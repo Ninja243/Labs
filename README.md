@@ -2,7 +2,7 @@
 ## Tl;Dr
 A cross platform and GDPR compliant application being written in React Native to replace the service currently running at https://jl.mweya.duckdns.org
 
-Uses Docker, Golang and MongoDB, and comes with setup instructions!
+Uses Docker/podman, Golang and MongoDB, and comes with setup instructions!
 Check the alpha out at https://jl.x-mweya.duckdns.org, and feel free to use this as a boilerplate for your applications.
 
 ## App
