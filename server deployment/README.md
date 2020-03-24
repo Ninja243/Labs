@@ -12,7 +12,7 @@ To update the server without causing outages, first build the containers on you 
 To do the same using podman-compose, build and push the containers using `podman-compose build && podman-compose push` and then pull and start them on the server using the following command `podman stop $(podman ps -a -q) || podman system prune && podman-compose pull && podman-compose up --no-deps -d`.
 
 # Troubleshooting
- - To view the logs (std.out really) from the containers, first find the container ID using `docker ps`, then run `docker container logs {container id}`, where "{container id}", refers to the ID of the container.
+ - To view the logs (std.out really) from the containers, first find the container ID using `docker ps` (assuming you're using docker, if you are running podman, use `podman ps` instead), then run `docker container logs {container id}` (or `podman container logs {container id}` if you are running podman), where "{container id}", refers to the ID of the container.
  - Make sure you've logged into Docker Hub to be able to push containers to it
    - For docker, use `docker login`
    - For podman, use `podman login`
