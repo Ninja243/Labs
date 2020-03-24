@@ -391,7 +391,7 @@ func search(w http.ResponseWriter, r *http.Request) {
 		result.LazyMatches = otherMatches
 
 		// Make JSON for client
-		b, err := json.Marshall(result)
+		b, err := json.Marshal(result)
 		if err != nil {
 			responseJSON(err.Error(), w, http.StatusInternalServerError)
 			return
