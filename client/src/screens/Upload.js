@@ -84,45 +84,45 @@ export class uploadForm extends Component {
         return (
             (this.state.filenameReady) ?
                 (this.state.languageReady) ?
-                    (this.state.code.length>0) ?
-                    <ScrollView style={{ flex: 1 }}>
-                        <View style={{ flex: 1 }}>
-                            <ScrollView style={{ flex: 1, width: '90%', flexDirection: 'column', alignSelf: 'center', }}>
-                                <View style={{ alignSelf: "center", marginTop: 50, flex: 1 }}>
-                                    <View style={{ flex: 1, flexDirection: 'row', borderColor: 'rgba(0, 122, 255, 1)', borderWidth: 0, margin: 10, justifyContent: 'center', }}>
-                                        <TextInput
-                                            style={{ marginRight: '5%', color: 'rgba(0,122,255,1)', fontSize: 35, borderColor: 'rgba(0, 122,255,1)', borderWidth: 0, borderBottomWidth: 2, maxHeight: h * .4, paddingBottom: 2, }}
-                                            autoCapitalize="none"
-                                            autoCompleteType="off"
-                                            multiline={true}
-                                            autoCorrect={false}
-                                            autoFocus={true}
-                                            blurOnSubmit={true}
-                                            caretHidden={true}
-                                            clearTextOnFocus={true}
-                                            disableFullscreenUI={true}
-                                            enablesReturnKeyAutomatically={true}
-                                            keyboardAppearance="light"
-                                            placeholder="print('Hello World!')"
-                                            returnKeyType="next"
-                                            spellCheck={false}
-                                            onChangeText={text => this.setState({ code: text })}
-                                            value={this.state.code}
-                                            onSubmitEditing={() => {
+                    (this.state.code.length > 0) ?
+                        <ScrollView style={{ flex: 1 }}>
+                            <View style={{ flex: 1 }}>
+                                <ScrollView style={{ flex: 1, width: '90%', flexDirection: 'column', alignSelf: 'center', }}>
+                                    <View style={{ alignSelf: "center", marginTop: 50, flex: 1 }}>
+                                        <View style={{ flex: 1, flexDirection: 'row', borderColor: 'rgba(0, 122, 255, 1)', borderWidth: 0, margin: 10, justifyContent: 'center', }}>
+                                            <TextInput
+                                                style={{ marginRight: '5%', color: 'rgba(0,122,255,1)', fontSize: 35, borderColor: 'rgba(0, 122,255,1)', borderWidth: 0, borderBottomWidth: 2, maxHeight: h * .4, paddingBottom: 2, }}
+                                                autoCapitalize="none"
+                                                autoCompleteType="off"
+                                                multiline={true}
+                                                autoCorrect={false}
+                                                autoFocus={true}
+                                                blurOnSubmit={true}
+                                                caretHidden={true}
+                                                clearTextOnFocus={true}
+                                                disableFullscreenUI={true}
+                                                enablesReturnKeyAutomatically={true}
+                                                keyboardAppearance="light"
+                                                placeholder="print('Hello World!')"
+                                                returnKeyType="next"
+                                                spellCheck={false}
+                                                onChangeText={text => this.setState({ code: text })}
+                                                value={this.state.code}
+                                                onSubmitEditing={() => {
+                                                    this.postCode()
+                                                }}
+                                            />
+                                        </View>
+                                        <View style={{ flex: 1, alignItems: 'center' }}>
+                                            <TouchableOpacity onPress={() => {
                                                 this.postCode()
-                                            }}
-                                        />
+                                            }}><Text style={{ color: 'rgba(0,122,255,1)', fontSize: 35, marginTop: 70 }}>Post <Feather name="send" size={40} color='rgba(0, 122, 255, 1)' /></Text></TouchableOpacity>
+                                        </View>
                                     </View>
-                                    <View style={{ flex: 1, alignItems: 'center' }}>
-                                        <TouchableOpacity onPress={() => {
-                                            this.postCode()
-                                        }}><Text style={{ color: 'rgba(0,122,255,1)', fontSize: 35, marginTop: 70 }}>Post <Feather name="send" size={40} color='rgba(0, 122, 255, 1)' /></Text></TouchableOpacity>
-                                    </View>
-                                </View>
 
 
-                            </ScrollView>
-                        </View>
+                                </ScrollView>
+                            </View>
                         </ScrollView>
                         :
                         <ScrollView style={{ flex: 1 }}>
@@ -155,7 +155,7 @@ export class uploadForm extends Component {
                                         </View>
                                         <View style={{ flex: 1, alignItems: 'center' }}>
                                             <TouchableOpacity onPress={() => {
-                                               
+
                                             }}><Text style={{ color: 'rgba(199,199,204,1)', fontSize: 35, marginTop: 70 }}>Post <Feather name="send" size={40} color='rgba(199,199,204,1)' /></Text></TouchableOpacity>
                                         </View>
                                     </View>

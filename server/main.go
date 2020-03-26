@@ -184,7 +184,7 @@ type LegalPolicy struct {
 type SearchResult struct {
 	Users       []string `json:"users"`
 	Labs        []string `json:"labs"`
-	LazyMatches []string `json:""`
+	LazyMatches []string `json:"misc"`
 }
 
 // Cache is a struct that will be used to store recently accessed user data to reduce
@@ -362,7 +362,9 @@ func search(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 		// Add most accurate match first
-		usersMatched = append(usersMatched, tempUser.ID)
+		if tempUser.ID != "" {
+			usersMatched = append(usersMatched, tempUser.ID)
+		}
 		// TODO lazy substring matches
 
 		// Find matches for labs
@@ -379,7 +381,9 @@ func search(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 		// Most accurate match first
-		labsMatched = append(labsMatched, tempLab.ID)
+		if tempLab.ID != "" {
+			labsMatched = append(labsMatched, tempLab.ID)
+		}
 		// TODO lazy substring matches
 		// Other matches
 		// TODO

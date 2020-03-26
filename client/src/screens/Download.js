@@ -5,13 +5,15 @@ import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 import { AntDesign, Octicons, Entypo, Feather, MaterialCommunityIcons, Foundation } from '@expo/vector-icons'
 import { connect } from 'react-redux'
-
+import MenuItem from '../components/menuItem'
 
 export class downloadForm extends Component {
     //title: 'JavaLabs',
     state = {
         adv: false,
         labs: [],
+        users: [],
+        lazy: [],
         searchString: "",
         searched: false
     }
@@ -27,7 +29,7 @@ export class downloadForm extends Component {
         const { navigate } = this.props.navigation;
         const profile = this.props.profile;
         //console.log("https://jl.x-mweya.duckdns.org/lab/"+this.state.searchString)
-        fetch("https://jl.x-mweya.duckdns.org/lab/" + text, {
+        fetch("https://jl.x-mweya.duckdns.org/search/" + text, {
             method: "GET",
             headers: {
                 "Authorization": "Bearer " + profile[0][profile[0].length - 1]
@@ -39,15 +41,25 @@ export class downloadForm extends Component {
                 if (response.status == 200) {
                     response.json().then((res) => {
                         console.log(res);
-                        var x = []
-                        x[x.length] = res
+                        this.setState({ labs: res.labs, users: res.users, lazy: res.misc })
+                        if (res.labs.toString() === "[\"\",]") { 
+                            res.labs = []
+                        }
+                        if (res.users.toString() === "[\"\",]") { 
+                            res.users = []
+                        }
+                        if (res.misc.toString() === "[\"\",]") { 
+                            res.misc = []
+                        }
+                        console.log("Labs: "+this.state.labs+this.state.labs.length+"\nUsers: "+this.state.users+"\nMisc: "+this.state.lazy);
+                        /*x[x.length] = res
                         this.setState({
                             labs: x
                         });
                         this.setState({ searchString: text });
                         this.setState({
                             found: this.state.labs.length + " labs found"
-                        })
+                        })*/
                     })
                 }
 
@@ -66,8 +78,8 @@ export class downloadForm extends Component {
 
     render() {
         const { navigate } = this.props.navigation;
-        //console.log(this.state.labs.length)
-        return ((this.state.labs.length > 0) ?
+        //console.log(this.state.labs)
+        return ((this.state.labs.length > 0 || this.state.lazy.length > 0 || this.state.users.length > 0) ?
             <View style={{ flex: 1 }}>
                 <ScrollView style={{ flex: 1, width: '90%', flexDirection: 'column', alignSelf: 'center', }}>
                     <View style={{ alignSelf: "center" }}>
@@ -94,6 +106,9 @@ export class downloadForm extends Component {
                             <TouchableOpacity onPress={() => this.search(this.state.searchString)}><Feather name="search" size={40} color='rgba(0, 122, 255, 1)' /></TouchableOpacity>
 
                         </View>
+                        <ScrollView>
+
+                        </ScrollView>
                     </View>
                 </ScrollView>
             </View>
