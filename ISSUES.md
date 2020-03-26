@@ -1,10 +1,12 @@
 # Stuff I don't understand
  * ##  :neckbeard: Go
    * API doesn't check to see if azp is the same as the Client ID
-   * Make endpoint for searching
-   * Appending to user string array for lab ID doesn't work?
+   * ~Make endpoint for searching~
+   * ~Appending to user string array for lab ID doesn't work?~
    * ~Context~
      - ~Why~
+       - ~Optimization, reduces unneccesary computations if the client drops before getting a response~
+       - ~It's cool~
      - ~How do you add info to the context?~
      - ~When should contexts be created?~
      - ~https://github.com/auth0/go-jwt-middleware~ 
@@ -14,32 +16,32 @@
          - ~Is the jwt middleware adding it to the user key automatically?!~
          - ~How do I read it?~
  * ##  :neckbeard: Auth0
-   * Auth0/Oauth2 authentication flow
+   * ~Auth0/Oauth2 authentication flow~
    * ~Tokens~
      - ~Can I use one to resolve the other?~
      - ~Why don't I get both `id_token` and `token` tokens when logging in?~
    * ~Authentication~
-   * Identification
-     - How do I restrict the requests that these users can make to their accounts only?
-     - Currently the client stores a user's JWT and the name bit of their OpenID profile
-       - Is the Email they use for Google unique enough to use as a key?
+   * ~Identification~
+     - ~How do I restrict the requests that these users can make to their accounts only?~
+     - ~Currently the client stores a user's JWT and the name bit of their OpenID profile~
+       - ~Is the Email they use for Google unique enough to use as a key?~
        - ~Can I resolve a user's information from the JWT they supply to the API?~
          - ~What would the flow for checking that look like?~
          - ~Giving the {authdomain}/userinfo the access token looks like it will return a normalized user profile~
            - ~https://mweya-labs.eu.auth0.com/?access_token={token}~
-             - 2 requests per second with 10 requests in each burst is really not enough
-               - https://auth0.com/docs/policies/rate-limits
-               - Server side cache?
-               - Time to switch away from Implicit Grant?
-                 - Client is not a secure place for a private key
+             - ~2 requests per second with 10 requests in each burst is really not enough~
+               - ~https://auth0.com/docs/policies/rate-limits~
+               - ~Server side cache?~
+               - ~Time to switch away from Implicit Grant?~
+                 - ~Client is not a secure place for a private key~
            - ~Just need the middleware to pass the token to a function~
            - ~Or add to the middleware and return a profile with the response writer and the location of the request?~
        - ~Should I be sending the JWT over to the API for Auth?~
-   * Scopes
-     - How should I be using them?
-     - Does each user get a set of scopes assigned to them when they log in?
-     - Can scopes be made more granular? 
-       - Can scopes be changed or assigned by the API?
+   * ~Scopes~
+     - ~How should I be using them?~
+     - ~Does each user get a set of scopes assigned to them when they log in?~
+     - ~Can scopes be made more granular? ~
+       - ~Can scopes be changed or assigned by the API?~
    * ~How did I miss this?~
      - ~https://github.com/auth0/react-native-auth0~
        - ~Kinda considering trying to ditch the AuthSession browser for a fetch method instead, how would I emulate the user's consent flow without raising a huge red flag?~
@@ -64,10 +66,23 @@
  * ## :tv: Ads
    * Legality
      - I can't be the only one here who's keen on doing this, why hasn't anyone else?
+     - My own ad service is illegal on the Google Play Store
+     - Facebook ads only work if submitted to Google Play Store
    * Optimization
      - ~Can I remove adverts from the DB if the amount of views they have paid for has run out?~
      - ~What's the best way to archive/warehouse the older ones?~
        - ~Should I just make a new collection for them? ~
+
+* ## :money: Publishing
+  * App store development licenses are expensive
+    - 25 USD for a year of Google Play Store publishing rights
+    - 99 USD for a year of Apple iStore publishing opportunities
+      - Can't even build the IPA without paying?
+    - Amazon app store?
+    - Samsung app store?
+    - Huawei app store?
+    - APK hosts?
+      - ApkMania?
 
  * ##  :bamboo: NoSQL DBs
    * RAM usage
@@ -92,6 +107,7 @@
 
  * ##  :books: Legal
    * Is writing my own policies a good idea?
+     - Probably not
    * Is there a service I can use to look through my policies and make sure they're ok that doesn't cost regular lawyer prices?
    * Have I done enough for GDPR compliance?
    * Do I need to register my Ad Engine somewhere?
