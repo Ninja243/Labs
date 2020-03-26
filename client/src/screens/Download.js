@@ -55,7 +55,7 @@ export class downloadForm extends Component {
                         // Make objects
                         var j = 0;
                         while (j < res.labs.length) { 
-                            res.labs[j] = <MenuItem name={res.labs[j]} type={"lab"}/>
+                            res.labs[j] = <MenuItem name={res.labs[j]} type={"lab"} key={j}/>
                             j = j + 1;
                         }
                         j = 0;

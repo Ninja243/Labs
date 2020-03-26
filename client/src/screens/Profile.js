@@ -10,6 +10,8 @@ import CodeBlock from '../components/codeBlock'
 import { connect } from 'react-redux';
 import { Feather, Entypo, AntDesign, Iconicons, Octicons } from '@expo/vector-icons';
 
+import MenuItem from '../components/menuItem'
+
 export class ProfilePage extends Component {
     constructor(props) {
         super(props);
@@ -86,17 +88,22 @@ export class ProfilePage extends Component {
     unpackLabs = (labs) => {
         const { navigate } = this.props.navigation;
         var elements = []
-        var i = 0
-        console.log(this.state.dataStore)
-        while (i < labs.length) {
+        //var i = 0
+        //console.log(this.state.dataStore)
+        var j = 0;
+        while (j < labs.length) {
+            labs[j] = <MenuItem name={labs[j]} type={"lab"} key={j}/>
+            j = j + 1;
+        }
+        /*while (i < labs.length) {
             var lab = labs[i]
             elements.push( <Text key={i} style={{ color: 'rgba(0, 122, 255, 1)', fontSize: 15, textDecorationLine: "underline" }} onPress={() => {
                 //console.log('https://jl.x-mweya.duckdns.org/lab/' + lab);
                 navigate("Lab", { link: 'https://jl.x-mweya.duckdns.org/lab/' + lab })
             }}>/{labs[i]}</Text>)
             i = i + 1
-        }
-        return elements
+        }*/
+        return labs
     }
 
     render() {
