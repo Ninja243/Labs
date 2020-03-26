@@ -40,18 +40,36 @@ export class downloadForm extends Component {
                 // TODO
                 if (response.status == 200) {
                     response.json().then((res) => {
-                        console.log(res);
-                        this.setState({ labs: res.labs, users: res.users, lazy: res.misc })
-                        if (res.labs.toString() === "[\"\",]") { 
+                        //console.log(res);
+                        
+                        if (res.labs == null) { 
                             res.labs = []
                         }
-                        if (res.users.toString() === "[\"\",]") { 
+                        if (res.users == null) { 
                             res.users = []
                         }
-                        if (res.misc.toString() === "[\"\",]") { 
+                        if (res.misc == null) { 
                             res.misc = []
                         }
-                        console.log("Labs: "+this.state.labs+this.state.labs.length+"\nUsers: "+this.state.users+"\nMisc: "+this.state.lazy);
+
+                        // Make objects
+                        var j = 0;
+                        while (j < res.labs.length) { 
+                            res.labs[j] = <MenuItem name={res.labs[j]} type={"lab"}/>
+                            j = j + 1;
+                        }
+                        j = 0;
+                        while (j < res.users.length) {
+                            res.users[j] = <MenuItem name={res.users[j]} type={"user"} />
+                            j = j + 1;
+                        }
+                        j = 0;
+                        while (j < res.misc.length) {
+                            res.misc[j] = <MenuItem name={res.misc[j]} type={""} />
+                            j = j + 1;
+                        }
+                        this.setState({ labs: res.labs, users: res.users, lazy: res.misc })
+                        //console.log("Labs: "+this.state.labs+this.state.labs.length+"\nUsers: "+this.state.users+"\nMisc: "+this.state.lazy);
                         /*x[x.length] = res
                         this.setState({
                             labs: x
@@ -106,9 +124,15 @@ export class downloadForm extends Component {
                             <TouchableOpacity onPress={() => this.search(this.state.searchString)}><Feather name="search" size={40} color='rgba(0, 122, 255, 1)' /></TouchableOpacity>
 
                         </View>
-                        <ScrollView>
-
-                        </ScrollView>
+                        <View style={{paddingTop: 50}}>
+                            {this.state.labs}    
+                        </View>
+                        <View style={{paddingTop: 50}}>
+                            {this.state.users}
+                        </View>
+                        <View style={{paddingTop: 50}}>
+                            {this.state.misc}
+                        </View>
                     </View>
                 </ScrollView>
             </View>
