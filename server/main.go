@@ -180,7 +180,6 @@ type LegalPolicy struct {
 // SearchResult describes the response to be given to the client when the client requests
 // a search for a specific string. This result includes an array of user IDs and an array of
 // lab IDs.
-// TODO
 type SearchResult struct {
 	Users       []string `json:"users"`
 	Labs        []string `json:"labs"`
@@ -273,7 +272,8 @@ func requestData(w http.ResponseWriter, r *http.Request) {
 	r.Method = "GET"
 	account(w, r)
 	// TODO send data to email
-	// - How2 keep password safe tho
+	// - How2 keep app password safe tho
+	//   - Environment variable?
 	// - https://gist.github.com/jpillora/cb46d183eca0710d909a
 	/*c, err := smtp.Dial("smtp.gmail.com:465")
 	if err != nil {
@@ -714,6 +714,21 @@ func account(w http.ResponseWriter, r *http.Request) {
 			responseJSON(err.Error(), w, http.StatusInternalServerError)
 			return
 		}
+		// TODO
+		// Search for other labs that aren't stored in the user's struct for some reason
+		c, err := labs.Find(r.Context(), filter)
+		if err != nil {
+			responseJSON(err.Error(), w, http.StatusInternalServerError)
+			return
+		}
+		var relevantLabs []string
+		var tempLab Lab
+		for (c.TryNext(r.Context())) {
+			c.Decode(&tempLab)
+			relevantLabs = append(relevantLabs, tempLab.ID)
+		}
+		log.Print(relevantLabs)
+		user.LabsCreated = relevantLabs
 		// Found it! Marshalling it to JSON
 		b, err := json.Marshal(user)
 		if err != nil {
@@ -782,7 +797,9 @@ func account(w http.ResponseWriter, r *http.Request) {
 				_, err = users.InsertOne(r.Context(), user)
 				if err != nil {
 					responseJSON(err.Error(), w, http.StatusInternalServerError)
+					return
 				}
+				w.WriteHeader(http.StatusOK)
 				return
 			}
 		}

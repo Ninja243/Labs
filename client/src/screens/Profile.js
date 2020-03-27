@@ -64,7 +64,7 @@ export class ProfilePage extends Component {
                 .then((response) => response.json())
 
                 .then((code) => {
-
+                    console.log(code)
                     this.setState({
                         isLoading: false,
                         dataSource: code,
