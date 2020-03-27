@@ -52,7 +52,7 @@ export class downloadForm extends Component {
                         if (res.misc == null) {
                             res.misc = []
                         }
-                        console.log(res)
+                        //console.log(res)
                         // Make objects
                         var j = 0;
                         while (j < res.labs.length) {

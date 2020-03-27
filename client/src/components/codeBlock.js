@@ -7,9 +7,21 @@ import { ScrollView } from 'react-native-gesture-handler';
 import NavigationService from '../components/navService';
 import { Feather, Entypo, AntDesign } from '@expo/vector-icons';
 
+import { connect } from 'react-redux';
+
 const fontFamily = Platform.OS === 'ios' ? 'Courier' : 'monospace';
 
-export default class CodeBlock extends Component {
+export class CodeBlock extends Component {
+    state = {
+        allowedToEdit: false
+    }
+
+    // TODO
+    componentDidMount() {
+        // Check if we are allowed to edit this thing
+        var profile = this.props.profile;
+    }
+
     render() {
         return (
             <ScrollView>
@@ -35,6 +47,23 @@ export default class CodeBlock extends Component {
     }
 }
 
+const mapStateToProps = (state) => {
+    return {
+        i: state.blank.i,
+        profile: state.blank.profile,
+        readyState: state.blank.ready
+    };
+};
+const mapDispatchToProps = (dispatch) => {
+    return {
+        increment: () => dispatch(increment()),
+        logIn: p => dispatch(logIn(p)),
+        setReady: b => dispatch(setReady(b)),
+        logOut: () => dispatch(logOut())
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(CodeBlock);
 /*<Text style={{ fontFamily, color: 'rgba(44,44,46,1)' }}>
                         {this.props.code}
                     </Text>

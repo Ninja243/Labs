@@ -195,6 +195,12 @@ type Cache struct {
 	Labs  []Lab  `json:"labs"`
 }
 
+// TODO
+type GDPRReport struct {
+	User User `json:"user"`
+	Labs 
+}
+
 // Auth0 structs I don't quite understand yet go here
 
 // Response is a struct that defines a message gotten from a JSON document
