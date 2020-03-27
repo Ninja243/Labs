@@ -196,9 +196,15 @@ type Cache struct {
 }
 
 // TODO
+// GDPRReport is a struct that will be returned when a client makes a GDPR data request,
+// neatly returning all the relevant user information along with an automatically generated
+// summary of their activity on this system
 type GDPRReport struct {
 	User User `json:"user"`
-	Labs 
+	Labs []Lab `json:"labs"`
+	PrivacyPolicy LegalPolicy `json:"privacypolicy"`
+	Terms LegalPolicy `json:"termsofservice"`
+	Summary string `json:"summary"`
 }
 
 // Auth0 structs I don't quite understand yet go here
@@ -273,10 +279,21 @@ func addTestAd() {
 // Returns all the data a user has given to the system (user struct and their labs) in
 // JSON
 func requestData(w http.ResponseWriter, r *http.Request) {
-	// No need to do work twice lol
-	// TODO, labs uploaded should probably also be supplied in full
-	r.Method = "GET"
-	account(w, r)
+	var resp GDPRReport
+	
+	// Find out who the user is
+
+	// Get user struct
+
+	// Get user labs
+
+	// Generate summary
+
+	// Compress
+
+	// Send
+
+
 	// TODO send data to email
 	// - How2 keep app password safe tho
 	//   - Environment variable?
@@ -672,7 +689,7 @@ func putLab(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Check to see if it already exists
-	filter := bson.D{{Key: "name", Value: lab.Author + "-" + lab.ID}}
+	filter := bson.D{{Key: "id", Value: lab.ID}}
 	_, err = labs.FindOne(r.Context(), filter)
 	if err != nil {
 		if err.Error() == "mongo: no documents in result" {
