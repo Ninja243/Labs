@@ -9,6 +9,7 @@ import { TouchableOpacity, Text, Button, View, SafeAreaView, StatusBar, AppState
 import CodeBlock from '../components/codeBlock'
 import { connect } from 'react-redux';
 import { Feather, Entypo, AntDesign, Iconicons, Octicons } from '@expo/vector-icons';
+//import NavigationService from '../components/navService'
 
 import MenuItem from '../components/menuItem'
 
@@ -22,11 +23,13 @@ export class ProfilePage extends Component {
 
     componentDidMount() {
         // Username from props
-        //console.log(this.props.navigation.state.params.username);
-        var profile = this.props.profile;
+        //console.log(this.props.navigation.state.params.link);
+        //console.log(this.props.navigation.state.params.username)
+        
         //
+        //console.log(this.props.navigation.getParams('username'))
         if (this.props.navigation.state.params != null) {
-            var uname = this.props.navigation.state.params.link.username;
+            var uname = this.props.navigation.state.params.username;
             return fetch("https://jl.x-mweya.duckdns.org/user/" + uname, {
                 method: "GET",
                 headers: {
@@ -53,6 +56,7 @@ export class ProfilePage extends Component {
                 });
         } else {
             // Fetch own profile
+            var profile = this.props.profile;
             var uname = profile[0][profile[0].length - 2].substring(0, profile[0][profile[0].length - 2].indexOf('@'));
             return fetch("https://jl.x-mweya.duckdns.org/user/" + uname, {
                 method: "GET",

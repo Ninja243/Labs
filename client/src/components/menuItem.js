@@ -23,7 +23,7 @@ export default class MenuItem extends Component {
                 :
                 (this.props.type == "user") ?
                     <View style={{ flex: 1, width: '90%', alignSelf: 'center' }}>
-                        <TouchableOpacity onPress={() => { NavigationService.navigate('Profile'), { username: this.props.name } }}>
+                        <TouchableOpacity onPress={() => { NavigationService.navigate("Profile", { username: this.props.name })}}>
                             <View style={{ flex: 1, flexDirection: 'row', borderColor: 'rgba(0, 122, 255, 1)', borderWidth: 0, margin: 10, justifyContent: 'center' }}>
                                 <Feather name="user" size={40} color="rgba(0, 122, 255, 1)" />
                                 <Text style={{ color: "rgba(0, 122, 255, 1)", fontSize: 30 }}> {this.props.name}</Text>
