@@ -723,7 +723,7 @@ func account(w http.ResponseWriter, r *http.Request) {
 		}
 		var relevantLabs []string
 		var tempLab Lab
-		for (c.TryNext(r.Context())) {
+		for c.TryNext(r.Context()) {
 			c.Decode(&tempLab)
 			relevantLabs = append(relevantLabs, tempLab.ID)
 		}
@@ -876,6 +876,13 @@ func resolveUser(token jwt.Token) (User, error) {
 	// Nicknames might not be unique and can be changed, therefore email is used instead
 	strparts := strings.Split(auth0response.Email, "@")
 	user.ID = strparts[0]
+
+	// Might as well pull info from the DB if we have it
+	filter := bson.D{{Key: "id", Value: user.ID}}
+	err = users.FindOne(req.Context(), filter).Decode(&user)
+	if err != nil {
+		// TODO
+	}
 
 	// Return struct and error state
 	return user, nil

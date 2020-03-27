@@ -65,7 +65,7 @@ export class downloadForm extends Component {
                         }
                         j = 0;
                         while (j < res.misc.length) {
-                            res.misc[j] = <MenuItem name={res.misc[j]} type={""} />
+                            res.misc[j] = <MenuItem name={res.misc[j]} type={""} key={j}/>
                             j = j + 1;
                         }
                         this.setState({ labs: res.labs, users: res.users, lazy: res.misc })
