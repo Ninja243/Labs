@@ -15,7 +15,8 @@ export class downloadForm extends Component {
         users: [],
         lazy: [],
         searchString: "",
-        searched: false
+        searched: false,
+        results: 0
     }
     static navigationOptions = {
 
@@ -41,35 +42,35 @@ export class downloadForm extends Component {
                 if (response.status == 200) {
                     response.json().then((res) => {
                         //console.log(res);
-                        
-                        if (res.labs == null) { 
+
+                        if (res.labs == null) {
                             res.labs = []
                         }
-                        if (res.users == null) { 
+                        if (res.users == null) {
                             res.users = []
                         }
-                        if (res.misc == null) { 
+                        if (res.misc == null) {
                             res.misc = []
                         }
-
+                        console.log(res)
                         // Make objects
                         var j = 0;
-                        while (j < res.labs.length) { 
-                            res.labs[j] = <MenuItem name={res.labs[j]} type={"lab"} key={j}/>
+                        while (j < res.labs.length) {
+                            res.labs[j] = <MenuItem name={res.labs[j]} type={"lab"} key={j} />
                             j = j + 1;
                         }
                         j = 0;
                         while (j < res.users.length) {
-                            res.users[j] = <MenuItem name={res.users[j]} type={"user"} />
+                            res.users[j] = <MenuItem name={res.users[j]} type={"user"} key={j} />
                             j = j + 1;
                         }
                         j = 0;
                         while (j < res.misc.length) {
-                            res.misc[j] = <MenuItem name={res.misc[j]} type={""} key={j}/>
+                            res.misc[j] = <MenuItem name={res.misc[j]} type={""} key={j} />
                             j = j + 1;
                         }
-                        this.setState({ labs: res.labs, users: res.users, lazy: res.misc })
-                        console.log("Labs: "+this.state.labs+this.state.labs.length+"\nUsers: "+this.state.users+"\nMisc: "+this.state.lazy);
+                        this.setState({ labs: res.labs, users: res.users, lazy: res.misc, results: res.labs.length + res.users.length + res.misc.length })
+                        //console.log("Labs: " + this.state.labs + this.state.labs.length + "\nUsers: " + this.state.users + "\nMisc: " + this.state.lazy);
                         /*x[x.length] = res
                         this.setState({
                             labs: x
@@ -124,15 +125,30 @@ export class downloadForm extends Component {
                             <TouchableOpacity onPress={() => this.search(this.state.searchString)}><Feather name="search" size={40} color='rgba(0, 122, 255, 1)' /></TouchableOpacity>
 
                         </View>
-                        <View style={{paddingTop: 50}}>
-                            {this.state.labs}    
-                        </View>
-                        <View style={{paddingTop: 50}}>
-                            {this.state.users}
-                        </View>
-                        <View style={{paddingTop: 50}}>
-                            {this.state.misc}
-                        </View>
+                        <ScrollView style={{minHeight: '70%'}}>
+                            <View >
+                                {this.state.labs}
+                            </View>
+                            <View >
+                                {this.state.users}
+                            </View>
+                            <View >
+                                {this.state.misc}
+                            </View>
+                            <View>
+                                <View style={{ flex: 1, width: '90%', alignSelf: 'center', paddingTop: 50 }}>
+                                    <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'flex-end'}}>
+                                        <View style={{ flex: 1, flexDirection: 'row', borderColor: 'rgba(0, 122, 255, 1)', borderWidth: 0, margin: 10, justifyContent: 'center' }}>
+                                            <Entypo name="flashlight" size={40} color="rgba(144, 144, 146, 1)" />
+                                            <Text style={{ color: "rgba(144, 144, 146, 1)", fontSize: 30 }}> {this.state.results} results found</Text>
+                                        </View>
+                                    </View>
+                                    
+
+                                </View>
+                            </View>
+                        </ScrollView>
+                        
                     </View>
                 </ScrollView>
             </View>
