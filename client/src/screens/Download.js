@@ -125,7 +125,7 @@ export class downloadForm extends Component {
                             <TouchableOpacity onPress={() => this.search(this.state.searchString)}><Feather name="search" size={40} color='rgba(0, 122, 255, 1)' /></TouchableOpacity>
 
                         </View>
-                        <ScrollView style={{minHeight: '70%'}}>
+                        <ScrollView style={{minHeight: '70%', paddingTop: 50}}>
                             <View >
                                 {this.state.labs}
                             </View>
@@ -136,7 +136,7 @@ export class downloadForm extends Component {
                                 {this.state.misc}
                             </View>
                             <View>
-                                <View style={{ flex: 1, width: '90%', alignSelf: 'center', paddingTop: 50 }}>
+                                <View style={{ flex: 1, width: '90%', alignSelf: 'center', paddingTop: 60 }}>
                                     <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'flex-end'}}>
                                         <View style={{ flex: 1, flexDirection: 'row', borderColor: 'rgba(0, 122, 255, 1)', borderWidth: 0, margin: 10, justifyContent: 'center' }}>
                                             <Entypo name="flashlight" size={40} color="rgba(144, 144, 146, 1)" />
