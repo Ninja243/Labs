@@ -24,10 +24,11 @@ export class ProfilePage extends Component {
     componentDidMount() {
         // Username from props
         //console.log(this.props.navigation.state.params.link);
-        //console.log(this.props.navigation.state.params.username)
+        //console.log(this.props.navigation.state.params)
         
         //
         //console.log(this.props.navigation.getParams('username'))
+        var profile = this.props.profile;
         if (this.props.navigation.state.params != null) {
             var uname = this.props.navigation.state.params.username;
             return fetch("https://jl.x-mweya.duckdns.org/user/" + uname, {
@@ -56,7 +57,7 @@ export class ProfilePage extends Component {
                 });
         } else {
             // Fetch own profile
-            var profile = this.props.profile;
+            //var profile = this.props.profile;
             var uname = profile[0][profile[0].length - 2].substring(0, profile[0][profile[0].length - 2].indexOf('@'));
             return fetch("https://jl.x-mweya.duckdns.org/user/" + uname, {
                 method: "GET",

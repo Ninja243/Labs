@@ -17,13 +17,13 @@ export default class CodeBlock extends Component {
                     <Text style={{ color: 'rgba(0,122,255,1)', paddingTop: 0, alignSelf: 'center', fontSize: 50, flexWrap: 'wrap', borderColor: 'rgba(0,122,255,1)', borderWidth: 0, borderBottomWidth: 2 }}>{this.props.filename}</Text>
                     <View style={{ backgroundColor: 'rgba(199,199,204,1)', padding: 5, marginTop: '10%', flexWrap: 'wrap' }}>
 
-                        <Text style={{flexWrap:'wrap', width: "100%"}}>{this.props.code}</Text>
+                        <Text style={{ flexWrap: 'wrap', width: "100%" }}>{this.props.code}</Text>
 
                     </View>
                     <View style={{ flexDirection: "row", marginTop: '10%', width: '100%', flexWrap: 'wrap' }}>
                         <Text>This lab has {this.props.views} views and has been </Text>
                         <Text>written in {this.props.language} by </Text>
-                        <TouchableOpacity onPress={() => { NavigationService.navigate('Profile'), { username: this.props.author }}}>
+                        <TouchableOpacity onPress={() => { NavigationService.navigate('Profile', { username: this.props.author }) }}>
                             <Text style={{ color: 'rgba(0, 122, 255, 1)', textDecorationLine: 'underline' }}>
                                 @{this.props.author}
                             </Text>

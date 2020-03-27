@@ -370,8 +370,10 @@ func search(w http.ResponseWriter, r *http.Request) {
 		// Find matches for labs
 		var labsMatched []string
 		// Search for the name of the lab
+		// TODO
+		// More than one person can have a lab of the same name
 		filter = bson.D{{Key: "name", Value: query}}
-		err = labs.FindOne(r.Context(), filter).Decode(&tempLab)
+		c, err := labs.Find(r.Context(), filter)
 		if err != nil {
 			if err.Error() == "mongo: no documents in result" {
 				// This is normal
@@ -380,10 +382,16 @@ func search(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 		}
-		// Most accurate match first
-		if tempLab.ID != "" {
+		// Iterate through matches
+		for c.TryNext(r.Context()) {
+			c.Decode(&tempLab)
 			labsMatched = append(labsMatched, tempLab.ID)
 		}
+		// Most accurate match first
+		// TODO no sense
+		//if tempLab.ID != "" {
+		//	labsMatched = append(labsMatched, tempLab.ID)
+		//}
 		// TODO lazy substring matches
 		// Other matches
 		// TODO
@@ -657,34 +665,49 @@ func putLab(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Insert into DB
-	_, err = labs.InsertOne(r.Context(), lab)
+	// Check to see if it already exists
+	filter := bson.D{{Key: "name", Value: lab.Author + "-" + lab.ID}}
+	_, err = labs.FindOne(r.Context(), filter)
 	if err != nil {
+		if err.Error() == "mongo: no documents in result" {
+			// This is good
+
+			// Insert into DB
+			_, err = labs.InsertOne(r.Context(), lab)
+			if err != nil {
+				responseJSON(err.Error(), w, http.StatusInternalServerError)
+				return
+			}
+
+			// Update the user's profile
+			// TODO Glitchy, consider rewriting to ask mongo to find all labs that have
+			// the right author ID attributed to them
+			user.LabsCreated = append(user.LabsCreated, lab.ID)
+
+			// Replace the user file in DB
+			filter := bson.D{{Key: "id", Value: user.ID}}
+			// Converting user to BSON for MongoDB
+			b, err := bson.Marshal(user)
+			if err != nil {
+				responseJSON(err.Error(), w, http.StatusInternalServerError)
+				return
+			}
+			// Inserting the user into the DB
+			_, err = users.ReplaceOne(r.Context(), filter, b)
+			if err != nil {
+				responseJSON(err.Error(), w, http.StatusInternalServerError)
+			}
+
+			// OK
+			w.WriteHeader(http.StatusOK)
+			return
+		}
+		// Wot
 		responseJSON(err.Error(), w, http.StatusInternalServerError)
 		return
 	}
-
-	// Update the user's profile
-	// TODO Glitchy, consider rewriting to ask mongo to find all labs that have
-	// the right author ID attributed to them
-	user.LabsCreated = append(user.LabsCreated, lab.ID)
-
-	// Replace the user file in DB
-	filter := bson.D{{Key: "id", Value: user.ID}}
-	// Converting user to BSON for MongoDB
-	b, err := bson.Marshal(user)
-	if err != nil {
-		responseJSON(err.Error(), w, http.StatusInternalServerError)
-		return
-	}
-	// Inserting the user into the DB
-	_, err = users.ReplaceOne(r.Context(), filter, b)
-	if err != nil {
-		responseJSON(err.Error(), w, http.StatusInternalServerError)
-	}
-
-	// OK
-	w.WriteHeader(http.StatusOK)
+	// Document must already exist
+	responseJSON("Lab already exists", w, http.StatusConflict)
 	return
 }
 

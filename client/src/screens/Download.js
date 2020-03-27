@@ -69,7 +69,7 @@ export class downloadForm extends Component {
                             j = j + 1;
                         }
                         this.setState({ labs: res.labs, users: res.users, lazy: res.misc })
-                        //console.log("Labs: "+this.state.labs+this.state.labs.length+"\nUsers: "+this.state.users+"\nMisc: "+this.state.lazy);
+                        console.log("Labs: "+this.state.labs+this.state.labs.length+"\nUsers: "+this.state.users+"\nMisc: "+this.state.lazy);
                         /*x[x.length] = res
                         this.setState({
                             labs: x
