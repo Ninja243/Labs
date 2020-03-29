@@ -64,12 +64,13 @@ export class ProfilePage extends Component {
                 headers: {
                     'User-Agent': 'Labs v1',
                     'Authorization': 'Bearer ' + profile[0][profile[0].length - 1]
-                }
+                },
+                cache: "no-store"
             })
                 .then((response) => response.json())
 
                 .then((code) => {
-                    console.log(code)
+                    //console.log(code)
                     this.setState({
                         isLoading: false,
                         dataSource: code,
@@ -125,11 +126,20 @@ export class ProfilePage extends Component {
             )
         }
         if (this.state.dataSource.message) {
-            return (<SafeAreaView>
-                <ScrollView>
-                    <Text style={{ flexWrap: 'wrap', alignSelf: "center" }}>{this.state.dataSource.message}</Text>
-                </ScrollView>
-            </SafeAreaView>);
+            return (<ScrollView style={{ flex: 1 }}>
+                <View style={{ flex: 1, width: '90%', alignSelf: 'center', paddingTop: 150 }}>
+                    <View style={{ flex: 1, flexDirection: 'row', alignSelf: 'center' }}>
+                        <View style={{ flex: 1, width: '90%', alignSelf: 'center' }}>
+                            <View style={{ flex: 1, flexDirection: 'row', borderColor: 'rgba(0, 122, 255, 1)', borderWidth: 0, margin: 10, justifyContent: 'center' }}>
+                                <Feather name="alert-triangle" size={150} color='rgba(255, 30, 0, 1)' style={{ alignSelf: 'flex-end' }} />
+                            </View>
+                            <Text style={{ alignContent: "center", alignSelf: "center", fontSize: 22, }}>{this.state.dataSource.message}</Text>
+                        </View>
+
+                    </View>
+                </View>
+
+            </ScrollView>);
         }
         return (
             (this.state.dataSource.labs != null) ?

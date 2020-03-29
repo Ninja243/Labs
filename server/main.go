@@ -690,7 +690,8 @@ func putLab(w http.ResponseWriter, r *http.Request) {
 
 	// Check to see if it already exists
 	filter := bson.D{{Key: "id", Value: lab.ID}}
-	_, err = labs.FindOne(r.Context(), filter)
+	err = labs.FindOne(r.Context(), filter)
+	// TODO
 	if err != nil {
 		if err.Error() == "mongo: no documents in result" {
 			// This is good
