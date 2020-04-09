@@ -114,7 +114,7 @@ export class ProfilePage extends Component {
 
     render() {
         const { navigate } = this.props.navigation;
-        //console.log(this.state.dataSource)
+        console.log(this.state.dataSource)
         if (this.state.isLoading) {
             return (
                 <SafeAreaView>

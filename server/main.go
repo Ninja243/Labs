@@ -200,11 +200,11 @@ type Cache struct {
 // neatly returning all the relevant user information along with an automatically generated
 // summary of their activity on this system
 type GDPRReport struct {
-	User User `json:"user"`
-	Labs []Lab `json:"labs"`
+	User          User        `json:"user"`
+	Labs          []Lab       `json:"labs"`
 	PrivacyPolicy LegalPolicy `json:"privacypolicy"`
-	Terms LegalPolicy `json:"termsofservice"`
-	Summary string `json:"summary"`
+	Terms         LegalPolicy `json:"termsofservice"`
+	Summary       string      `json:"summary"`
 }
 
 // Auth0 structs I don't quite understand yet go here
@@ -279,8 +279,8 @@ func addTestAd() {
 // Returns all the data a user has given to the system (user struct and their labs) in
 // JSON
 func requestData(w http.ResponseWriter, r *http.Request) {
-	var resp GDPRReport
-	
+	//var resp GDPRReport
+
 	// Find out who the user is
 
 	// Get user struct
@@ -292,7 +292,6 @@ func requestData(w http.ResponseWriter, r *http.Request) {
 	// Compress
 
 	// Send
-
 
 	// TODO send data to email
 	// - How2 keep app password safe tho
@@ -615,7 +614,17 @@ func getLab(w http.ResponseWriter, r *http.Request) {
 		// Keep the old uploaded date
 		update.Uploaded = lab.Uploaded
 		// Write changes to DB
-		_, err := labs.ReplaceOne(r.Context(), filter, update)
+
+		// TODO
+		// Delete old lab(s) with the same ID
+
+		_, err = labs.DeleteMany(r.Context(), filter)
+		if err != nil {
+			responseJSON(err.Error(), w, http.StatusInternalServerError)
+			return
+		}
+		// Does replacing make sense after deleting?
+		_, err := labs.InsertOne(r.Context(), filter)
 		if err != nil {
 			responseJSON(err.Error(), w, http.StatusInternalServerError)
 			return
@@ -647,6 +656,7 @@ func getLab(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		w.WriteHeader(http.StatusOK)
+		return
 	}
 	// Some weird method seems to have been used
 	responseJSON("method not allowed", w, http.StatusMethodNotAllowed)
@@ -690,7 +700,8 @@ func putLab(w http.ResponseWriter, r *http.Request) {
 
 	// Check to see if it already exists
 	filter := bson.D{{Key: "id", Value: lab.ID}}
-	err = labs.FindOne(r.Context(), filter)
+	var tempLab Lab
+	err = labs.FindOne(r.Context(), filter).Decode(&tempLab)
 	// TODO
 	if err != nil {
 		if err.Error() == "mongo: no documents in result" {
@@ -706,7 +717,7 @@ func putLab(w http.ResponseWriter, r *http.Request) {
 			// Update the user's profile
 			// TODO Glitchy, consider rewriting to ask mongo to find all labs that have
 			// the right author ID attributed to them
-			user.LabsCreated = append(user.LabsCreated, lab.ID)
+			//user.LabsCreated = append(user.LabsCreated, lab.ID)
 
 			// Replace the user file in DB
 			filter := bson.D{{Key: "id", Value: user.ID}}
@@ -763,18 +774,24 @@ func account(w http.ResponseWriter, r *http.Request) {
 		}
 		// TODO
 		// Search for other labs that aren't stored in the user's struct for some reason
+		var tempLab Lab
+		var relevantLabs []string
+		filter = bson.D{{Key: "author", Value: filter}}
 		c, err := labs.Find(r.Context(), filter)
 		if err != nil {
-			responseJSON(err.Error(), w, http.StatusInternalServerError)
-			return
+			if err.Error() == "mongo: no documents in result" {
+				// This is normal
+			} else {
+				responseJSON(err.Error(), w, http.StatusInternalServerError)
+				return
+			}
 		}
-		var relevantLabs []string
-		var tempLab Lab
+		// Iterate through matches
 		for c.TryNext(r.Context()) {
 			c.Decode(&tempLab)
 			relevantLabs = append(relevantLabs, tempLab.ID)
 		}
-		log.Print(relevantLabs)
+		//log.Print(relevantLabs)
 		user.LabsCreated = relevantLabs
 		// Found it! Marshalling it to JSON
 		b, err := json.Marshal(user)

@@ -22,6 +22,7 @@ import uploadForm from './screens/Upload'
 import downloadForm from './screens/Download'
 import LabViewer from './screens/Lab'
 import ProfilePage from './screens/Profile'
+import editForm from './screens/Edit'
 
 import { FaCode } from "react-icons/fa/index";
 import PolicyViewer from './screens/PolicyView.js';
@@ -130,6 +131,14 @@ const MainNavigator = createStackNavigator({
     navigationOptions: {
       headerTitle: () => <View style={{ flexDirection: 'column', flex: 1, alignItems: 'stretch', justifyContent: 'center' }}>
         <Text style={{ padding: 5, alignSelf: "center", color: 'rgba(0, 122, 255, 1)', fontSize: 30, alignItems: 'center', justifyContent: 'center', flex: 1 }}>{"Browse"}</Text>
+      </View>,
+    },
+  },
+  Edit: {
+    screen: editForm,
+    navigationOptions: {
+      headerTitle: () => <View style={{ flexDirection: 'column', flex: 1, alignItems: 'stretch', justifyContent: 'center' }}>
+        <Text style={{ padding: 5, alignSelf: "center", color: 'rgba(0, 122, 255, 1)', fontSize: 30, alignItems: 'center', justifyContent: 'center', flex: 1 }}>{"Edit"}</Text>
       </View>,
     },
   },

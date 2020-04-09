@@ -27,12 +27,12 @@ export class LabViewer extends Component {
         // Get username from redux
         var profile = this.props.profile[0][3];
         // Return result of comparison
-        console.log(username+" = "+profile)
-        if (username === profile) { 
+        //console.log(username+" = "+profile)
+        if (username === profile) {
             return true;
         }
         return false;
-     };
+    };
 
     componentDidMount() {
         // Link from props
@@ -55,7 +55,7 @@ export class LabViewer extends Component {
                 }, function () {
 
                 });
-                console.log(code)
+                //console.log(code)
                 if (this.areAuthor(code.author)) {
                     this.setState({ owned: true });
                 }
@@ -67,12 +67,36 @@ export class LabViewer extends Component {
                     message: "While trying to fetch your lab, our server said '" + response.error_description + "' which is really rude and quite frankly, uncalled for. We're sorry for it's behaviour."
                 });
             });
-        
-       
+
+
     }
     static navigationOptions = {
 
     };
+
+    deleteLab = () => {
+        var profile = this.props.profile;
+        return fetch(this.props.navigation.state.params.link, {
+            method: "DELETE",
+            headers: {
+                "User-Agent": "Labs v1",
+                'Authorization': 'Bearer ' + profile[0][profile[0].length - 1]
+            }
+        }).then(() => {
+            // Good job many thanks
+            const { navigate } = this.props.navigation;
+            this.props.navigation.goBack();
+        }).catch((error) => {
+            if (response.status == 404) {
+                // Didn't exist in the first place so whatever
+            } else {
+                const { navigate } = this.props.navigation;
+                navigate("FatalError", {
+                    message: "While trying to delete your lab, our server said '" + response.error_description + "' which is really rude and quite frankly, uncalled for. We're sorry for it's behaviour."
+                })
+            }
+        })
+    }
 
     render() {
         const { navigate } = this.props.navigation;
@@ -104,27 +128,35 @@ export class LabViewer extends Component {
             </ScrollView>);
         }
         if (this.state.owned) {
-            // TODO
-            // Add edit buttons 
-            console.log("I own this")
             return (
                 <SafeAreaView>
                     <ScrollView >
                         <CodeBlock code={this.state.dataSource.code} filename={this.state.dataSource.name} updated={this.state.dataSource.uploaded} language={this.state.dataSource.language} author={this.state.dataSource.author} views={this.state.dataSource.views}></CodeBlock>
-                        <View style={{ justifyContent: 'center', alignContent: 'center', flexDirection: "column", paddingTop: 150 }}>
-                            <TouchableOpacity onPress={() => { NavigationService.navigate("Home") }}>
-                                <View style={{ flex: 1, flexDirection: 'row', borderColor: 'rgba(0, 122, 255, 1)', borderWidth: 0, margin: 10, justifyContent: 'center' }}>
-                                    <AntDesign name="edit" size={40} color="rgba(0, 122, 255, 1)" />
-                                    <Text style={{ color: "rgba(0, 122, 255, 1)", fontSize: 30 }}> Edit</Text>
-                                </View>
-                            </TouchableOpacity>
+
+                        <View>
+                            <View style={{ justifyContent: 'center', alignContent: 'center', flexDirection: "column", paddingTop: 150 }}>
+                                <TouchableOpacity onPress={() => { navigate("Edit", { link: this.props.navigation.state.params.link }) }}>
+                                    <View style={{ flex: 1, flexDirection: 'row', borderColor: 'rgba(0, 122, 255, 1)', borderWidth: 0, margin: 10, justifyContent: 'center' }}>
+                                        <AntDesign name="edit" size={40} color="rgba(0, 122, 255, 1)" />
+                                        <Text style={{ color: "rgba(0, 122, 255, 1)", fontSize: 30 }}> Edit</Text>
+                                    </View>
+                                </TouchableOpacity>
+                            </View>
+
+                            <View style={{ justifyContent: 'center', alignContent: 'center', flexDirection: "column", paddingTop: 10 }}>
+                                <TouchableOpacity onPress={() => { this.deleteLab()}}>
+                                    <View style={{ flex: 1, flexDirection: 'row', borderColor: 'rgba(255, 30, 0, 1)', borderWidth: 0, margin: 10, justifyContent: 'center' }}>
+                                        <AntDesign name="delete" size={40} color="rgba(255, 30, 0, 1)" />
+                                        <Text style={{ color: "rgba(255, 30, 0, 1)", fontSize: 30 }}> Delete</Text>
+                                    </View>
+                                </TouchableOpacity>
+                            </View>
                         </View>
-                        
                     </ScrollView>
 
                 </SafeAreaView>
             );
-        } 
+        }
         return (
             <SafeAreaView>
                 <ScrollView >
