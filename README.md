@@ -7,7 +7,7 @@
 [![forthebadge cc-by](http://ForTheBadge.com/images/badges/cc-by.svg)](https://creativecommons.org/licenses/by/4.0)
 ---
 ## Tl;Dr
-A cross platform and GDPR compliant application being written in React Native to replace the service currently running at https://jl.mweya.duckdns.org
+A cross platform and GDPR compliant application being written in React Native to replace the service currently running at ~https://jl.mweya.duckdns.org~ (sorry, the site is down, help me pay for it [here](https://paypal.me/mweya))
 
 Uses Docker/podman, Golang and MongoDB, and comes with setup instructions!
 Check the alpha out ~at https://jl.x-mweya.duckdns.org~ (sorry, the site is down, help me pay for it [here](https://paypal.me/mweya)), and feel free to use this as a boilerplate for your applications. More specific information can be found in the README files in the client, server and server deployment directories.
