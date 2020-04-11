@@ -1,9 +1,11 @@
 # Labs
-[![forthebadge](https://forthebadge.com/images/featured/featured-gluten-free.svg)](https://forthebadge.com)
-[![ForTheBadge uses-js](http://ForTheBadge.com/images/badges/uses-js.svg)](http://ForTheBadge.com)
-[![ForTheBadge uses-css](http://ForTheBadge.com/images/badges/uses-css.svg)](http://ForTheBadge.com)
-[![ForTheBadge uses-git](http://ForTheBadge.com/images/badges/uses-git.svg)](https://GitHub.com/)
+## [Badges](https://forthebadge.com)
+[![forthebadge](https://forthebadge.com/images/featured/featured-gluten-free.svg)](https://lmgtfy.com/?q=does+software+contain+gluten&iie=1)
+[![ForTheBadge uses-js](http://ForTheBadge.com/images/badges/uses-js.svg)](https://www.reddit.com/r/ProgrammerHumor/comments/b252lc/javascript_pain/)
+[![ForTheBadge uses-css](http://ForTheBadge.com/images/badges/uses-css.svg)](https://medium.com/carwow-product-engineering/is-css-condemned-to-suck-forever-64aeee146d36)
+[![ForTheBadge uses-git](http://ForTheBadge.com/images/badges/uses-git.svg)](https://stevebennett.me/2012/02/24/10-things-i-hate-about-git/)
 [![ForTheBadge uses-badges](http://ForTheBadge.com/images/badges/uses-badges.svg)](http://ForTheBadge.com)
+[![ForTheBadge uses-badges](https://forthebadge.com/images/badges/made-with-go.svg)](https://www.freecodecamp.org/news/here-are-some-amazing-advantages-of-go-that-you-dont-hear-much-about-1af99de3b23a/)
 [![forthebadge cc-by](http://ForTheBadge.com/images/badges/cc-by.svg)](https://creativecommons.org/licenses/by/4.0)
 ---
 ## Tl;Dr
