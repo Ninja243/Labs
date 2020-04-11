@@ -1,4 +1,4 @@
-# Labs [</>](https://github.com/Ninja243/Labs/blob/master/client/assets/code.svg)
+# [</>](https://github.com/Ninja243/Labs/blob/master/client/assets/code.svg) Labs
 ## [Badges](https://forthebadge.com)
 [![forthebadge](https://forthebadge.com/images/featured/featured-gluten-free.svg)](https://lmgtfy.com/?q=does+software+contain+gluten&iie=1)
 [![ForTheBadge uses-js](http://ForTheBadge.com/images/badges/uses-js.svg)](https://www.reddit.com/r/ProgrammerHumor/comments/b252lc/javascript_pain/)
