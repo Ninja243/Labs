@@ -1,4 +1,6 @@
 # Labs
+---
+[![forthebadge](https://forthebadge.com/images/featured/featured-gluten-free.svg)](https://forthebadge.com)
 ## Tl;Dr
 A cross platform and GDPR compliant application being written in React Native to replace the service currently running at https://jl.mweya.duckdns.org
 
