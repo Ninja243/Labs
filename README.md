@@ -9,10 +9,10 @@
 [![forthebadge cc-by](http://ForTheBadge.com/images/badges/cc-by.svg)](https://creativecommons.org/licenses/by/4.0)
 ---
 ## [Tl;Dr](https://www.urbandictionary.com/define.php?term=TLDR)
-A cross platform and GDPR compliant application being written in React Native to replace the service currently running at ~https://jl.mweya.duckdns.org~ (sorry, the site is down, help me pay for it [here](https://paypal.me/mweya))
+A cross platform and GDPR compliant application being written in React Native to replace the service currently running at https://jl.mweya.duckdns.org ~(sorry, the site is down, help me pay for it [here](https://paypal.me/mweya))~
 
 Uses Docker/podman, Golang and MongoDB, and comes with setup instructions!
-Check the alpha out ~at https://jl.x-mweya.duckdns.org~ (sorry, the site is down, help me pay for it [here](https://paypal.me/mweya)), and feel free to use this as a boilerplate for your applications. More specific information can be found in the README files in the client, server and server deployment directories.
+Check the alpha out at https://jl.x-mweya.duckdns.org ~(sorry, the site is down, help me pay for it [here](https://paypal.me/mweya))~, and feel free to use this as a boilerplate for your applications. More specific information can be found in the README files in the client, server and server deployment directories.
 
 ## [The Frontend](https://www.urbandictionary.com/define.php?term=app)
 The app has been written in React Native (Expo) which allows for the compilation of a native Android application, a native iOS application and a JavaScript version that can either run in your web browser, on the Expo application or on your Android or iOS phone. Cool tech like React Redux and React Navigation have been used to build this.
